@@ -3,7 +3,8 @@
 import random
 from flask import Blueprint, jsonify, request
 from app import db
-from app.models.timeline_data import Evento, UsuarioProgreso
+from app.models.timeline_data import Evento
+from app.models.user import User as UsuarioProgreso
 
 timeline_bp = Blueprint('timeline', __name__)
 

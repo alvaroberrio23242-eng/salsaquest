@@ -5,6 +5,7 @@ Estructura para los eventos y la línea de tiempo musical.
 """
 
 from app import db
+from app.models.user import User as UsuarioProgreso
 
 
 class TimelineData(db.Model):
