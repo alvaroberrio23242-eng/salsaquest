@@ -215,3 +215,82 @@ ${tieneVideo ? `
   </a>
 ` : ''}
 
+// app/static/js/timeline.js
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadTimeline();
+});
+
+async function loadTimeline() {
+    const container = document.getElementById('timeline-container');
+    if (!container) return;
+
+    try {
+        const response = await fetch('/api/timeline');
+        const eventos = await response.json();
+
+        container.innerHTML = '';
+
+        if (eventos.length === 0) {
+            container.innerHTML = '<p class="text-center text-muted">No hay eventos registrados.</p>';
+            return;
+        }
+
+        eventos.forEach((evento, index) => {
+            const isEven = index % 2 === 0;
+            const eventCard = document.createElement('div');
+            eventCard.className = `row align-items-center mb-5 ${isEven ? '' : 'flex-row-reverse'}`;
+
+            // Sección de reproductor Embed (YouTube) u Audio HTML5
+            let mediaHTML = '';
+            if (evento.audio_url) {
+                if (evento.audio_url.includes('youtube')) {
+                    mediaHTML = `
+                        <div class="mt-3 ratio ratio-16x9 rounded-3 overflow-hidden shadow">
+                            <iframe src="${evento.audio_url}" title="${evento.titulo}" allowfullscreen></iframe>
+                        </div>
+                    `;
+                } else {
+                    mediaHTML = `
+                        <div class="mt-3">
+                            <label class="form-label small text-warning fw-bold"><i class="fa-solid fa-music me-1"></i> Escucha el ritmo:</label>
+                            <audio controls class="w-100">
+                                <source src="${evento.audio_url}" type="audio/mpeg">
+                            </audio>
+                        </div>
+                    `;
+                }
+            }
+
+            // Sección de Trivia si existe
+            const triviaHTML = evento.trivia ? `
+                <div class="mt-3 p-2 rounded bg-dark text-warning small border border-warning border-opacity-25">
+                    💡 <strong>Dato Curioso:</strong> ${evento.trivia}
+                </div>
+            ` : '';
+
+            eventCard.innerHTML = `
+                <div class="col-md-6 text-center">
+                    <img src="${evento.imagen_url || 'https://via.placeholder.com/400x250'}" 
+                         class="img-fluid rounded-4 shadow-lg border border-secondary" 
+                         alt="${evento.titulo}">
+                </div>
+                <div class="col-md-6 mt-3 mt-md-0">
+                    <div class="card bg-secondary text-white border-0 shadow-lg rounded-4 p-4">
+                        <span class="badge bg-warning text-dark fs-6 w-auto align-self-start mb-2">${evento.anio}</span>
+                        <h3 class="fw-bold text-warning">${evento.titulo}</h3>
+                        <p class="text-light">${evento.descripcion}</p>
+                        ${triviaHTML}
+                        ${mediaHTML}
+                    </div>
+                </div>
+            `;
+
+            container.appendChild(eventCard);
+        });
+
+    } catch (error) {
+        console.error('Error al cargar la línea de tiempo:', error);
+        container.innerHTML = '<p class="text-center text-danger">Error al conectar con el servidor.</p>';
+    }
+}
