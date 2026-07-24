@@ -1,0 +1,24 @@
+<!-- app/templates/index.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SalsaQuest — Línea de tiempo</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header class="encabezado">
+    <h1 class="encabezado__titulo">SalsaQuest</h1>
+    <p class="encabezado__subtitulo">Desliza para recorrer la historia de la salsa</p>
+  </header>
+
+  <main class="timeline-wrapper">
+    <div class="timeline-track" id="timeline-track">
+      <p>Cargando...</p>
+    </div>
+  </main>
+
+  <script src="{{ url_for('static', filename='js/timeline.js') }}"></script>
+</body>
+</html>
