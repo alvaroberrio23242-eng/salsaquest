@@ -1,9 +1,15 @@
 // app/static/js/trivia.js
 
+// ==========================================
+// 1. ESTADO GLOBAL DE LA APLICACIÓN
+// ==========================================
 let questions = [];
 let currentQuestionIndex = 0;
 let score = 0;
 
+// ==========================================
+// 2. REFERENCIAS A ELEMENTOS DEL DOM
+// ==========================================
 const questionText = document.getElementById('question-text');
 const optionsContainer = document.getElementById('options-container');
 const scoreBadge = document.getElementById('score-badge');
@@ -14,27 +20,46 @@ const quizCard = document.getElementById('quiz-card');
 const resultCard = document.getElementById('result-card');
 const finalScore = document.getElementById('final-score');
 
-// Cargar preguntas desde la API
+// ==========================================
+// 3. FUNCIONES PRINCIPALES DE LA TRIVIA
+// ==========================================
+
+/**
+ * Carga las preguntas desde la API de Flask (/api/trivia)
+ */
 async function loadQuestions() {
     try {
         const response = await fetch('/api/trivia');
         questions = await response.json();
+
         if (questions.length > 0) {
             showQuestion();
         } else {
-            questionText.innerText = "No se encontraron preguntas disponibles.";
+            if (questionText) {
+                questionText.innerText = "No se encontraron preguntas disponibles.";
+            }
         }
     } catch (error) {
         console.error("Error al cargar la trivia:", error);
-        questionText.innerText = "Error al conectar con el servidor.";
+        if (questionText) {
+            questionText.innerText = "Error al conectar con el servidor.";
+        }
     }
 }
 
+/**
+ * Muestra la pregunta actual y genera dinámicamente los botones de opciones
+ */
 function showQuestion() {
     resetState();
     const q = questions[currentQuestionIndex];
-    questionCount.innerText = `Pregunta ${currentQuestionIndex + 1} de ${questions.length}`;
-    questionText.innerText = q.pregunta;
+
+    if (questionCount) {
+        questionCount.innerText = `Pregunta ${currentQuestionIndex + 1} de ${questions.length}`;
+    }
+    if (questionText) {
+        questionText.innerText = q.pregunta;
+    }
 
     q.opciones.forEach((opcion, index) => {
         const btn = document.createElement('button');
@@ -45,16 +70,22 @@ function showQuestion() {
     });
 }
 
+/**
+ * Limpia el contenedor de opciones y oculta botones y mensajes de feedback
+ */
 function resetState() {
-    nextBtn.classList.add('d-none');
-    feedback.classList.add('d-none');
-    optionsContainer.innerHTML = '';
+    if (nextBtn) nextBtn.classList.add('d-none');
+    if (feedback) feedback.classList.add('d-none');
+    if (optionsContainer) optionsContainer.innerHTML = '';
 }
 
+/**
+ * Maneja la selección de una respuesta y valida si es correcta
+ */
 function selectOption(selectedIndex, correctIndex) {
     const buttons = optionsContainer.children;
-    
-    // Deshabilitar todos los botones después de elegir
+
+    // Deshabilitar todas las opciones para prevenir múltiples clics
     for (let btn of buttons) {
         btn.disabled = true;
     }
@@ -62,35 +93,50 @@ function selectOption(selectedIndex, correctIndex) {
     if (selectedIndex === correctIndex) {
         buttons[selectedIndex].classList.replace('btn-outline-light', 'btn-success');
         score += 100;
-        scoreBadge.innerText = `Puntos: ${score}`;
-        feedback.innerText = "🎉 ¡Correcto! Sabes de salsa.";
-        feedback.className = "mt-4 text-center alert alert-success fw-bold";
+        if (scoreBadge) scoreBadge.innerText = `Puntos: ${score}`;
+        
+        if (feedback) {
+            feedback.innerText = "🎉 ¡Correcto! Sabes de salsa.";
+            feedback.className = "mt-4 text-center alert alert-success fw-bold";
+        }
     } else {
         buttons[selectedIndex].classList.replace('btn-outline-light', 'btn-danger');
         buttons[correctIndex].classList.replace('btn-outline-light', 'btn-success');
-        feedback.innerText = "❌ Incorrecto, ¡sigue practicando!";
-        feedback.className = "mt-4 text-center alert alert-danger fw-bold";
+        
+        if (feedback) {
+            feedback.innerText = "❌ Incorrecto, ¡sigue practicando!";
+            feedback.className = "mt-4 text-center alert alert-danger fw-bold";
+        }
     }
 
-    feedback.classList.remove('d-none');
+    if (feedback) feedback.classList.remove('d-none');
 
+    // Control del flujo: siguiente pregunta o mostrar pantalla final
     if (currentQuestionIndex + 1 < questions.length) {
-        nextBtn.classList.remove('d-none');
+        if (nextBtn) nextBtn.classList.remove('d-none');
     } else {
         setTimeout(showResults, 1500);
     }
 }
 
-nextBtn.addEventListener('click', () => {
-    currentQuestionIndex++;
-    showQuestion();
-});
-
+/**
+ * Oculta la tarjeta del juego y muestra la pantalla final con la puntuación
+ */
 function showResults() {
-    quizCard.classList.add('d-none');
-    resultCard.classList.remove('d-none');
-    finalScore.innerText = `${score} pts`;
+    if (quizCard) quizCard.classList.add('d-none');
+    if (resultCard) resultCard.classList.remove('d-none');
+    if (finalScore) finalScore.innerText = `${score} pts`;
 }
 
-// Iniciar trivia
+// ==========================================
+// 4. EVENTOS E INICIALIZACIÓN
+// ==========================================
+if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+        currentQuestionIndex++;
+        showQuestion();
+    });
+}
+
+// Iniciar la trivia
 loadQuestions();
