@@ -1,77 +1,92 @@
-# init_db.py
-
+import os
 from app import crear_app, db
 from app.models.user import User
-from app.models.timeline_data import Evento, UsuarioProgreso
+from app.models.timeline_data import TimelineData
 
 app = crear_app()
 
-with app.app_context():
-    # 1. Limpiar e inicializar la base de datos
-    db.drop_all()
-    db.create_all()
-    print("¡Base de datos limpia y tablas reestructuradas!")
+eventos_salsa = [
+    {
+        "anio": "1900-1940",
+        "titulo": "Son Cubano",
+        "descripcion": "Fusión de ritmos africanos y españoles en Cuba que sentó las bases de la salsa.",
+        "trivia": "El son nació en las zonas rurales del oriente cubano antes de tomar La Habana.",
+        "imagen": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500",
+        "audio_url": "https://www.youtube-nocookie.com/embed/5A1L6S0GIs4"
+    },
+    {
+        "anio": "1964",
+        "titulo": "Nacimiento de Fania Records",
+        "descripcion": "Jerry Masucci y Johnny Pacheco fundan el sello clave en la masificación de la salsa.",
+        "trivia": "Pacheco vendía los primeros discos de Fania directamente en el baúl de su auto.",
+        "imagen": "https://images.unsplash.com/photo-1539375665275-f9de415ef9ac?w=500",
+        "audio_url": "https://www.youtube-nocookie.com/embed/409C1vLvh-8"
+    },
+    {
+        "anio": "1967",
+        "titulo": "Debut de Willie Colón y Héctor Lavoe",
+        "descripcion": "Lanzan el álbum 'El Malo', iniciando una de las duplas más icónicas del género.",
+        "trivia": "Willie tenía solo 17 años cuando grabó este emblemático disco.",
+        "imagen": "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=500",
+        "audio_url": "https://www.youtube-nocookie.com/embed/j_8K3XU_0iI"
+    },
+    {
+        "anio": "1974",
+        "titulo": "Celia Cruz & Fania en África",
+        "descripcion": "Histórico concierto en Zaire junto a la mítica pelea de boxeo entre Ali y Foreman.",
+        "trivia": "Celia Cruz deslumbró al público africano gritando por primera vez con fuerza '¡Azúcar!'",
+        "imagen": "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=500",
+        "audio_url": "https://www.youtube-nocookie.com/embed/S2p0Pz9aHms"
+    },
+    {
+        "anio": "1978",
+        "titulo": "Lanzamiento de 'Siembra'",
+        "descripcion": "Willie Colón y Rubén Blades lanzan el álbum de salsa más vendido de la historia.",
+        "trivia": "Incluye 'Pedro Navaja', un tema que los ejecutivos del sello no querían incluir por ser muy largo.",
+        "imagen": "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=500",
+        "audio_url": "https://www.youtube-nocookie.com/embed/JmGvK5mR3kE"
+    },
+    {
+        "anio": "1981",
+        "titulo": "Grupo Niche & Jairo Varela",
+        "descripcion": "Jairo Varela consolida al Grupo Niche en Colombia, convirtiendo a Cali en la Capital de la Salsa.",
+        "trivia": "Jairo Varela compuso clásicos eternos sin tocar instrumentos armónicos, tarareando sus arreglos.",
+        "imagen": "https://images.unsplash.com/photo-1539375665275-f9de415ef9ac?w=500",
+        "audio_url": "https://www.youtube-nocookie.com/embed/L1d4gU0mF-A"
+    },
+    {
+        "anio": "1995",
+        "titulo": "La Timba Cubana: Los Van Van",
+        "descripcion": "Juan Formell y Los Van Van revolucionan Cuba y el mundo con la explosión de la Timba.",
+        "trivia": "Juan Formell creó el ritmo 'Songo' y fusionó sintetizadores con la charanga tradicional.",
+        "imagen": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=500",
+        "audio_url": "https://www.youtube-nocookie.com/embed/rP3v6q_S8f8"
+    }
+]
 
-    # 2. Crear un usuario de prueba (Admin/Jugador)
-    usuario_admin = User(
-        username="admin_salsa",
-        email="admin@salsaquest.com",
-        score=100
-    )
-    usuario_admin.set_password("salsa2026") # Genera la contraseña encriptada
+def poblar_base_datos():
+    with app.app_context():
+        db.drop_all()
+        db.create_all()
+        print("¡Base de datos reestructurada!")
 
-    # 3. Insertar eventos iniciales de la línea de tiempo (con imágenes y audios)
-    eventos_iniciales = [
-        Evento(
-            era="raices",
-            anio=1900,
-            anio_fin=1940,
-            titulo="Son Cubano",
-            descripcion="Fusión de ritmos africanos y españoles en Cuba que sentó las bases del género.",
-            dato_curioso="El Son se popularizó en La Habana a través de las agrupaciones de sextetos y septetos.",
-            imagen_url="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500",
-            audio_url="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
-        ),
-        Evento(
-            era="nueva_york",
-            anio=1964,
-            titulo="Nacimiento de Fania Records",
-            descripcion="Jerry Masucci y Johnny Pacheco fundan el sello clave en la masificación de la salsa.",
-            dato_curioso="Comenzaron vendiendo discos directamente desde el maletero de un coche en Nueva York.",
-            imagen_url="https://images.unsplash.com/photo-1461360370896-922624d12aa1?w=500",
-            audio_url="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
-        ),
-        Evento(
-            era="fania",
-            anio=1971,
-            titulo="Concierto en El Cheetah",
-            descripcion="Las Estrellas de Fania ofrecen un histórico concierto grabado en vivo.",
-            dato_curioso="De este concierto nació la película documental 'Our Latin Thing'.",
-            imagen_url="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=500",
-            audio_url="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
-        ),
-        Evento(
-            era="expansion",
-            anio=1978,
-            titulo="Lanzamiento de 'Siembra'",
-            descripcion="Willie Colón y Rubén Blades lanzan uno de los álbumes más vendidos del género.",
-            dato_curioso="El tema 'Pedro Navaja' dura más de 7 minutos, rompiendo el estándar comercial de radio.",
-            imagen_url="https://images.unsplash.com/photo-1511735111819-9a3f7709049c?w=500",
-            audio_url="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3"
-        )
-    ]
+        admin = User(username='admin_salsa', email='admin@sonhavana.com', score=200)
+        admin.set_password('salsa2026')
+        db.session.add(admin)
 
-    # 4. Insertar jugador de prueba en el Leaderboard
-    jugador_demo = UsuarioProgreso(
-        nombre_jugador="Hector Lavoe",
-        puntaje=50,
-        nivel_alcanzado=2
-    )
+        for data in eventos_salsa:
+            evento = TimelineData(
+                anio=data['anio'],
+                titulo=data['titulo'],
+                descripcion=data['descripcion'],
+                trivia=data['trivia'],
+                imagen=data['imagen'],
+                audio_url=data['audio_url']
+            )
+            db.session.add(evento)
 
-    # 5. Guardar todo en la base de datos
-    db.session.add(usuario_admin)
-    db.session.add_all(eventos_iniciales)
-    db.session.add(jugador_demo)
-    db.session.commit()
+        db.session.commit()
+        print("¡Base de datos actualizada con reproductores corregidos! 🎬💃")
 
-    print("¡Base de datos lista con usuarios, eventos, audios e imágenes de prueba! 🎶")
+if __name__ == '__main__':
+    poblar_base_datos()

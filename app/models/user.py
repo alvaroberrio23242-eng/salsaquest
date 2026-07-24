@@ -23,3 +23,13 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return f'<User {self.username}>'
+
+
+class PageView(db.Model):
+    __tablename__ = 'page_views'
+
+    id = db.Column(db.Integer, primary_key=True)
+    count = db.Column(db.Integer, default=0)
+
+    def __repr__(self):
+        return f'<PageView {self.count}>'

@@ -1,70 +1,117 @@
-/* app/static/css/style.css */
-
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;0,700;1,600&family=Space+Mono:wght@400;700&display=swap');
+/* ==========================================
+   1. FUENTES Y VARIABLES GLOBALES
+   ========================================== */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;0,700;1,600&family=Poppins:wght@300;400;600;800&family=Space+Mono:wght@400;700&display=swap');
 
 :root {
-  --bg: #170f2e;
-  --surface: #201639;
+  /* Paleta Neon & Salsa Theme */
+  --bg-dark: #0f0c1b;
+  --surface: #181428;
+  --neon-pink: #ff2a74;
+  --neon-cyan: #00f0ff;
+  --neon-gold: #ffbe0b;
   --accent-red: #ef3f5d;
-  --accent-gold: #f2a93b;
-  --text: #f5efe6;
-  --text-muted: #a393c9;
-  --border: rgba(245, 239, 230, 0.14);
+  --text-light: #f0f0f5;
+  --text-muted: #a09abc;
+  --border: rgba(255, 42, 116, 0.25);
+  --font-heading: 'Fraunces', serif;
+  --font-sans: 'Poppins', sans-serif;
+  --font-mono: 'Space Mono', monospace;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
+/* ==========================================
+   2. ESTILOS GENERALES
+   ========================================== */
 body {
   margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Space Mono', monospace;
+  padding: 20px;
+  background-color: var(--bg-dark);
+  color: var(--text-light);
+  font-family: var(--font-sans);
+  background-image: radial-gradient(circle at 50% 10%, #2a0845 0%, var(--bg-dark) 70%);
+  min-height: 100vh;
 }
 
+/* ==========================================
+   3. ENCABEZADO
+   ========================================== */
 .encabezado {
-  padding: 3rem 2rem 2rem;
+  text-align: center;
+  padding: 2rem 1rem 1.5rem;
+  margin-bottom: 30px;
   border-bottom: 1px solid var(--border);
 }
 
 .encabezado__titulo {
-  font-family: 'Fraunces', serif;
+  font-family: var(--font-heading);
   font-style: italic;
-  font-weight: 700;
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-size: clamp(2.5rem, 6vw, 4.2rem);
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink), 0 0 35px var(--neon-pink);
   margin: 0;
-  color: var(--accent-gold);
+  letter-spacing: 1px;
 }
 
 .encabezado__subtitulo {
-  color: var(--text-muted);
+  color: var(--neon-cyan);
+  font-size: 1.1rem;
   margin-top: 0.5rem;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
 }
 
+/* ==========================================
+   4. CONTENEDORES Y TARJETAS
+   ========================================== */
+.form-container, 
+.quiz-container, 
+.admin-container {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 42, 116, 0.15);
+  backdrop-filter: blur(6px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-container:hover, 
+.quiz-container:hover {
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.7), 0 0 25px rgba(0, 240, 255, 0.3);
+}
+
+/* Timeline Horizontal Track */
 .timeline-wrapper {
-  padding: 3rem 0;
+  padding: 2rem 0;
 }
 
 .timeline-track {
   display: flex;
-  gap: 2rem;
-  padding: 1rem 2rem 3rem;
+  gap: 1.5rem;
+  padding: 1rem 1rem 2rem;
   overflow-x: auto;
   scroll-snap-type: x proximity;
 }
 
-.nodo {
+/* Nodos y Tarjetas Individuales */
+.nodo, 
+.timeline-item {
   scroll-snap-align: start;
-  flex: 0 0 min(320px, 80vw);
+  flex: 0 0 min(320px, 85vw);
   background: var(--surface);
-  border-top: 4px solid var(--era-color, var(--accent-red));
-  border-radius: 4px;
-  padding: 1.5rem;
-  cursor: pointer;
+  border-top: 4px solid var(--era-color, var(--neon-cyan));
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
-.nodo:hover {
+.nodo:hover, 
+.timeline-item:hover {
   transform: translateY(-4px);
 }
 
@@ -72,209 +119,110 @@ body {
   opacity: 0.55;
 }
 
-.nodo__marcador {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--era-color, var(--accent-red));
+.nodo__anio, 
+.timeline-year {
   display: inline-block;
-  margin-bottom: 0.75rem;
-}
-
-.nodo__anio {
+  background: var(--era-color, var(--neon-cyan));
+  color: #000;
+  font-weight: 800;
   font-size: 0.85rem;
-  color: var(--accent-gold);
-  letter-spacing: 0.05em;
-  display: block;
-  margin-bottom: 0.4rem;
+  padding: 3px 12px;
+  border-radius: 20px;
+  margin-bottom: 0.5rem;
 }
 
-.nodo__titulo {
-  font-family: 'Fraunces', serif;
+.nodo__titulo, 
+.timeline-title {
+  font-family: var(--font-heading);
   font-weight: 600;
-  font-size: 1.4rem;
-  margin: 0 0 0.5rem;
+  font-size: 1.35rem;
+  color: #fff;
+  margin: 0.25rem 0 0.5rem;
 }
 
-.nodo__descripcion {
+.nodo__descripcion, 
+.timeline-desc {
   font-size: 0.9rem;
   line-height: 1.5;
   color: var(--text-muted);
   margin: 0;
 }
 
+/* ==========================================
+   5. BOTONES E INSUMOS INTERACTIVOS
+   ========================================== */
+.btn-trivia, 
+button[type="submit"] {
+  background: linear-gradient(45deg, var(--neon-pink), #ff5200);
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(255, 42, 116, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-trivia:hover, 
+button[type="submit"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(255, 42, 116, 0.8);
+}
+
+.trivia-box {
+  background-color: #fff9db;
+  color: #2c3e50;
+  border-left: 4px solid var(--neon-gold);
+  padding: 12px;
+  margin-top: 12px;
+  border-radius: 8px;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+/* Forms e Inputs */
+input, 
+textarea {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: #fff !important;
+  border-radius: 8px !important;
+}
+
+input:focus, 
+textarea:focus {
+  border-color: var(--neon-cyan) !important;
+  outline: none;
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
+}
+
 .error {
-  padding: 2rem;
+  padding: 1.5rem;
   color: var(--accent-red);
-}
-.btn-trivia {
-    background-color: #e67e22;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: bold;
-    margin-top: 10px;
-    transition: background-color 0.2s;
+  font-weight: bold;
 }
 
-.btn-trivia:hover {
-    background-color: #d35400;
-}
-
-.trivia-box {
-    background-color: #fff9db;
-    color: #2c3e50;
-    border-left: 4px solid #f1c40f;
+/* ==========================================
+   6. OPTIMIZACIÓN MOBILE-FIRST (CELULARES)
+   ========================================== */
+@media (max-width: 768px) {
+  body {
     padding: 12px;
-    margin-top: 10px;
-    border-radius: 6px;
-    font-style: italic;
-}
-.btn-trivia {
-    background-color: #e67e22;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: bold;
-    margin-top: 10px;
-    transition: background-color 0.2s;
-}
+    padding-bottom: 80px; /* Margen para que el menú inferior no tape contenido */
+  }
 
-.btn-trivia:hover {
-    background-color: #d35400;
-}
+  .encabezado {
+    padding: 1.5rem 0.5rem 1rem;
+  }
 
-.trivia-box {
-    background-color: #fff9db;
-    color: #2c3e50;
-    border-left: 4px solid #f1c40f;
-    padding: 12px;
-    margin-top: 10px;
-    border-radius: 6px;
-    font-style: italic;
-}
-/* app/static/css/style.css */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap');
+  .card-img-top {
+    height: 160px !important;
+    object-fit: cover;
+  }
 
-:root {
-    --bg-dark: #0f0c1b;
-    --card-bg: #181428;
-    --neon-pink: #ff2a74;
-    --neon-cyan: #00f0ff;
-    --neon-gold: #ffbe0b;
-    --text-light: #f0f0f5;
-    --text-muted: #a09abc;
-}
-
-body {
-    background-color: var(--bg-dark);
-    color: var(--text-light);
-    font-family: 'Poppins', sans-serif;
-    margin: 0;
-    padding: 20px;
-    background-image: radial-gradient(circle at 50% 10%, #2a0845 0%, var(--bg-dark) 70%);
-    min-height: 100vh;
-}
-
-/* Encabezado Principal */
-.encabezado {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.encabezado__titulo {
-    font-size: 3rem;
-    font-weight: 800;
-    color: #fff;
-    text-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink), 0 0 40px var(--neon-pink);
-    letter-spacing: 2px;
-    margin-bottom: 5px;
-}
-
-.encabezado__subtitulo {
-    color: var(--neon-cyan);
-    font-size: 1.1rem;
-}
-
-/* Contenedores de Sección */
-.form-container, .quiz-container, .admin-container {
-    background: var(--card-bg);
-    border: 1px solid rgba(255, 42, 116, 0.3);
-    border-radius: 16px;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 42, 116, 0.15);
-    backdrop-filter: blur(4px);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.form-container:hover, .quiz-container:hover {
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.7), 0 0 25px rgba(0, 240, 255, 0.3);
-}
-
-/* Tarjetas de la Línea de Tiempo */
-.timeline-item {
-    background: var(--card-bg);
-    border-left: 4px solid var(--era-color, var(--neon-cyan));
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-}
-
-.timeline-year {
-    display: inline-block;
-    background: var(--era-color, var(--neon-cyan));
-    color: #000;
-    font-weight: 800;
-    padding: 3px 12px;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    margin-bottom: 10px;
-}
-
-.timeline-title {
-    color: #fff;
-    font-size: 1.4rem;
-    margin: 5px 0 10px 0;
-}
-
-.timeline-desc {
-    color: var(--text-muted);
-    font-size: 0.95rem;
-    line-height: 1.5;
-}
-
-/* Botones */
-.btn-trivia, button[type="submit"] {
-    background: linear-gradient(45deg, var(--neon-pink), #ff5200);
-    color: white;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 25px;
-    font-weight: 600;
-    cursor: pointer;
-    box-shadow: 0 0 10px rgba(255, 42, 116, 0.4);
-    transition: all 0.2s ease-in-out;
-}
-
-.btn-trivia:hover, button[type="submit"]:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 20px rgba(255, 42, 116, 0.8);
-}
-
-/* Inputs */
-input, textarea {
-    background: rgba(255, 255, 255, 0.05) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    color: #fff !important;
-    border-radius: 8px !important;
-}
-
-input:focus, textarea:focus {
-    border-color: var(--neon-cyan) !important;
-    outline: none;
-    box-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
+  .nodo, 
+  .timeline-item {
+    flex: 0 0 88vw; /* Ocupa la mayor parte de la pantalla en celular */
+  }
 }

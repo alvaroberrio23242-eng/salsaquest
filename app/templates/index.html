@@ -1,90 +1,184 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SalsaQuest — Línea de tiempo</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SalsaQuest — Línea de Tiempo & Ritmo</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- CSS Personalizado -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body>
+<body class="bg-dark text-white">
 
-    <!-- Encabezado Principal -->
-    <header class="encabezado">
-        <h1 class="encabezado__titulo">SalsaQuest</h1>
-        <p class="encabezado__subtitulo">Desliza para recorrer la historia de la salsa</p>
-    </header>
+  <!-- Header / Navbar Principal -->
+  <header class="p-3 mb-4 border-bottom border-secondary bg-black sticky-top shadow-lg">
+    <div class="container d-flex flex-wrap align-items-center justify-content-between">
+      <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+        <span class="fs-3 fw-bold text-danger">🕺 Salsa<span class="text-warning">Quest</span></span>
+      </a>
 
-    <!-- Formulario para agregar nuevos eventos -->
-    <section class="form-container" style="max-width: 600px; margin: 20px auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px;">
-        <h3>➕ Añadir Nuevo Hito a la Historia</h3>
-        <form id="form-nuevo-evento" onsubmit="guardarNuevoEvento(event)">
-            <div style="margin-bottom: 12px;">
-                <label for="anio">Año:</label><br>
-                <input type="number" id="anio" required placeholder="Ej. 1985" style="width: 100%; padding: 8px; box-sizing: border-box;">
-            </div>
-            <div style="margin-bottom: 12px;">
-                <label for="titulo">Título:</label><br>
-                <input type="text" id="titulo" required placeholder="Ej. Noche de Salsa en Cali" style="width: 100%; padding: 8px; box-sizing: border-box;">
-            </div>
-            <div style="margin-bottom: 12px;">
-                <label for="descripcion">Descripción:</label><br>
-                <textarea id="descripcion" required placeholder="Breve reseña del evento..." style="width: 100%; padding: 8px; box-sizing: border-box;"></textarea>
-            </div>
-            <div style="margin-bottom: 12px;">
-                <label for="dato_curioso">Dato curioso (Trivia):</label><br>
-                <input type="text" id="dato_curioso" placeholder="Un dato poco conocido..." style="width: 100%; padding: 8px; box-sizing: border-box;">
-            </div>
-            <button type="submit" class="btn-trivia" style="width: 100%; padding: 10px;">Guardar Evento 🚀</button>
-        </form>
+      <!-- Contador de Vistas & Selector de Idioma -->
+      <div class="d-flex align-items-center gap-3">
+        <span class="badge bg-secondary p-2 fs-6">
+          <i class="fa-solid fa-eye text-warning me-1"></i> <span id="views-count">{{ total_views or 1 }}</span> Visitas
+        </span>
+        <button class="btn btn-outline-warning btn-sm" onclick="toggleLanguage()">
+          🌐 <span id="lang-text">ES / EN</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    
+    <!-- Hero / Encabezado Principal -->
+    <div class="text-center my-4">
+      <h1 class="display-4 fw-bold text-warning">Línea de Tiempo de la Salsa</h1>
+      <p class="lead text-light">Desliza para recorrer la historia, los grandes exponentes y la evolución del ritmo latino.</p>
+    </div>
+
+    <!-- 🎵 SECCIÓN VIRAL: REPRODUCTORES DE SPOTIFY -->
+    <section class="my-5 p-4 rounded-4" style="background: rgba(25, 20, 35, 0.9); border: 1px solid rgba(255, 193, 7, 0.3); box-shadow: 0 8px 32px rgba(255, 0, 128, 0.2);">
+      <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap">
+        <div>
+          <h3 class="fw-bold text-warning mb-1">
+            <i class="fa-brands fa-spotify text-success me-2"></i>Playlists Top: ¡Ponle Música al Recorrido!
+          </h3>
+          <p class="text-secondary small mb-0">Escucha los mejores clásicos de Salsa Brava, Timba Cubana, Salsa Caleña y Romántica.</p>
+        </div>
+        <span class="badge bg-danger rounded-pill px-3 py-2 animate-pulse mt-2 mt-md-0">🔥 Música en Vivo</span>
+      </div>
+
+      <div class="row g-3">
+        <!-- Playlist 1: Salsa Brava / Fania -->
+        <div class="col-md-6">
+          <div class="p-2 rounded-3" style="background: #121212;">
+            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZF1DX84S3L91YI2E?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+          </div>
+        </div>
+
+        <!-- Playlist 2: Timba Cubana Power -->
+        <div class="col-md-6">
+          <div class="p-2 rounded-3" style="background: #121212;">
+            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZF1DXcK43oXACRsz?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+          </div>
+        </div>
+
+        <!-- Playlist 3: Salsa Caleña & Golpe Duro -->
+        <div class="col-md-6">
+          <div class="p-2 rounded-3" style="background: #121212;">
+            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZF1DXa58Gg4N2wD2?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+          </div>
+        </div>
+
+        <!-- Playlist 4: Clásicos Románticos -->
+        <div class="col-md-6">
+          <div class="p-2 rounded-3" style="background: #121212;">
+            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZF1DX0S8zY3pvhT6?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <!-- Contenido Principal -->
-    <main class="main-content">
-        <h2>Línea de Tiempo de la Salsa</h2>
-        
-        <!-- JavaScript inyectará dinámicamente las tarjetas desde la BD aquí -->
-        <div class="timeline-wrapper">
-            <div class="timeline-track" id="timeline-track">
-                <p>Cargando historia...</p>
-            </div>
+    <!-- ➕ FORMULARIO PARA AGREGAR NUEVOS EVENTOS -->
+    <section class="form-container my-5 p-4 rounded-4" id="admin-form-container" style="max-width: 650px; margin: 0 auto; background: #1e1e24; border: 1px solid #f2a93b;">
+      <h3 class="text-warning text-center mb-3">➕ Añadir Nuevo Hito a la Historia</h3>
+      <form id="form-nuevo-evento" onsubmit="guardarNuevoEvento(event)">
+        <div class="mb-3">
+          <label for="anio" class="form-label text-light">Año o Época:</label>
+          <input type="text" id="anio" required placeholder="Ej. 1985" class="form-control bg-dark text-white border-secondary">
         </div>
+        <div class="mb-3">
+          <label for="titulo" class="form-label text-light">Título del Evento:</label>
+          <input type="text" id="titulo" required placeholder="Ej. Noche de Salsa en Cali" class="form-control bg-dark text-white border-secondary">
+        </div>
+        <div class="mb-3">
+          <label for="descripcion" class="form-label text-light">Descripción:</label>
+          <textarea id="descripcion" required placeholder="Breve reseña del evento..." class="form-control bg-dark text-white border-secondary" rows="3"></textarea>
+        </div>
+        <div class="mb-3">
+          <label for="dato_curioso" class="form-label text-light">Dato curioso (Trivia):</label>
+          <input type="text" id="dato_curioso" placeholder="Un dato poco conocido..." class="form-control bg-dark text-white border-secondary">
+        </div>
+        <div class="mb-3">
+          <label for="imagen_url" class="form-label text-light">URL de Imagen / GIF (Opcional):</label>
+          <input type="url" id="imagen_url" placeholder="https://ejemplo.com/imagen.gif" class="form-control bg-dark text-white border-secondary">
+        </div>
+        <button type="submit" class="btn btn-warning w-100 fw-bold py-2">Guardar Evento 🚀</button>
+      </form>
+    </section>
+
+    <!-- 📌 LÍNEA DE TIEMPO (TARJETAS DINÁMICAS DE LA BD) -->
+    <main class="main-content my-5">
+      <h2 class="text-center text-gradient mb-4">Recorrido Histórico</h2>
+      <div class="timeline-wrapper">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="timeline-track">
+          <p class="text-center w-100 text-secondary">Cargando historia...</p>
+        </div>
+      </div>
     </main>
 
-    <!-- Script Principal -->
-    <script src="{{ url_for('static', filename='js/timeline.js') }}"></script>
-</body>
-</html>
-<!-- Seccion del Juego / Quiz -->
-<section class="quiz-container" style="max-width: 600px; margin: 30px auto; padding: 20px; border: 2px solid #f2a93b; border-radius: 12px; background: #1e1e24; color: #fff; text-align: center;">
-    <h2>💃 Quiz SalsaQuest 🕺</h2>
-    <p id="quiz-instruccion">Demuestra cuánto sabes sobre la historia de la salsa.</p>
-    
-    <div id="quiz-box" style="margin-top: 15px;">
-        <button onclick="iniciarQuiz()" class="btn-trivia" style="padding: 12px 24px; font-size: 1.1rem; cursor: pointer;">
-            🎮 Iniciar Desafío
-        </button>
-    </div>
-    
-    <p id="quiz-resultado" style="margin-top: 15px; font-weight: bold;"></p>
-</section>
-<!-- Formulario de Jugador y Leaderboard -->
-<section style="max-width: 600px; margin: 20px auto; padding: 15px; border: 1px solid #f2a93b; border-radius: 8px; background: #222; color: #fff;">
-    <div style="margin-bottom: 15px;">
-        <label for="nombre-jugador">👤 Nombre del Jugador:</label>
-        <input type="text" id="nombre-jugador" placeholder="Ej. Hector Lavoe" style="padding: 6px; border-radius: 4px; border: none; width: 60%;">
+    <!-- 💃 SECCIÓN DEL JUEGO / QUIZ Y LEADERBOARD 🕺 -->
+    <div class="row g-4 my-5">
+      
+      <!-- Quiz SalsaQuest -->
+      <div class="col-md-6">
+        <section class="quiz-container h-100 p-4 rounded-4" style="border: 2px solid #f2a93b; background: #1e1e24; color: #fff; text-align: center;">
+          <h3 class="text-warning fw-bold mb-3">💃 Quiz SalsaQuest 🕺</h3>
+          <p id="quiz-instruccion" class="text-light">Demuestra cuánto sabes sobre la historia de la salsa.</p>
+          
+          <div id="quiz-box" class="my-4">
+            <button onclick="iniciarQuiz()" class="btn btn-warning btn-lg fw-bold px-4">
+              🎮 Iniciar Desafío
+            </button>
+          </div>
+          
+          <p id="quiz-resultado" class="fw-bold mt-3 text-info"></p>
+        </section>
+      </div>
+
+      <!-- Jugador & Tabla de Posiciones -->
+      <div class="col-md-6">
+        <section class="p-4 rounded-4 h-100" style="border: 1px solid #f2a93b; background: #1e1e24; color: #fff;">
+          <h3 class="text-warning fw-bold mb-3"><i class="fa-solid fa-trophy me-2"></i>Tabla de Posiciones</h3>
+          
+          <div class="mb-3">
+            <label for="nombre-jugador" class="form-label">👤 Nombre del Jugador:</label>
+            <input type="text" id="nombre-jugador" placeholder="Ej. Hector Lavoe" class="form-control bg-dark text-white border-secondary">
+          </div>
+
+          <ul id="lista-leaderboard" class="list-group list-group-flush rounded-3">
+            <li class="list-group-item bg-dark text-secondary border-secondary">Cargando posiciones...</li>
+          </ul>
+        </section>
+      </div>
+
     </div>
 
-    <h4>🏆 Tabla de Posiciones</h4>
-    <ul id="lista-leaderboard" style="list-style: none; padding-left: 0;">
-        <li>Cargando posiciones...</li>
-    </ul>
-</section>
-<div style="margin-bottom: 12px;">
-    <label for="imagen_url">URL de la Imagen (opcional):</label><br>
-    <input type="url" id="imagen_url" placeholder="https://ejemplo.com/imagen.jpg" style="width: 100%; padding: 8px; box-sizing: border-box;">
-</div>
-<!-- app/templates/index.html -->
-<section class="form-container" id="admin-form-container" style="display: none;">
-    <h3>➕ Añadir Nuevo Hito a la Historia</h3>
-    <!-- Tu formulario actual aquí -->
-</section>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='js/timeline.js') }}"></script>
+</body>
+</html>
+<!-- NAV BAR INFERIOR SOLO PARA MÓVILES -->
+<nav class="navbar navbar-dark bg-black fixed-bottom d-md-none border-top border-secondary py-2">
+  <div class="container d-flex justify-content-around text-center">
+    <a href="#timeline-track" class="text-warning text-decoration-none small">
+      <i class="fa-solid fa-timeline fs-5 d-block"></i> Historia
+    </a>
+    <a href="#seccion-spotify" class="text-success text-decoration-none small">
+      <i class="fa-brands fa-spotify fs-5 d-block"></i> Playlists
+    </a>
+    <a href="#seccion-quiz" class="text-info text-decoration-none small">
+      <i class="fa-solid fa-gamepad fs-5 d-block"></i> Quiz
+    </a>
+    <a href="#seccion-leaderboard" class="text-danger text-decoration-none small">
+      <i class="fa-solid fa-trophy fs-5 d-block"></i> Ranking
+    </a>
+  </div>
+</nav>
