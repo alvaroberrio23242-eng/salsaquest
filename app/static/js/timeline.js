@@ -358,3 +358,82 @@ function actualizarVistaAdmin() {
         botonesEliminar.forEach(btn => btn.style.display = 'none');
     }
 }
+// Manejo de Modales
+function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+// Verificar usuario al cargar la página
+document.addEventListener('DOMContentLoaded', () => {
+    checkCurrentUser();
+});
+
+function checkCurrentUser() {
+    fetch('/auth/current_user')
+        .then(res => res.json())
+        .then(data => {
+            if (data.authenticated) {
+                document.getElementById('auth-buttons').style.display = 'none';
+                document.getElementById('user-info').style.display = 'block';
+                document.getElementById('user-display-name').innerText = data.username;
+                document.getElementById('user-score').innerText = data.score;
+            } else {
+                document.getElementById('auth-buttons').style.display = 'block';
+                document.getElementById('user-info').style.display = 'none';
+            }
+        });
+}
+
+// Evento Login
+document.getElementById('login-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const data = {
+        username: document.getElementById('login-username').value,
+        password: document.getElementById('login-password').value
+    };
+    fetch('/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(res => {
+        alert(res.message);
+        if (res.success) {
+            closeModal('login-modal');
+            checkCurrentUser();
+        }
+    });
+});
+
+// Evento Registro
+document.getElementById('register-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const data = {
+        username: document.getElementById('reg-username').value,
+        email: document.getElementById('reg-email').value,
+        password: document.getElementById('reg-password').value
+    };
+    fetch('/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(res => {
+        alert(res.message);
+        if (res.success) {
+            closeModal('register-modal');
+            checkCurrentUser();
+        }
+    });
+});
+
+// Cerrar sesión
+function logout() {
+    fetch('/auth/logout', { method: 'POST' })
+        .then(res => res.json())
+        .then(data => {
+            alert(data.message);
+            checkCurrentUser();
+        });
+}
