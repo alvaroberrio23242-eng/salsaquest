@@ -1,53 +1,59 @@
 # app/models/timeline_data.py
 """
-Datos de la línea de tiempo de SalsaQuest.
-Por ahora es una lista de diccionarios en Python (datos "hardcodeados").
-Más adelante esto se migrará a una tabla real en SQLite usando SQLAlchemy,
-pero mantenemos la misma estructura de campos para que la migración sea directa.
+Modelos de Base de Datos para SalsaQuest (SQLAlchemy).
+Contiene la estructura para la línea de tiempo y la puntuación de los usuarios.
 """
 
-timeline_nodes = [
-    {
-        "id": 1,
-        "era": "raices",
-        "anio_inicio": 1900,
-        "anio_fin": 1940,
-        "titulo": "Son cubano",
-        "descripcion_corta": "La fusión de ritmos africanos y españoles en Cuba que dio origen a la salsa.",
-        "imagen": "son_cubano.jpg",
-        "orden": 1,
-    },
-    {
-        "id": 2,
-        "era": "nueva_york",
-        "anio_inicio": 1940,
-        "anio_fin": 1960,
-        "titulo": "Migración y Latin Jazz en Nueva York",
-        "descripcion_corta": "La migración puertorriqueña y cubana a NYC mezcla el son con el jazz, sentando las bases de la salsa moderna.",
-        "imagen": "nyc_latin_jazz.jpg",
-        "orden": 2,
-    },
-    {
-        "id": 3,
-        "era": "fania",
-        "anio_inicio": 1960,
-        "anio_fin": 1975,
-        "titulo": "Fania Records populariza la 'salsa'",
-        "descripcion_corta": "El sello discográfico Fania reúne a los grandes músicos del género y consolida el nombre 'salsa'.",
-        "imagen": "fania_all_stars.jpg",
-        "orden": 3,
-    },
-]
+from app import db
 
 
-def obtener_todos_los_nodos():
-    """Devuelve todos los nodos ordenados cronológicamente."""
-    return sorted(timeline_nodes, key=lambda nodo: nodo["orden"])
+class Evento(db.Model):
+    """Modelo para los nodos/eventos de la línea de tiempo."""
+    __tablename__ = 'eventos'
+    __table_args__ = {'extend_existing': True}
+
+    id = db.Column(db.Integer, primary_key=True)
+    era = db.Column(db.String(50), nullable=True, default='raices')
+    anio = db.Column(db.Integer, nullable=False)
+    anio_fin = db.Column(db.Integer, nullable=True)
+    titulo = db.Column(db.String(150), nullable=False)
+    descripcion = db.Column(db.Text, nullable=False)
+    dato_curioso = db.Column(db.Text, nullable=True)
+    imagen_url = db.Column(db.String(255), nullable=True)
+    audio_url = db.Column(db.String(255), nullable=True)  # 🎵 Campo de audio / música
+
+    def to_dict(self):
+        """Convierte el objeto a diccionario para respuestas JSON de las APIs."""
+        return {
+            "id": self.id,
+            "era": self.era or "raices",
+            "anio": self.anio,
+            "anio_inicio": self.anio,
+            "anio_fin": self.anio_fin,
+            "titulo": self.titulo,
+            "descripcion": self.descripcion,
+            "descripcion_corta": self.descripcion,
+            "dato_curioso": self.dato_curioso,
+            "imagen_url": self.imagen_url or "https://via.placeholder.com/300x180?text=SalsaQuest",
+            "audio_url": self.audio_url or ""
+        }
 
 
-def obtener_nodo_por_id(nodo_id):
-    """Busca un nodo específico por su id. Devuelve None si no existe."""
-    for nodo in timeline_nodes:
-        if nodo["id"] == nodo_id:
-            return nodo
-    return None
+class UsuarioProgreso(db.Model):
+    """Modelo para guardar la puntuación y avance de los jugadores."""
+    __tablename__ = 'usuario_progreso'
+    __table_args__ = {'extend_existing': True}
+
+    id = db.Column(db.Integer, primary_key=True)
+    nombre_jugador = db.Column(db.String(80), nullable=False)
+    puntaje = db.Column(db.Integer, default=0)
+    nivel_alcanzado = db.Column(db.Integer, default=1)
+
+    def to_dict(self):
+        """Convierte el progreso del usuario a diccionario JSON."""
+        return {
+            "id": self.id,
+            "nombre_jugador": self.nombre_jugador,
+            "puntaje": self.puntaje,
+            "nivel_alcanzado": self.nivel_alcanzado
+        }
