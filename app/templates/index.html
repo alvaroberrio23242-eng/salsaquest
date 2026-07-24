@@ -13,7 +13,7 @@
 <body class="bg-light">
 
     <!-- Encabezado / Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow sticky-top">
         <div class="container">
             <a class="navbar-brand fw-bold text-warning" href="#">💃 SalsaQuest</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -101,7 +101,7 @@
                 <i class="fa-solid fa-timeline me-2"></i>Línea del Tiempo Histórica
             </h2>
             <!-- Contenedor dinámico cargado mediante timeline.js -->
-            <div id="timeline" class="row g-4">
+            <div id="timeline-container" class="row g-4">
                 <div class="text-center py-4">
                     <div class="spinner-border text-warning" role="status">
                         <span class="visually-hidden">Cargando eventos...</span>
@@ -114,21 +114,20 @@
 
         <!-- 3. SECCIÓN INFERIOR: SPOTIFY -->
         <section id="spotify-section" class="mb-5">
-            <div class="card shadow border-0 rounded-3 p-4">
-                <h3 class="h4 fw-bold text-dark mb-3">
-                    <i class="fa-brands fa-spotify text-success me-2"></i>Playlist Oficial de Salsa
+            <div class="card shadow border-0 rounded-3 p-4 bg-dark text-white">
+                <h3 class="h4 fw-bold text-success mb-2">
+                    <i class="fa-brands fa-spotify me-2"></i>Playlist Oficial de Salsa
                 </h3>
-                <p class="text-muted">Disfruta de la mejor selección de éxitos salseros mientras juegas.</p>
-                <div class="ratio ratio-16x9">
-                    <iframe 
-                        style="border-radius:12px" 
-                        src="https://open.spotify.com/embed/playlist/37i9dQZF1DX76W92StJ94M?utm_source=generator" 
-                        width="100%" 
-                        height="352" 
-                        frameBorder="0" 
-                        allowfullscreen="" 
-                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-                        loading="lazy">
+                <p class="text-muted small mb-3">Disfruta de la mejor selección de éxitos salseros mientras juegas.</p>
+                <div>
+                    <iframe style="border-radius:12px" 
+                            src="https://open.spotify.com/embed/playlist/37i9dQZF1DX76Wlfd11A3M?utm_source=generator" 
+                            width="100%" 
+                            height="352" 
+                            frameBorder="0" 
+                            allowfullscreen="" 
+                            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                            loading="lazy">
                     </iframe>
                 </div>
             </div>
