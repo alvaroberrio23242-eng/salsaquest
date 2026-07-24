@@ -3,42 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SalsaQuest - Desafío de Salsa</title>
-    <!-- Bootstrap CSS -->
+    <title>SalsaQuest - Desafío de Trivia</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body class="bg-light">
+<body class="bg-dark text-white">
 
-    <!-- Encabezado / Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+    <nav class="navbar navbar-dark bg-black shadow mb-4">
         <div class="container">
             <a class="navbar-brand fw-bold text-warning" href="/">💃 SalsaQuest</a>
             <a href="/" class="btn btn-outline-light btn-sm"><i class="fa-solid fa-house me-1"></i> Volver al Inicio</a>
         </div>
     </nav>
 
-    <main class="container my-5">
+    <main class="container py-4">
         <div class="row justify-content-center">
-            <div class="col-md-8 text-center py-5">
-                <div class="card shadow border-0 rounded-3 p-5">
-                    <h1 class="display-5 fw-bold text-primary mb-3">🎯 Zona de Desafío</h1>
-                    <p class="lead text-secondary mb-4">¡Prepárate para poner a prueba tus conocimientos salseros!</p>
-                    <div class="alert alert-warning shadow-sm" role="alert">
-                        <i class="fa-solid fa-spinner fa-spin me-2"></i> Módulo de Trivia en carga...
+            <div class="col-md-8">
+                
+                <!-- Tarjeta de Juego -->
+                <div id="quiz-card" class="card bg-secondary text-white shadow-lg border-0 rounded-4 p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge bg-warning text-dark fs-6" id="score-badge">Puntos: 0</span>
+                        <span class="text-light" id="question-count">Pregunta 1</span>
                     </div>
+
+                    <h3 id="question-text" class="fw-bold mb-4">Cargando desafío...</h3>
+
+                    <!-- Opciones de Respuesta -->
+                    <div id="options-container" class="d-grid gap-3">
+                        <!-- Las opciones se generarán dinámicamente con JS -->
+                    </div>
+
+                    <!-- Mensaje de Retroalimentación -->
+                    <div id="feedback" class="mt-4 text-center d-none"></div>
+
+                    <button id="next-btn" class="btn btn-warning w-100 fw-bold mt-4 d-none">Siguiente Pregunta ➡️</button>
+                </div>
+
+                <!-- Tarjeta de Resultados -->
+                <div id="result-card" class="card bg-secondary text-white shadow-lg border-0 rounded-4 p-5 text-center d-none">
+                    <h1 class="display-4 fw-bold text-warning mb-3">🏆 ¡Desafío Completado!</h1>
+                    <p class="fs-4">Tu puntuación final es: <strong id="final-score" class="text-info">0</strong></p>
                     <div class="mt-4">
-                        <a href="/" class="btn btn-primary btn-lg">Regresar al Home</a>
+                        <button onclick="location.reload()" class="btn btn-warning btn-lg me-2">Intentar de nuevo</button>
+                        <a href="/" class="btn btn-outline-light btn-lg">Volver al Inicio</a>
                     </div>
                 </div>
+
             </div>
         </div>
     </main>
 
-    <footer class="bg-dark text-white text-center py-4 fixed-bottom">
-        <p class="mb-0">&copy; 2026 SalsaQuest - Todos los derechos reservados.</p>
-    </footer>
-
+    <!-- Script de la lógica del Quiz -->
+    <script src="{{ url_for('static', filename='js/trivia.js') }}"></script>
 </body>
 </html>
