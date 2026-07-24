@@ -206,3 +206,12 @@ function cargarRetoDelDia() {
 
 // Ejecutar al cargar la página
 document.addEventListener('DOMContentLoaded', cargarRetoDelDia);
+${tieneVideo ? `
+  <div class="ratio ratio-16x9 my-2 rounded-3 overflow-hidden shadow bg-black">
+    <iframe src="${evento.audio_url}" title="Entrevista ${evento.titulo}" allowfullscreen style="border:0;"></iframe>
+  </div>
+  <a href="${evento.audio_url.replace('embed/', 'watch?v=').replace('youtube-nocookie.com', 'youtube.com')}" target="_blank" class="btn btn-sm btn-outline-danger w-100 my-1">
+    <i class="fa-brands fa-youtube me-1"></i> Abrir entrevista en YouTube ↗
+  </a>
+` : ''}
+

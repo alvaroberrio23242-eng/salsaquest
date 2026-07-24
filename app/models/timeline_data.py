@@ -36,8 +36,5 @@ class TimelineData(db.Model):
         return f'<TimelineData {self.titulo}>'
 
 
-# --------------------------------------------------------------------------
-# ALIAS Y COMPATIBILIDAD CON CÓDIGO ANTERIOR
-# --------------------------------------------------------------------------
+# ALIAS DE COMPATIBILIDAD
 Evento = TimelineData
-from app.models.user import User as UsuarioProgreso
