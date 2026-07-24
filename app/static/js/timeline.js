@@ -8,9 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
     cargarTimeline();
     cargarLeaderboard();
     cargarRetoDelDia();
+    iniciarQuiz();
 });
 
-// 1. CARGAR LÍNEA DEL TIEMPO (Soporta IDs: 'timeline-container', 'timeline-track' o 'timeline')
+// 1. CARGAR LÍNEA DEL TIEMPO
 async function cargarTimeline() {
     const container = document.getElementById('timeline-container') || 
                       document.getElementById('timeline-track') || 
@@ -23,7 +24,7 @@ async function cargarTimeline() {
         if (!response.ok) throw new Error('Error en la respuesta del servidor');
         
         const eventos = await response.json();
-        container.innerHTML = ''; // Limpia el spinner o cargador
+        container.innerHTML = ''; // Limpia el spinner
 
         if (!eventos || eventos.length === 0) {
             container.innerHTML = '<p class="text-center w-100 text-secondary">No hay hitos disponibles por ahora.</p>';
@@ -34,11 +35,9 @@ async function cargarTimeline() {
             const tieneVideo = evento.audio_url && evento.audio_url.includes('youtube');
             const imagenSrc = evento.imagen_url || evento.imagen || 'https://via.placeholder.com/400x250?text=SalsaQuest';
             
-            // Texto codificado para WhatsApp
             const textoShare = encodeURIComponent(`🔥 ¡Mira este dato histórico en SalsaQuest! ${evento.titulo} (${evento.anio}): ${evento.trivia || evento.descripcion}`);
             const linkWhatsApp = `https://api.whatsapp.com/send?text=${textoShare}`;
 
-            // Contenido Multimedia (YouTube o Reproductor Audio)
             let mediaHTML = '';
             if (evento.audio_url) {
                 if (tieneVideo) {
@@ -63,7 +62,6 @@ async function cargarTimeline() {
                 }
             }
 
-            // Sección de Dato Curioso / Trivia
             const triviaHTML = evento.trivia ? `
                 <div class="mt-auto pt-2 border-top border-secondary">
                     <small class="text-info"><i class="fa-solid fa-lightbulb me-1"></i> <strong>Dato Curioso:</strong> ${evento.trivia}</small>
@@ -102,62 +100,13 @@ async function cargarTimeline() {
         console.error("Error al cargar la línea de tiempo:", error);
         container.innerHTML = `
             <div class="col-12 text-center text-danger py-3">
-                <p class="mb-0">⚠️ Ocurrió un error al cargar la línea del tiempo. Revisa la conexión con el servidor.</p>
+                <p class="mb-0">⚠️ Ocurrió un error al cargar la línea del tiempo.</p>
             </div>
         `;
     }
 }
 
-// 2. GUARDAR NUEVO EVENTO DESDE UN FORMULARIO ADMIN
-async function guardarNuevoEvento(e) {
-    e.preventDefault();
-
-    const anio = document.getElementById('anio')?.value;
-    const titulo = document.getElementById('titulo')?.value;
-    const descripcion = document.getElementById('descripcion')?.value;
-    const trivia = document.getElementById('dato_curioso')?.value;
-    const imagen = document.getElementById('imagen_url')?.value;
-
-    try {
-        const response = await fetch('/api/timeline', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ anio, titulo, descripcion, trivia, imagen })
-        });
-
-        if (response.ok) {
-            alert('¡Hito guardado con éxito!');
-            document.getElementById('form-nuevo-evento')?.reset();
-            cargarTimeline();
-        } else {
-            alert('Error al guardar el hito.');
-        }
-    } catch (error) {
-        console.error("Error guardando evento:", error);
-    }
-}
-
-// 3. GENERADOR DE RETO DEL DÍA
-function cargarRetoDelDia() {
-    const hoy = new Date();
-    const diaDelAnio = Math.floor((hoy - new Date(hoy.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
-    
-    const retos = [
-        "Hoy se cumplen años del auge de la Timba Cubana en La Habana.",
-        "¿Sabías que Héctor Lavoe improvisaba el 90% de sus soneos en vivo?",
-        "El ritmo Songo fue creado mezclando la batería americana con la percusión afrocubana.",
-        "Cali, Colombia es oficialmente reconocida como la Capital Mundial de la Salsa."
-    ];
-
-    const retoHoy = retos[diaDelAnio % retos.length];
-    
-    const quizInstruccion = document.getElementById('quiz-instruccion');
-    if (quizInstruccion) {
-        quizInstruccion.innerHTML = `<span class="badge bg-danger mb-2">🔥 RETO DIARIO</span><br>${retoHoy}`;
-    }
-}
-
-// 4. QUIZ DINÁMICO
+// 2. QUIZ Y TRIVIA INTERACTIVA
 const preguntasQuiz = [
     { pregunta: "¿En qué país nació el Son Cubano?", opciones: ["Puerto Rico", "Cuba", "Colombia"], correcta: 1 },
     { pregunta: "¿Quién era conocido como 'El Cantante de los Cantantes'?", opciones: ["Héctor Lavoe", "Ismael Rivera", "Cheo Feliciano"], correcta: 0 },
@@ -185,28 +134,69 @@ function verificarRespuesta(seleccion, correcta) {
     const resultado = document.getElementById('quiz-resultado');
     if (seleccion === correcta) {
         puntajeActual += 50;
-        if (resultado) resultado.innerText = `¡Correcto! 🔥 Ganaste 50 puntos (Total: ${puntajeActual} pts)`;
-        guardarPuntajeJugador();
+        if (resultado) {
+            resultado.innerHTML = `
+                <span class="text-success fw-bold">¡Correcto! 🔥 Ganaste 50 puntos (Total: ${puntajeActual} pts)</span>
+                <br>
+                <button class="btn btn-sm btn-warning mt-2 fw-bold text-dark" onclick="abrirModalRegistro()">
+                    🎁 Guardar Puntaje y Reclamar Premio
+                </button>
+            `;
+        }
     } else {
         if (resultado) resultado.innerText = `¡Incorrecto! 😅 Inténtalo de nuevo.`;
     }
     iniciarQuiz();
 }
 
-// 5. TABLA DE POSICIONES (LEADERBOARD)
-async function guardarPuntajeJugador() {
-    const nombreInput = document.getElementById('nombre-jugador');
-    const nombre = nombreInput ? nombreInput.value : 'Jugador Anónimo';
-    
+// 3. CAPTURA DE LEADS Y GUARDADO EN LEADERBOARD
+function abrirModalRegistro() {
+    const modalElement = document.getElementById('modalRegistroLead');
+    if (modalElement) {
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
+    } else {
+        // Respaldo si no existe el modal
+        const nombre = prompt('Ingresa tu nombre para el Leaderboard:');
+        if (nombre) guardarPuntajeDirecto(nombre);
+    }
+}
+
+async function guardarPuntajeConLead(event) {
+    event.preventDefault();
+
+    const nombre = document.getElementById('lead-nombre')?.value || 'Salsero';
+    const whatsapp = document.getElementById('lead-whatsapp')?.value || '';
+    const email = document.getElementById('lead-email')?.value || '';
+    const acepta_promociones = document.getElementById('lead-consentimiento')?.checked ?? true;
+
     try {
-        await fetch('/api/leaderboard', {
+        const response = await fetch('/api/leaderboard', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nombre_jugador: nombre, puntaje: puntajeActual })
+            body: JSON.stringify({
+                nombre_jugador: nombre,
+                whatsapp: whatsapp,
+                email: email,
+                puntaje: puntajeActual,
+                acepta_promociones: acepta_promociones
+            })
         });
-        cargarLeaderboard();
+
+        const data = await response.json();
+
+        if (response.ok) {
+            const msj = document.getElementById('mensaje-recompensa');
+            if (msj) msj.classList.remove('d-none');
+            
+            document.getElementById('form-captura-lead')?.reset();
+            cargarLeaderboard();
+        } else {
+            alert('Error al guardar datos: ' + (data.error || 'Inténtalo de nuevo'));
+        }
     } catch (error) {
-        console.error("Error al guardar puntaje:", error);
+        console.error('Error enviando lead:', error);
+        alert('Ocurrió un error de conexión.');
     }
 }
 
@@ -232,12 +222,31 @@ async function cargarLeaderboard() {
             </li>
         `).join('');
     } catch (error) {
-        // Mantiene una lista estática limpia si no hay backend activo para el leaderboard
-        console.log("No se pudo conectar con el endpoint del leaderboard, mostrando estático.");
+        console.log("Leaderboard en espera de conexión con el backend.");
     }
 }
 
-// 6. CAMBIO RÁPIDO DE IDIOMA (DEMO)
+// 4. RETO DEL DÍA
+function cargarRetoDelDia() {
+    const hoy = new Date();
+    const diaDelAnio = Math.floor((hoy - new Date(hoy.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+    
+    const retos = [
+        "Hoy se cumplen años del auge de la Timba Cubana en La Habana.",
+        "¿Sabías que Héctor Lavoe improvisaba el 90% de sus soneos en vivo?",
+        "El ritmo Songo fue creado mezclando la batería americana con la percusión afrocubana.",
+        "Cali, Colombia es oficialmente reconocida como la Capital Mundial de la Salsa."
+    ];
+
+    const retoHoy = retos[diaDelAnio % retos.length];
+    
+    const quizInstruccion = document.getElementById('quiz-instruccion');
+    if (quizInstruccion) {
+        quizInstruccion.innerHTML = `<span class="badge bg-danger mb-2">🔥 RETO DIARIO</span><br>${retoHoy}`;
+    }
+}
+
+// 5. CAMBIO RÁPIDO DE IDIOMA
 function toggleLanguage() {
     const langText = document.getElementById('lang-text');
     if (!langText) return;
