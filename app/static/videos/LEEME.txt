@@ -1,0 +1,14 @@
+Pon aqui tus clips de video con estos nombres exactos
+(video-bg.js los busca por este nombre):
+
+  habana-1.mp4
+  habana-2.mp4
+  habana-3.mp4
+  habana-carro.mp4
+
+Si quieres agregar/quitar clips, edita la lista "clips" en
+app/static/js/video-bg.js -- no hace falta tocar el HTML ni el CSS.
+
+Recuerda comprimirlos primero para que la app cargue rapido en
+celulares, por ejemplo:
+  ffmpeg -i tu-video.mp4 -vf scale=1280:-1 -crf 28 habana-1.mp4

@@ -26,7 +26,7 @@ async function cargarEventosGrandes() {
         eventos.forEach(ev => {
             container.innerHTML += `
                 <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card h-100 bg-dark text-white border-secondary shadow-sm rounded-4 overflow-hidden">
+                    <div class="card h-100 card-glass text-white shadow-sm rounded-4 overflow-hidden">
                         <img src="${ev.imagen_url}" class="card-img-top" alt="${ev.titulo}" style="height: 160px; object-fit: cover;">
                         <div class="card-body p-3">
                             <span class="badge bg-warning text-dark fw-bold mb-2">${ev.anio}</span>
@@ -56,7 +56,7 @@ async function cargarRecordsSalsa() {
         records.forEach(r => {
             container.innerHTML += `
                 <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card h-100 bg-dark text-white border-secondary shadow-sm rounded-4 p-3">
+                    <div class="card h-100 card-glass text-white shadow-sm rounded-4 p-3">
                         <i class="fa-solid fa-trophy text-warning fa-2x mb-2"></i>
                         <h6 class="text-warning fw-bold">${r.titulo}</h6>
                         <p class="small fw-bold text-info mb-1">${r.dato}</p>
@@ -86,7 +86,7 @@ async function cargarArtistas() {
             const etiqueta = a.tipo === 'ritmo' ? 'Ritmo' : 'Artista';
             container.innerHTML += `
                 <div class="col-md-6 col-lg-3 mb-4">
-                    <div class="card h-100 bg-dark text-white border-secondary shadow-sm rounded-4 overflow-hidden" 
+                    <div class="card h-100 card-glass text-white shadow-sm rounded-4 overflow-hidden" 
                          style="cursor:pointer" onclick="abrirModalArtista('${a.slug}')">
                         <img src="${a.imagen_url}" class="card-img-top" alt="${a.nombre}" style="height: 150px; object-fit: cover;">
                         <div class="card-body p-3">
@@ -127,7 +127,7 @@ async function cargarTimba() {
         const timba = await res.json();
 
         const recordsHTML = timba.records.map(r => `
-            <li class="list-group-item bg-dark text-white border-secondary">
+            <li class="list-group-item card-glass text-white">
                 <strong class="text-warning">${r.titulo}</strong> — ${r.dato}
                 <br><span class="small text-secondary">${r.descripcion}</span>
             </li>
@@ -143,14 +143,14 @@ async function cargarTimba() {
         container.innerHTML = `
             <div class="row g-4">
                 <div class="col-lg-6">
-                    <div class="card bg-dark text-white border-secondary p-3 h-100">
+                    <div class="card card-glass text-white p-3 h-100">
                         <h6 class="text-warning fw-bold">Origen de la Timba</h6>
                         <p class="small text-light">${timba.historia}</p>
                         <ul class="list-group list-group-flush mt-2">${recordsHTML}</ul>
                     </div>
                 </div>
                 <div class="col-lg-6">
-                    <div class="card bg-dark text-white border-secondary p-3 h-100">
+                    <div class="card card-glass text-white p-3 h-100">
                         <h6 class="text-warning fw-bold mb-3"><i class="fa-brands fa-spotify me-2"></i>Playlists de Timba</h6>
                         ${playlistsHTML}
                     </div>

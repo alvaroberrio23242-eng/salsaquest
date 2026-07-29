@@ -70,7 +70,7 @@ async function cargarTimeline() {
 
             const eventCard = `
                 <div class="col-md-6 mb-4 timeline-card" data-anio="${evento.anio}">
-                    <div class="card h-100 bg-dark text-white border-secondary shadow-sm rounded-4 overflow-hidden">
+                    <div class="card h-100 card-glass text-white shadow-sm rounded-4 overflow-hidden">
                         <img src="${imagenSrc}" class="card-img-top" alt="${evento.titulo}" style="height: 180px; object-fit: cover;">
                         
                         <div class="card-body d-flex flex-column p-4">
@@ -139,7 +139,7 @@ function verificarRespuesta(seleccion, correcta) {
                 <span class="text-success fw-bold">¡Correcto! 🔥 Ganaste 50 puntos (Total: ${puntajeActual} pts)</span>
                 <br>
                 <button class="btn btn-sm btn-warning mt-2 fw-bold text-dark" onclick="abrirModalRegistro()">
-                    🎁 Guardar Puntaje y Reclamar Premio
+                    💾 Guardar mi Puntaje
                 </button>
             `;
         }
@@ -211,12 +211,12 @@ async function cargarLeaderboard() {
         const jugadores = await response.json();
 
         if (!jugadores || jugadores.length === 0) {
-            lista.innerHTML = '<li class="list-group-item bg-dark text-secondary border-secondary">Aún no hay puntuaciones.</li>';
+            lista.innerHTML = '<li class="list-group-item card-glass text-secondary">Aún no hay puntuaciones.</li>';
             return;
         }
 
         lista.innerHTML = jugadores.map((j, i) => `
-            <li class="list-group-item bg-dark text-white border-secondary d-flex justify-content-between align-items-center py-3">
+            <li class="list-group-item card-glass text-white d-flex justify-content-between align-items-center py-3">
                 <span><strong>#${i + 1}</strong> ${j.nombre_jugador || j.username || 'Salsero'}</span>
                 <span class="badge bg-warning text-dark fw-bold rounded-pill">${j.puntaje || j.score || 0} pts</span>
             </li>
