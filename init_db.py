@@ -79,7 +79,7 @@ def poblar_base_datos():
         print("¡Base de datos reestructurada!")
 
         # Crear usuario administrador
-        admin = User(username='admin_salsa', email='admin@sonhavana.com', score=200)
+        admin = User(username='admin_salsa', email='admin@sonhavana.com', score=200, is_admin=True)
         admin.set_password('salsa2026')
         db.session.add(admin)
 

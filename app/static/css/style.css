@@ -265,3 +265,13 @@ textarea:focus {
     flex: 0 0 88vw; /* Ocupa la mayor parte de la pantalla en celular */
   }
 }
+/* ==========================================
+   FOOTER: enlaces de contacto (GitHub / WhatsApp)
+   ========================================== */
+.footer-contacto-link {
+  transition: color .2s ease, text-shadow .2s ease;
+}
+.footer-contacto-link:hover {
+  color: var(--neon-cyan) !important;
+  text-shadow: 0 0 10px var(--neon-cyan);
+}
