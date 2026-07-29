@@ -69,7 +69,7 @@ async function cargarTimeline() {
             ` : '';
 
             const eventCard = `
-                <div class="col-md-6 mb-4">
+                <div class="col-md-6 mb-4 timeline-card" data-anio="${evento.anio}">
                     <div class="card h-100 bg-dark text-white border-secondary shadow-sm rounded-4 overflow-hidden">
                         <img src="${imagenSrc}" class="card-img-top" alt="${evento.titulo}" style="height: 180px; object-fit: cover;">
                         

@@ -26,16 +26,19 @@ def crear_app():
     from app.routes.main import main_bp
     from app.routes.auth import auth_bp
     from app.routes.timeline import timeline_bp
+    from app.routes.content import content_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(timeline_bp)
+    app.register_blueprint(content_bp)
 
     # Crear tablas en la base de datos si no existen al arrancar
     with app.app_context():
         # Importar los modelos para que SQLAlchemy reconozca la estructura
         from app.models.timeline_data import TimelineData 
         from app.models.user import User
+        from app.models.visit_counter import VisitCounter
         db.create_all()
 
     return app

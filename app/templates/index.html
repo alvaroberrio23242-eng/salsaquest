@@ -14,7 +14,6 @@
 
     <style>
         body { 
-            background-color: #121212; 
             color: #f8f9fa; 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
         }
@@ -24,6 +23,14 @@
     </style>
 </head>
 <body>
+
+    <!-- FONDO DE VIDEO ROTATIVO (varios clips de La Habana en loop) -->
+    <div class="video-bg-container" aria-hidden="true">
+        <video id="video-bg" autoplay muted playsinline
+               data-base-url="{{ url_for('static', filename='videos/') }}"
+               poster="{{ url_for('static', filename='img/cuba-flag.jpg') }}"></video>
+        <div class="video-bg-overlay"></div>
+    </div>
 
     <!-- NAVBAR NAVEGACIÓN -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-black sticky-top border-bottom border-warning px-3 px-md-5">
@@ -41,9 +48,16 @@
                     <li class="nav-item"><a class="nav-link active" href="#desafio-section">Desafío</a></li>
                     <li class="nav-item"><a class="nav-link" href="#ranking-section">Ranking</a></li>
                     <li class="nav-item"><a class="nav-link" href="#timeline-section">Línea del Tiempo</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#eventos-section">Grandes Eventos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#records-section">Récords</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#artistas-section">Historias</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#timba-section">Timba</a></li>
                     <li class="nav-item"><a class="nav-link" href="#spotify-section">Música</a></li>
                 </ul>
-                <div class="d-flex align-items-center gap-2">
+                <div class="d-flex align-items-center gap-3">
+                    <span class="text-secondary small d-none d-md-inline" id="contador-visitas">
+                        <i class="fa-solid fa-eye me-1"></i> ...
+                    </span>
                     <button type="button" class="btn btn-warning fw-bold text-dark px-3 rounded-pill shadow" onclick="abrirModalRegistro()">
                         <i class="fa-solid fa-user-plus me-1"></i> Registrarse / Unirse
                     </button>
@@ -103,11 +117,44 @@
                 <!-- LÍNEA DEL TIEMPO -->
                 <section id="timeline-section" class="mb-5">
                     <h3 class="text-warning fw-bold mb-3"><i class="fa-solid fa-timeline me-2"></i>Línea del Tiempo</h3>
+                    <div id="timeline-filtros" class="d-flex flex-wrap gap-2 mb-3"></div>
                     <div id="timeline-container" class="row g-4">
                         <div class="text-center py-5">
                             <div class="spinner-border text-warning" role="status"></div>
                             <p class="text-secondary mt-2">Cargando hitos históricos...</p>
                         </div>
+                    </div>
+                </section>
+
+                <!-- GRANDES EVENTOS DE LA SALSA -->
+                <section id="eventos-section" class="mb-5">
+                    <h3 class="text-warning fw-bold mb-3"><i class="fa-solid fa-star me-2"></i>Grandes Eventos de la Salsa</h3>
+                    <div id="eventos-container" class="row g-4">
+                        <div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>
+                    </div>
+                </section>
+
+                <!-- RÉCORDS DE LA SALSA -->
+                <section id="records-section" class="mb-5">
+                    <h3 class="text-warning fw-bold mb-3"><i class="fa-solid fa-medal me-2"></i>Récords de la Salsa</h3>
+                    <div id="records-container" class="row g-4">
+                        <div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>
+                    </div>
+                </section>
+
+                <!-- HISTORIAS: ARTISTAS Y RITMOS -->
+                <section id="artistas-section" class="mb-5">
+                    <h3 class="text-warning fw-bold mb-3"><i class="fa-solid fa-user-large me-2"></i>Historias: Artistas y Ritmos</h3>
+                    <div id="artistas-container" class="row g-4">
+                        <div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>
+                    </div>
+                </section>
+
+                <!-- TIMBA -->
+                <section id="timba-section" class="mb-5">
+                    <h3 class="text-warning fw-bold mb-3"><i class="fa-solid fa-drum me-2"></i>Timba</h3>
+                    <div id="timba-container">
+                        <div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>
                     </div>
                 </section>
 
@@ -198,9 +245,29 @@
         </div>
     </div>
 
+    <!-- MODAL DE DETALLE DE ARTISTA / RITMO -->
+    <div class="modal fade" id="modalArtista" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content bg-dark text-white border-warning rounded-4 shadow-lg">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title text-warning fw-bold" id="modalArtistaTitulo">Cargando...</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <img id="modalArtistaImagen" src="" alt="" class="rounded-3 mb-3 w-100" style="max-height: 280px; object-fit: cover;">
+                    <p id="modalArtistaTexto" class="text-light"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Fondo de video rotativo -->
+    <script src="{{ url_for('static', filename='js/video-bg.js') }}"></script>
     <!-- Módulo JS Principal -->
     <script src="{{ url_for('static', filename='js/timeline.js') }}"></script>
+    <!-- Módulo JS de contenido nuevo (eventos, records, artistas, timba, visitas) -->
+    <script src="{{ url_for('static', filename='js/content.js') }}"></script>
 </body>
 </html>
