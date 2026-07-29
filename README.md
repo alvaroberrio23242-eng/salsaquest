@@ -12,7 +12,9 @@
 ## 🌟 Características
 
 - 🎬 **Fondo de video rotativo** de La Habana con tarjetas de "vidrio esmerilado" (glassmorphism) que dejan ver el video detrás del texto.
-- 📜 **Línea de tiempo interactiva** de la historia de la salsa, con filtros por década, trivia, imágenes y video/audio embebido.
+- 📜 **Menú e Interacción**: consulta interactiva de productos, bebidas y gastronomía del establecimiento.
+- 📅 **Eventos & Cartelera**: sección informativa con las actividades y presentaciones del lugar.
+- 🕰️ **Línea de tiempo interactiva** de la historia de la salsa, con filtros por década, trivia, imágenes y video/audio embebido.
 - ⭐ **Grandes Eventos de la Salsa**: los conciertos y hitos que marcaron el género (Fania All-Stars, Feria de Cali, etc).
 - 🏆 **Récords de la Salsa**: hitos y marcas históricas del género.
 - 🕺 **Historias de Artistas y Ritmos**: biografías de La Lupe, Fruko, Afrosound, Gilberto Santa Rosa, Willie Colón, Rubén Blades, Oscar D'León, y del guaguancó como ritmo raíz — con modal de detalle al hacer clic.
