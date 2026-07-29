@@ -1,6 +1,5 @@
 # app/routes/main.py
 from flask import Blueprint, render_template, jsonify
-from app.models.user import User
 
 main_bp = Blueprint('main', __name__)
 
@@ -36,10 +35,9 @@ def get_trivia():
     ]
     return jsonify(preguntas)
 
-@main_bp.route('/api/leaderboard', methods=['GET', 'POST'])
-def leaderboard():
-    try:
-        jugadores = User.query.order_by(User.score.desc()).limit(5).all()
-        return jsonify([{"username": u.username, "score": u.score} for u in jugadores])
-    except Exception as e:
-        return jsonify([]), 500
+# NOTA: la ruta /api/leaderboard (GET publico y POST de captura de lead)
+# vive SOLO en app/routes/auth.py. Antes tambien estaba definida aqui,
+# duplicada con distinto comportamiento (esta version devolvia solo
+# username/score; la de auth.py exponia email/whatsapp en el GET) — dos
+# blueprints registrando la misma URL+metodo es ambiguo, asi que se
+# unifico en un unico lugar.

@@ -18,6 +18,7 @@ class User(UserMixin, db.Model):
     score = db.Column(db.Integer, default=0)                       # Puntaje acumulado en trivias
     fecha_registro = db.Column(db.DateTime, default=datetime.utcnow)
     acepta_promociones = db.Column(db.Boolean, default=True)        # Opt-in para promociones
+    is_admin = db.Column(db.Boolean, default=False)                 # Acceso al panel de administracion
 
     def set_password(self, password):
         """Genera el hash seguro de la contraseña."""
@@ -29,8 +30,19 @@ class User(UserMixin, db.Model):
             return False
         return check_password_hash(self.password_hash, password)
 
+    def to_public_dict(self):
+        """Version SIN datos sensibles (email, whatsapp), para cualquier
+        endpoint que no requiera login (ej. leaderboard publico)."""
+        return {
+            'id': self.id,
+            'nombre_jugador': self.nombre_jugador or self.username or 'Salsero Anónimo',
+            'username': self.username or self.nombre_jugador or 'Anónimo',
+            'score': self.score,
+        }
+
     def to_dict(self):
-        """Convierte el objeto a JSON para APIs de Leaderboard / Marketing."""
+        """Version COMPLETA con datos de contacto (email, whatsapp). Solo
+        para el panel de administracion (login_required + is_admin)."""
         return {
             'id': self.id,
             'nombre_jugador': self.nombre_jugador or self.username or 'Salsero Anónimo',
