@@ -69,8 +69,8 @@
     <!-- SECCIÓN HERO / RETO DEL DÍA -->
     <header class="container py-4 text-center">
         <div class="p-4 rounded-4 bg-dark border border-secondary shadow">
-            <h1 class="display-6 fw-bold text-warning">¡Salsa, Historia y Premios!</h1>
-            <p class="lead text-light">Pon a prueba tu conocimiento salsero y gana beneficios en la barra.</p>
+            <h1 class="display-6 fw-bold text-warning">¡Salsa e Historia!</h1>
+            <p class="lead text-light">Pon a prueba tu conocimiento salsero y compite por el primer lugar.</p>
             <div id="quiz-instruccion" class="mt-3">
                 <span class="badge bg-danger mb-2">🔥 RETO DIARIO</span><br>Cargando reto del día...
             </div>
@@ -196,14 +196,14 @@
                 
                 <div class="modal-header border-secondary">
                     <h5 class="modal-title text-warning fw-bold" id="modalLeadLabel">
-                        🏆 ¡Regístrate y Reclama tu Premio!
+                        🏆 ¡Regístrate y Guarda tu Puntaje!
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
 
                 <div class="modal-body p-4">
                     <p class="text-light small">
-                        Ingresa tus datos para registrar tus puntos en el ranking de <strong>Son Havana</strong> y obtener sorpresas exclusivas. 🍹
+                        Ingresa tus datos para registrar tus puntos en el ranking de <strong>Son Havana</strong>.
                     </p>
 
                     <form id="form-captura-lead" onsubmit="guardarPuntajeConLead(event)">
@@ -213,7 +213,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="lead-whatsapp" class="form-label text-warning small fw-bold">WhatsApp * (para enviar tu beneficio)</label>
+                            <label for="lead-whatsapp" class="form-label text-warning small fw-bold">WhatsApp *</label>
                             <input type="tel" class="form-control bg-secondary text-white border-0" id="lead-whatsapp" placeholder="+57 300 000 0000" required>
                         </div>
 
@@ -237,7 +237,7 @@
                     <!-- Mensaje de éxito post-registro -->
                     <div id="mensaje-recompensa" class="alert alert-success mt-3 d-none text-center rounded-3">
                         🎉 <strong>¡Te has registrado con éxito!</strong><br>
-                        Presenta el código <span class="badge bg-dark fs-6 text-warning">SONHAVANA10OFF</span> en la barra.
+                        Tu puntaje ya quedó guardado en el ranking.
                     </div>
                 </div>
 

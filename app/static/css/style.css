@@ -6,7 +6,7 @@
 :root {
   /* Paleta Neon & Salsa Theme */
   --bg-dark: #0f0c1b;
-  --surface: #181428;
+  --surface: rgba(24, 20, 40, 0.55);   /* translúcido: antes era solido, tapaba el video de fondo */
   --neon-pink: #ff2a74;
   --neon-cyan: #00f0ff;
   --neon-gold: #ffbe0b;
@@ -24,16 +24,42 @@
 }
 
 /* ==========================================
+   1b. FONDO DE VIDEO ROTATIVO
+   ========================================== */
+.video-bg-container {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: -2;
+  background-color: var(--bg-dark); /* respaldo mientras carga o si falla el video */
+}
+
+#video-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 12, 27, 0.6);
+  z-index: -1;
+}
+
+/* ==========================================
    2. ESTILOS GENERALES
    ========================================== */
 body {
   margin: 0;
   padding: 20px;
-  background-color: var(--bg-dark);
   color: var(--text-light);
   font-family: var(--font-sans);
-  background-image: radial-gradient(circle at 50% 10%, #2a0845 0%, var(--bg-dark) 70%);
   min-height: 100vh;
+  position: relative;
+  z-index: 0; /* crea contexto de apilamiento para que el video-bg (z-index negativo) quede detras */
 }
 
 /* ==========================================
@@ -82,6 +108,19 @@ body {
 .form-container:hover, 
 .quiz-container:hover {
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.7), 0 0 25px rgba(0, 240, 255, 0.3);
+}
+
+/* Tarjeta "vidrio esmerilado" para eventos/records/artistas/timba:
+   reemplaza el bg-dark solido de Bootstrap (que tapaba el video). */
+.card-glass {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.card-glass:hover {
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 240, 255, 0.25);
 }
 
 /* Timeline Horizontal Track */
