@@ -45,7 +45,19 @@
                 <div id="result-card" class="card bg-secondary text-white shadow-lg border-0 rounded-4 p-5 text-center d-none">
                     <h1 class="display-4 fw-bold text-warning mb-3">🏆 ¡Desafío Completado!</h1>
                     <p class="fs-4">Tu puntuación final es: <strong id="final-score" class="text-info">0</strong></p>
-                    <div class="mt-4">
+
+                    <form onsubmit="guardarPuntajeDesafio(event)" class="mt-3 mb-2">
+                        <div class="mb-3">
+                            <input type="text" id="desafio-nombre" class="form-control bg-dark text-white border-0 text-center"
+                                   placeholder="Tu nombre para el ranking" maxlength="50" required>
+                        </div>
+                        <button type="submit" id="btn-guardar-desafio" class="btn btn-success w-100 fw-bold">
+                            💾 Guardar mi Puntaje
+                        </button>
+                        <p id="desafio-guardado-msg" class="small mt-2 text-success d-none"></p>
+                    </form>
+
+                    <div class="mt-2">
                         <button onclick="location.reload()" class="btn btn-warning btn-lg me-2">Intentar de nuevo</button>
                         <a href="/" class="btn btn-outline-light btn-lg">Volver al Inicio</a>
                     </div>

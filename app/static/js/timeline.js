@@ -107,18 +107,35 @@ async function cargarTimeline() {
 }
 
 // 2. QUIZ Y TRIVIA INTERACTIVA
-const preguntasQuiz = [
-    { pregunta: "¿En qué país nació el Son Cubano?", opciones: ["Puerto Rico", "Cuba", "Colombia"], correcta: 1 },
-    { pregunta: "¿Quién era conocido como 'El Cantante de los Cantantes'?", opciones: ["Héctor Lavoe", "Ismael Rivera", "Cheo Feliciano"], correcta: 0 },
-    { pregunta: "¿Cuál es el álbum de salsa más vendido de la historia?", opciones: ["Siembra", "El Malo", "Comedia"], correcta: 0 },
-    { pregunta: "¿En qué ciudad nació el Grupo Niche?", opciones: ["Cali", "Bogotá", "Medellín"], correcta: 0 }
-];
+// Antes esta lista estaba hardcodeada aqui, duplicada y desincronizada
+// del banco real en /api/trivia (backend). Ahora se carga UNA vez desde
+// el backend y se cachea en memoria, para que portada y /desafio usen
+// siempre las mismas preguntas.
+let preguntasQuizCache = [];
 
-function iniciarQuiz() {
+async function cargarBancoPreguntas() {
+    if (preguntasQuizCache.length > 0) return preguntasQuizCache;
+    try {
+        const res = await fetch('/api/trivia');
+        preguntasQuizCache = await res.json();
+    } catch (e) {
+        console.error('No se pudo cargar el banco de trivia:', e);
+        preguntasQuizCache = [];
+    }
+    return preguntasQuizCache;
+}
+
+async function iniciarQuiz() {
     const quizBox = document.getElementById('quiz-box');
     if (!quizBox) return;
 
-    const preg = preguntasQuiz[Math.floor(Math.random() * preguntasQuiz.length)];
+    const banco = await cargarBancoPreguntas();
+    if (banco.length === 0) {
+        quizBox.innerHTML = '<p class="text-danger small mb-0">No se pudo cargar la trivia. Intenta recargar la página.</p>';
+        return;
+    }
+
+    const preg = banco[Math.floor(Math.random() * banco.length)];
 
     quizBox.innerHTML = `
         <p class="fw-bold mb-3">${preg.pregunta}</p>

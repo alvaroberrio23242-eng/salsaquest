@@ -13,6 +13,13 @@ def desafio():
 
 @main_bp.route('/api/trivia', methods=['GET'])
 def get_trivia():
+    """
+    Banco ÚNICO de preguntas de trivia, usado tanto por el quiz rápido
+    de la portada (timeline.js) como por el reto completo de /desafio
+    (trivia.js). Antes había 2 bancos de preguntas distintos y
+    desconectados (uno aquí, otro hardcodeado en timeline.js) — se
+    combinaron aquí sin perder ninguna pregunta de ninguno de los dos.
+    """
     preguntas = [
         {
             "id": 1,
@@ -31,7 +38,31 @@ def get_trivia():
             "pregunta": "¿Qué instrumento es considerado la columna vertebral del ritmo en la salsa?",
             "opciones": ["El Piano", "El Bajo", "La Clave", "El Saxofón"],
             "correcta": 2
-        }
+        },
+        {
+            "id": 4,
+            "pregunta": "¿En qué país nació el Son Cubano?",
+            "opciones": ["Puerto Rico", "Cuba", "Colombia", "Venezuela"],
+            "correcta": 1
+        },
+        {
+            "id": 5,
+            "pregunta": "¿Quién era conocido como 'El Cantante de los Cantantes'?",
+            "opciones": ["Héctor Lavoe", "Ismael Rivera", "Cheo Feliciano", "Rubén Blades"],
+            "correcta": 0
+        },
+        {
+            "id": 6,
+            "pregunta": "¿Cuál es el álbum de salsa más vendido de la historia?",
+            "opciones": ["Siembra", "El Malo", "Comedia", "Asalto Navideño"],
+            "correcta": 0
+        },
+        {
+            "id": 7,
+            "pregunta": "¿En qué ciudad nació el Grupo Niche?",
+            "opciones": ["Cali", "Bogotá", "Medellín", "Barranquilla"],
+            "correcta": 0
+        },
     ]
     return jsonify(preguntas)
 
