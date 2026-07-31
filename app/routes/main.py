@@ -13,13 +13,6 @@ def desafio():
 
 @main_bp.route('/api/trivia', methods=['GET'])
 def get_trivia():
-    """
-    Banco ÚNICO de preguntas de trivia, usado tanto por el quiz rápido
-    de la portada (timeline.js) como por el reto completo de /desafio
-    (trivia.js). Antes había 2 bancos de preguntas distintos y
-    desconectados (uno aquí, otro hardcodeado en timeline.js) — se
-    combinaron aquí sin perder ninguna pregunta de ninguno de los dos.
-    """
     preguntas = [
         {
             "id": 1,
@@ -38,37 +31,15 @@ def get_trivia():
             "pregunta": "¿Qué instrumento es considerado la columna vertebral del ritmo en la salsa?",
             "opciones": ["El Piano", "El Bajo", "La Clave", "El Saxofón"],
             "correcta": 2
-        },
-        {
-            "id": 4,
-            "pregunta": "¿En qué país nació el Son Cubano?",
-            "opciones": ["Puerto Rico", "Cuba", "Colombia", "Venezuela"],
-            "correcta": 1
-        },
-        {
-            "id": 5,
-            "pregunta": "¿Quién era conocido como 'El Cantante de los Cantantes'?",
-            "opciones": ["Héctor Lavoe", "Ismael Rivera", "Cheo Feliciano", "Rubén Blades"],
-            "correcta": 0
-        },
-        {
-            "id": 6,
-            "pregunta": "¿Cuál es el álbum de salsa más vendido de la historia?",
-            "opciones": ["Siembra", "El Malo", "Comedia", "Asalto Navideño"],
-            "correcta": 0
-        },
-        {
-            "id": 7,
-            "pregunta": "¿En qué ciudad nació el Grupo Niche?",
-            "opciones": ["Cali", "Bogotá", "Medellín", "Barranquilla"],
-            "correcta": 0
-        },
+        }
     ]
     return jsonify(preguntas)
 
-# NOTA: la ruta /api/leaderboard (GET publico y POST de captura de lead)
-# vive SOLO en app/routes/auth.py. Antes tambien estaba definida aqui,
-# duplicada con distinto comportamiento (esta version devolvia solo
-# username/score; la de auth.py exponia email/whatsapp en el GET) — dos
-# blueprints registrando la misma URL+metodo es ambiguo, asi que se
-# unifico en un unico lugar.
+# NOTA: la ruta /api/leaderboard (GET y POST) se quito de aqui. Vivia
+# duplicada tambien en app/routes/auth.py con distinta logica (esa si
+# guarda el registro/lead en la base de datos), y al haber dos rutas
+# identicas registradas en blueprints distintos, Flask/Werkzeug le daba
+# prioridad a esta version (registrada primero) -- que ni siquiera leia
+# el body del POST. Resultado: los registros del modal de "Registrarse"
+# probablemente nunca se estaban guardando. Ahora solo existe la
+# version de auth.py.

@@ -55,6 +55,7 @@
 body {
   margin: 0;
   padding: 20px;
+  background-color: transparent !important; /* Bootstrap pone #fff por defecto y tapaba el video */
   color: var(--text-light);
   font-family: var(--font-sans);
   min-height: 100vh;
@@ -265,13 +266,49 @@ textarea:focus {
     flex: 0 0 88vw; /* Ocupa la mayor parte de la pantalla en celular */
   }
 }
+
 /* ==========================================
-   FOOTER: enlaces de contacto (GitHub / WhatsApp)
+   7. LETRERO DE NEÓN ANIMADO (título "SalsaQuest")
    ========================================== */
-.footer-contacto-link {
-  transition: color .2s ease, text-shadow .2s ease;
+.neon-sign {
+  font-family: var(--font-heading);
+  font-style: italic;
+  color: #fff !important;
+  text-shadow:
+    0 0 5px #fff,
+    0 0 10px #fff,
+    0 0 20px var(--neon-pink),
+    0 0 35px var(--neon-pink),
+    0 0 45px var(--neon-pink);
+  animation: neon-flicker 4s infinite;
 }
-.footer-contacto-link:hover {
-  color: var(--neon-cyan) !important;
-  text-shadow: 0 0 10px var(--neon-cyan);
+
+/* Simula el parpadeo real de un letrero de neón: la mayor parte del
+   tiempo brilla firme, con 2 parpadeos breves por ciclo (como un
+   letrero con una conexión un poco floja). */
+@keyframes neon-flicker {
+  0%, 17%, 19%, 21%, 52%, 54%, 100% {
+    text-shadow:
+      0 0 5px #fff,
+      0 0 10px #fff,
+      0 0 20px var(--neon-pink),
+      0 0 35px var(--neon-pink),
+      0 0 45px var(--neon-pink);
+    opacity: 1;
+  }
+  18%, 20%, 53% {
+    text-shadow: none;
+    opacity: 0.35;
+  }
+}
+
+/* ==========================================
+   8. NAVBAR Y FOOTER: vidrio esmerilado (antes bg-black solido,
+   que tapaba el video de fondo igual que las tarjetas viejas)
+   ========================================== */
+.navbar-glass,
+.footer-glass {
+  background: var(--surface) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }

@@ -1,0 +1,16 @@
+Pon aqui tus videos de entrevistas reales, en formato .mp4.
+
+Por cada entrevista que agregues, edita la lista ENTREVISTAS en
+app/models/content_data.py con un bloque asi:
+
+    {
+        "slug": "entrevista-2",
+        "titulo": "Nombre real de la entrevista",
+        "invitado": "Nombre del entrevistado",
+        "descripcion": "De que trata la entrevista.",
+        "video_url": "entrevistas/nombre-del-archivo.mp4",
+        "miniatura_url": "",  # opcional: ruta a una imagen de portada
+    },
+
+El "video_url" debe coincidir EXACTO con el nombre del archivo que
+pongas en esta carpeta.

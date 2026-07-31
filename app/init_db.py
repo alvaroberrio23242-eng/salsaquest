@@ -2,13 +2,6 @@
 """
 Script para inicializar y poblar la base de datos de SalsaQuest.
 Crea la estructura de tablas, registra un usuario administrador y carga los eventos históricos de salsa.
-
-IMPORTANTE: este script ahora es IDEMPOTENTE -- se puede correr las
-veces que sea (por ejemplo, en cada despliegue en Render) sin borrar
-usuarios, puntajes ni datos ya existentes. Antes hacia db.drop_all()
-que arrasaba con TODO en cada ejecucion; eso era peligroso si alguna
-vez se llamaba a este script en produccion, o si build.sh volvia a
-incluir "python init_db.py" por error.
 """
 
 import os
@@ -80,36 +73,30 @@ eventos_salsa = [
 
 def poblar_base_datos():
     with app.app_context():
+        # Reiniciar tablas de la base de datos
+        db.drop_all()
         db.create_all()
+        print("¡Base de datos reestructurada!")
 
-        # --- Usuario administrador: solo se crea si NO existe ya ---
-        admin_existente = User.query.filter_by(username='admin_salsa').first()
-        if not admin_existente:
-            admin = User(username='admin_salsa', email='admin@sonhavana.com', score=200, is_admin=True)
-            admin.set_password('salsa2026')
-            db.session.add(admin)
-            print("Usuario administrador creado.")
-        else:
-            print("El usuario administrador ya existia, no se modifico.")
+        # Crear usuario administrador
+        admin = User(username='admin_salsa', email='admin@sonhavana.com', score=200, is_admin=True)
+        admin.set_password('salsa2026')
+        db.session.add(admin)
 
-        # --- Eventos de la timeline: solo se siembran si la tabla esta vacia ---
-        if TimelineData.query.count() == 0:
-            for data in eventos_salsa:
-                evento = TimelineData(
-                    anio=data['anio'],
-                    titulo=data['titulo'],
-                    descripcion=data['descripcion'],
-                    trivia=data.get('trivia'),
-                    imagen_url=data['imagen_url'],
-                    audio_url=data['audio_url']
-                )
-                db.session.add(evento)
-            print("Eventos historicos de la timeline cargados.")
-        else:
-            print("La timeline ya tenia datos, no se volvio a sembrar.")
+        # Cargar los eventos de salsa en la tabla TimelineData
+        for data in eventos_salsa:
+            evento = TimelineData(
+                anio=data['anio'],
+                titulo=data['titulo'],
+                descripcion=data['descripcion'],
+                trivia=data.get('trivia'),
+                imagen_url=data['imagen_url'],
+                audio_url=data['audio_url']
+            )
+            db.session.add(evento)
 
         db.session.commit()
-        print("¡Base de datos lista! (usuarios y puntajes existentes se conservaron) 🎬💃")
+        print("¡Base de datos actualizada con eventos completos y reproductores listos! 🎬💃")
 
 
 if __name__ == '__main__':

@@ -12,6 +12,24 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // 1. CARGAR LÍNEA DEL TIEMPO
+// obtenerEventosTimeline() cachea la petición a /api/timeline en una
+// sola Promise compartida: antes timeline.js Y content.js (para los
+// filtros por década) pedían este endpoint cada uno por su lado, o
+// sea 2 peticiones simultáneas por cada carga de página. Ahora ambos
+// reusan la misma respuesta.
+let _promesaEventosTimeline = null;
+
+function obtenerEventosTimeline() {
+    if (!_promesaEventosTimeline) {
+        _promesaEventosTimeline = fetch('/api/timeline').then(res => {
+            if (!res.ok) throw new Error('Error en la respuesta del servidor');
+            return res.json();
+        });
+    }
+    return _promesaEventosTimeline;
+}
+window.obtenerEventosTimeline = obtenerEventosTimeline;
+
 async function cargarTimeline() {
     const container = document.getElementById('timeline-container') || 
                       document.getElementById('timeline-track') || 
@@ -20,10 +38,7 @@ async function cargarTimeline() {
     if (!container) return;
 
     try {
-        const response = await fetch('/api/timeline');
-        if (!response.ok) throw new Error('Error en la respuesta del servidor');
-        
-        const eventos = await response.json();
+        const eventos = await obtenerEventosTimeline();
         container.innerHTML = ''; // Limpia el spinner
 
         if (!eventos || eventos.length === 0) {
@@ -107,35 +122,18 @@ async function cargarTimeline() {
 }
 
 // 2. QUIZ Y TRIVIA INTERACTIVA
-// Antes esta lista estaba hardcodeada aqui, duplicada y desincronizada
-// del banco real en /api/trivia (backend). Ahora se carga UNA vez desde
-// el backend y se cachea en memoria, para que portada y /desafio usen
-// siempre las mismas preguntas.
-let preguntasQuizCache = [];
+const preguntasQuiz = [
+    { pregunta: "¿En qué país nació el Son Cubano?", opciones: ["Puerto Rico", "Cuba", "Colombia"], correcta: 1 },
+    { pregunta: "¿Quién era conocido como 'El Cantante de los Cantantes'?", opciones: ["Héctor Lavoe", "Ismael Rivera", "Cheo Feliciano"], correcta: 0 },
+    { pregunta: "¿Cuál es el álbum de salsa más vendido de la historia?", opciones: ["Siembra", "El Malo", "Comedia"], correcta: 0 },
+    { pregunta: "¿En qué ciudad nació el Grupo Niche?", opciones: ["Cali", "Bogotá", "Medellín"], correcta: 0 }
+];
 
-async function cargarBancoPreguntas() {
-    if (preguntasQuizCache.length > 0) return preguntasQuizCache;
-    try {
-        const res = await fetch('/api/trivia');
-        preguntasQuizCache = await res.json();
-    } catch (e) {
-        console.error('No se pudo cargar el banco de trivia:', e);
-        preguntasQuizCache = [];
-    }
-    return preguntasQuizCache;
-}
-
-async function iniciarQuiz() {
+function iniciarQuiz() {
     const quizBox = document.getElementById('quiz-box');
     if (!quizBox) return;
 
-    const banco = await cargarBancoPreguntas();
-    if (banco.length === 0) {
-        quizBox.innerHTML = '<p class="text-danger small mb-0">No se pudo cargar la trivia. Intenta recargar la página.</p>';
-        return;
-    }
-
-    const preg = banco[Math.floor(Math.random() * banco.length)];
+    const preg = preguntasQuiz[Math.floor(Math.random() * preguntasQuiz.length)];
 
     quizBox.innerHTML = `
         <p class="fw-bold mb-3">${preg.pregunta}</p>

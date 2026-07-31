@@ -18,7 +18,7 @@ class User(UserMixin, db.Model):
     score = db.Column(db.Integer, default=0)                       # Puntaje acumulado en trivias
     fecha_registro = db.Column(db.DateTime, default=datetime.utcnow)
     acepta_promociones = db.Column(db.Boolean, default=True)        # Opt-in para promociones
-    is_admin = db.Column(db.Boolean, default=False)                 # Acceso al panel de administracion
+    is_admin = db.Column(db.Boolean, default=False, nullable=False) # Acceso al panel de administracion
 
     def set_password(self, password):
         """Genera el hash seguro de la contraseña."""
@@ -30,19 +30,9 @@ class User(UserMixin, db.Model):
             return False
         return check_password_hash(self.password_hash, password)
 
-    def to_public_dict(self):
-        """Version SIN datos sensibles (email, whatsapp), para cualquier
-        endpoint que no requiera login (ej. leaderboard publico)."""
-        return {
-            'id': self.id,
-            'nombre_jugador': self.nombre_jugador or self.username or 'Salsero Anónimo',
-            'username': self.username or self.nombre_jugador or 'Anónimo',
-            'score': self.score,
-        }
-
     def to_dict(self):
-        """Version COMPLETA con datos de contacto (email, whatsapp). Solo
-        para el panel de administracion (login_required + is_admin)."""
+        """Convierte el objeto a JSON con TODOS los datos, incluyendo
+        contacto (email/whatsapp). Solo para uso del panel de admin."""
         return {
             'id': self.id,
             'nombre_jugador': self.nombre_jugador or self.username or 'Salsero Anónimo',
@@ -50,7 +40,18 @@ class User(UserMixin, db.Model):
             'email': self.email,
             'whatsapp': self.whatsapp,
             'score': self.score,
+            'acepta_promociones': self.acepta_promociones,
             'fecha_registro': self.fecha_registro.strftime('%Y-%m-%d %H:%M') if self.fecha_registro else ''
+        }
+
+    def to_dict_public(self):
+        """Version segura para el leaderboard PUBLICO: sin email ni
+        whatsapp, para no exponer datos de contacto a cualquiera."""
+        return {
+            'id': self.id,
+            'nombre_jugador': self.nombre_jugador or self.username or 'Salsero Anónimo',
+            'username': self.username or self.nombre_jugador or 'Anónimo',
+            'score': self.score,
         }
 
     def __repr__(self):

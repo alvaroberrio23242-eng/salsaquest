@@ -9,6 +9,13 @@ document.addEventListener('DOMContentLoaded', () => {
     cargarRecordsSalsa();
     cargarArtistas();
     cargarTimba();
+    cargarEntrevistas();
+    cargarCaratulas();
+    cargarOrquestas();
+    cargarInstrumentos();
+    cargarMuseos();
+    cargarMapaLugares();
+    cargarRankingAlbumes();
     cargarFiltrosTimeline();
     cargarVisitas();
 });
@@ -25,7 +32,7 @@ async function cargarEventosGrandes() {
 
         eventos.forEach(ev => {
             container.innerHTML += `
-                <div class="col-md-6 col-lg-4 mb-4">
+                <div class="col-md-6 col-lg-3 mb-4">
                     <div class="card h-100 card-glass text-white shadow-sm rounded-4 overflow-hidden">
                         <img src="${ev.imagen_url}" class="card-img-top" alt="${ev.titulo}" style="height: 160px; object-fit: cover;">
                         <div class="card-body p-3">
@@ -55,7 +62,7 @@ async function cargarRecordsSalsa() {
 
         records.forEach(r => {
             container.innerHTML += `
-                <div class="col-md-6 col-lg-4 mb-4">
+                <div class="col-md-6 col-lg-3 mb-4">
                     <div class="card h-100 card-glass text-white shadow-sm rounded-4 p-3">
                         <i class="fa-solid fa-trophy text-warning fa-2x mb-2"></i>
                         <h6 class="text-warning fw-bold">${r.titulo}</h6>
@@ -168,8 +175,10 @@ async function cargarFiltrosTimeline() {
     if (!contenedorFiltros) return;
 
     try {
-        const res = await fetch('/api/timeline');
-        const eventos = await res.json();
+        // Reusa la MISMA petición/caché que timeline.js (ver
+        // obtenerEventosTimeline en timeline.js), en vez de volver a
+        // pedir /api/timeline por su cuenta.
+        const eventos = await window.obtenerEventosTimeline();
 
         // Agrupa por década a partir del año (ej. "1971" -> "1970s")
         const decadas = new Set();
@@ -221,5 +230,225 @@ async function cargarVisitas() {
         span.innerHTML = `<i class="fa-solid fa-eye me-1"></i> ${data.total} visitas`;
     } catch (e) {
         span.innerHTML = '';
+    }
+}
+
+// 7. ENTREVISTAS INÉDITAS (video real, no YouTube)
+async function cargarEntrevistas() {
+    const container = document.getElementById('entrevistas-container');
+    if (!container) return;
+
+    try {
+        const res = await fetch('/api/entrevistas');
+        const entrevistas = await res.json();
+
+        if (!entrevistas.length) {
+            container.innerHTML = '<p class="text-muted">Todavía no hay entrevistas cargadas.</p>';
+            return;
+        }
+
+        container.innerHTML = entrevistas.map(e => `
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 card-glass text-white rounded-4 overflow-hidden">
+                    <video controls preload="metadata" class="w-100" style="max-height:220px; object-fit:cover; background:#000;"
+                           ${e.miniatura_url ? `poster="/static/${e.miniatura_url}"` : ''}>
+                        <source src="/static/videos/${e.video_url}" type="video/mp4">
+                        Tu navegador no soporta el video.
+                    </video>
+                    <div class="card-body p-3">
+                        <h5 class="card-title text-warning mb-1">${e.titulo}</h5>
+                        <p class="small text-secondary mb-2">${e.invitado || ''}</p>
+                        <p class="small mb-0">${e.descripcion}</p>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    } catch (e) {
+        container.innerHTML = '<p class="text-danger">No se pudieron cargar las entrevistas.</p>';
+    }
+}
+
+// 8. CARÁTULAS ICÓNICAS (portada real via embed oficial de Spotify)
+async function cargarCaratulas() {
+    const container = document.getElementById('caratulas-container');
+    if (!container) return;
+
+    try {
+        const res = await fetch('/api/caratulas');
+        const caratulas = await res.json();
+
+        container.innerHTML = caratulas.map(c => `
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="card h-100 card-glass text-white rounded-4 overflow-hidden">
+                    <iframe style="border-radius:12px 12px 0 0; border:0;"
+                            src="https://open.spotify.com/embed/album/${c.spotify_album_id}?utm_source=generator&theme=0"
+                            width="100%" height="152" frameBorder="0"
+                            allowfullscreen=""
+                            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                            loading="lazy">
+                    </iframe>
+                    <div class="card-body p-3">
+                        <h6 class="text-warning fw-bold mb-0">${c.titulo}</h6>
+                        <p class="small text-secondary mb-2">${c.artista} · ${c.anio}</p>
+                        <p class="small mb-2"><strong class="text-success">Éxitos:</strong> ${c.exitos}</p>
+                        <p class="small mb-0">${c.curiosidad}</p>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    } catch (e) {
+        container.innerHTML = '<p class="text-danger">No se pudieron cargar las carátulas.</p>';
+    }
+}
+
+// 7. ORQUESTAS INFLUYENTES
+async function cargarOrquestas() {
+    const container = document.getElementById('orquestas-container');
+    if (!container) return;
+    try {
+        const res = await fetch('/api/orquestas');
+        const orquestas = await res.json();
+        container.innerHTML = orquestas.map(o => `
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 card-glass text-white shadow-sm rounded-4 p-3">
+                    <h6 class="text-warning fw-bold mb-1">${o.nombre}</h6>
+                    <p class="small text-secondary mb-2"><i class="fa-solid fa-location-dot me-1"></i>${o.lugar} · Fundada en ${o.fundacion}</p>
+                    <p class="small text-light mb-0">${o.texto}</p>
+                </div>
+            </div>
+        `).join('');
+    } catch (e) {
+        container.innerHTML = '<p class="text-danger text-center w-100">No se pudieron cargar las orquestas.</p>';
+    }
+}
+
+// 8. INSTRUMENTOS (galería interactiva)
+let INSTRUMENTOS_CACHE = [];
+
+async function cargarInstrumentos() {
+    const container = document.getElementById('instrumentos-container');
+    if (!container) return;
+    try {
+        const res = await fetch('/api/instrumentos');
+        INSTRUMENTOS_CACHE = await res.json();
+        container.innerHTML = INSTRUMENTOS_CACHE.map((i, idx) => `
+            <div class="col-6 col-md-4 col-lg-2 mb-4">
+                <div class="card h-100 card-glass text-white shadow-sm rounded-4 p-3 instrumento-card"
+                     role="button" style="cursor:pointer;" onclick="abrirInstrumento(${idx})">
+                    <span class="badge bg-warning text-dark fw-bold mb-2 align-self-start" style="font-size:0.65em;">${i.categoria}</span>
+                    <h6 class="text-warning fw-bold mb-0">${i.nombre}</h6>
+                    <p class="small text-secondary mt-2 mb-0"><i class="fa-solid fa-circle-info me-1"></i>Ver ficha</p>
+                </div>
+            </div>
+        `).join('') + `
+            <!-- Modal de detalle de instrumento -->
+            <div class="modal fade" id="modalInstrumento" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content bg-dark text-white border border-warning">
+                        <div class="modal-header border-secondary">
+                            <h5 class="modal-title text-warning fw-bold" id="modalInstrumentoTitulo"></h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body" id="modalInstrumentoBody"></div>
+                    </div>
+                </div>
+            </div>
+        `;
+    } catch (e) {
+        container.innerHTML = '<p class="text-danger text-center w-100">No se pudieron cargar los instrumentos.</p>';
+    }
+}
+
+function abrirInstrumento(idx) {
+    const i = INSTRUMENTOS_CACHE[idx];
+    if (!i) return;
+    document.getElementById('modalInstrumentoTitulo').innerHTML =
+        `<i class="fa-solid fa-music me-2"></i>${i.nombre}`;
+    document.getElementById('modalInstrumentoBody').innerHTML = `
+        <span class="badge bg-warning text-dark fw-bold mb-3">${i.categoria}</span>
+        <h6 class="text-warning small text-uppercase mt-2">Historia</h6>
+        <p class="text-light">${i.texto}</p>
+        <h6 class="text-warning small text-uppercase mt-3">Sonido</h6>
+        <p class="text-light">${i.sonido || 'Próximamente.'}</p>
+        <h6 class="text-warning small text-uppercase mt-3">Quiénes lo hicieron famoso</h6>
+        <p class="text-light">${i.famosos_por || 'Próximamente.'}</p>
+        ${i.video_busqueda ? `
+        <a href="${i.video_busqueda}" target="_blank" rel="noopener" class="btn btn-outline-warning btn-sm mt-2">
+            <i class="fa-brands fa-youtube me-1"></i>Buscar videos en YouTube
+        </a>` : ''}
+    `;
+    const modal = new bootstrap.Modal(document.getElementById('modalInstrumento'));
+    modal.show();
+}
+
+// 9. MUSEOS
+async function cargarMuseos() {
+    const container = document.getElementById('museos-container');
+    if (!container) return;
+    try {
+        const res = await fetch('/api/museos');
+        const museos = await res.json();
+        container.innerHTML = museos.map(m => `
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 card-glass text-white shadow-sm rounded-4 p-3">
+                    <h6 class="text-warning fw-bold mb-1">${m.nombre}</h6>
+                    <p class="small text-secondary mb-2"><i class="fa-solid fa-location-dot me-1"></i>${m.lugar} · Desde ${m.fundacion}</p>
+                    <p class="small text-light mb-0">${m.texto}</p>
+                </div>
+            </div>
+        `).join('');
+    } catch (e) {
+        container.innerHTML = '<p class="text-danger text-center w-100">No se pudieron cargar los museos.</p>';
+    }
+}
+
+// 10. MAPA DE LUGARES SALSEROS (Leaflet)
+async function cargarMapaLugares() {
+    const mapDiv = document.getElementById('mapa-lugares');
+    if (!mapDiv || typeof L === 'undefined') return;
+    try {
+        const res = await fetch('/api/lugares-salseros');
+        const lugares = await res.json();
+
+        const mapa = L.map('mapa-lugares').setView([15, -70], 3);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors',
+            maxZoom: 18,
+        }).addTo(mapa);
+
+        lugares.forEach(lugar => {
+            L.marker([lugar.lat, lugar.lng]).addTo(mapa)
+                .bindPopup(`<strong>${lugar.nombre}</strong><br><span style="font-size:0.85em">${lugar.descripcion}</span>`);
+        });
+    } catch (e) {
+        mapDiv.innerHTML = '<p class="text-danger text-center">No se pudo cargar el mapa.</p>';
+    }
+}
+
+// 11. RANKING DE ÁLBUMES MÁS INFLUYENTES
+async function cargarRankingAlbumes() {
+    const container = document.getElementById('ranking-container');
+    if (!container) return;
+    try {
+        const res = await fetch('/api/ranking-albumes');
+        const data = await res.json();
+        container.innerHTML = data.albumes.map(a => `
+            <div class="col-12 mb-3">
+                <div class="card card-glass text-white shadow-sm rounded-4 p-3 d-flex flex-row align-items-center gap-3">
+                    <div class="display-6 fw-bold text-warning" style="min-width: 60px;">#${a.puesto}</div>
+                    <div>
+                        <h6 class="text-warning fw-bold mb-0">${a.titulo}</h6>
+                        <p class="small text-secondary mb-1">${a.artista} · ${a.anio}</p>
+                        <p class="small text-light mb-0">${a.motivo}</p>
+                    </div>
+                </div>
+            </div>
+        `).join('') + `
+            <p class="small text-secondary text-center mt-2">
+                Basado en el ranking de Rolling Stone (oct. 2024).
+                <a href="${data.fuente_url}" target="_blank" rel="noopener" class="text-warning">Ver la lista completa de 50 &rarr;</a>
+            </p>`;
+    } catch (e) {
+        container.innerHTML = '<p class="text-danger text-center w-100">No se pudo cargar el ranking.</p>';
     }
 }
