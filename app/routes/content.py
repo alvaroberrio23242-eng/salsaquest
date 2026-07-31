@@ -2,7 +2,9 @@
 from flask import Blueprint, jsonify
 from app.models.content_data import (
     GRANDES_EVENTOS, RECORDS_SALSA, ARTISTAS, TIMBA, ENTREVISTAS, CARATULAS_ICONICAS,
-    ORQUESTAS, INSTRUMENTOS, MUSEOS_SALSA, LUGARES_SALSEROS, RANKING_ALBUMES, RANKING_FUENTE_URL
+    ORQUESTAS, INSTRUMENTOS, MUSEOS_SALSA, LUGARES_SALSEROS, RANKING_ALBUMES, RANKING_FUENTE_URL,
+    MEDELLIN_HISTORIA, MEDELLIN_BARES, MEDELLIN_EMISORAS, MEDELLIN_PLAYLIST_URL, MEDELLIN_PENDIENTE,
+    MEDELLIN_EVENTOS, MEDELLIN_CALENDARIO_VIVO_URL, GRAMMY_SALSA, FOTOS_VALIDADAS
 )
 from app.models.visit_counter import VisitCounter
 
@@ -70,6 +72,31 @@ def get_lugares_salseros():
 @content_bp.route('/api/ranking-albumes', methods=['GET'])
 def get_ranking_albumes():
     return jsonify({"fuente_url": RANKING_FUENTE_URL, "albumes": RANKING_ALBUMES})
+
+
+@content_bp.route('/api/medellin', methods=['GET'])
+def get_medellin():
+    return jsonify({
+        "historia": MEDELLIN_HISTORIA,
+        "bares": MEDELLIN_BARES,
+        "emisoras": MEDELLIN_EMISORAS,
+        "playlist_url": MEDELLIN_PLAYLIST_URL,
+        "eventos": MEDELLIN_EVENTOS,
+        "calendario_vivo_url": MEDELLIN_CALENDARIO_VIVO_URL,
+        "pendiente": MEDELLIN_PENDIENTE,
+    })
+
+
+@content_bp.route('/api/grammy', methods=['GET'])
+def get_grammy():
+    return jsonify(GRAMMY_SALSA)
+
+
+@content_bp.route('/api/fotos-artista/<slug>', methods=['GET'])
+def get_fotos_artista(slug):
+    """Galeria de fotos reales verificadas (Wikimedia Commons) para un
+    artista, ademas de la imagen_url principal que ya trae ARTISTAS."""
+    return jsonify(FOTOS_VALIDADAS.get(slug, []))
 
 
 @content_bp.route('/api/visitas', methods=['GET'])

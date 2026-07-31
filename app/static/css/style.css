@@ -312,3 +312,84 @@ textarea:focus {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
+
+/* ==========================================
+   9. FILA HORIZONTAL ESTILO NETFLIX (seccion Grammy)
+   ========================================== */
+#grammy-container {
+  scrollbar-width: thin;
+  scrollbar-color: var(--neon-gold) transparent;
+}
+
+#grammy-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+#grammy-container::-webkit-scrollbar-thumb {
+  background: var(--neon-gold);
+  border-radius: 10px;
+}
+
+#grammy-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#grammy-container .card-glass {
+  transition: transform 0.2s ease;
+}
+
+#grammy-container .card-glass:hover {
+  transform: translateY(-4px) scale(1.02);
+}
+
+/* ==========================================
+   10. ENTRADA ANIMADA AL HACER SCROLL
+   (ver static/js/scroll-reveal.js)
+   ========================================== */
+.reveal-init {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==========================================
+   11. AGRANDAR AL ACERCAR EL CURSOR (hover)
+   Se excluyen los modales (.modal-content tambien usa card-glass,
+   pero agrandar un modal a pantalla completa se veria roto)
+   ========================================== */
+main .card,
+main .card-glass {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+main .card:hover,
+main .card-glass:hover {
+  transform: translateY(-6px) scale(1.035);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55), 0 0 22px rgba(0, 240, 255, 0.22);
+  z-index: 2;
+}
+
+/* Las imagenes y videos dentro de una tarjeta ya se agrandan porque
+   agrandamos la tarjeta completa; para las que estan sueltas
+   (galeria de caratulas, entrevistas) tambien reacciona el propio
+   media al pasar el cursor por encima */
+main img.card-img-top,
+#entrevistas-container video {
+  transition: transform 0.35s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-init,
+  .reveal-visible,
+  main .card,
+  main .card-glass {
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}

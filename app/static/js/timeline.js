@@ -46,62 +46,46 @@ async function cargarTimeline() {
             return;
         }
 
+        // Grilla de 5 columnas en pantallas grandes (row-cols de Bootstrap)
+        container.classList.add('row-cols-1', 'row-cols-md-3', 'row-cols-lg-5');
+
         eventos.forEach((evento) => {
-            const tieneVideo = evento.audio_url && evento.audio_url.includes('youtube');
-            const imagenSrc = evento.imagen_url || evento.imagen || 'https://via.placeholder.com/400x250?text=SalsaQuest';
-            
-            const textoShare = encodeURIComponent(`🔥 ¡Mira este dato histórico en SalsaQuest! ${evento.titulo} (${evento.anio}): ${evento.trivia || evento.descripcion}`);
+            const textoShare = encodeURIComponent(`🔥 ¡Mira este hito histórico en SalsaQuest! ${evento.titulo} (${evento.anio}) de ${evento.artista || ''}: ${evento.trivia || evento.descripcion}`);
             const linkWhatsApp = `https://api.whatsapp.com/send?text=${textoShare}`;
 
-            let mediaHTML = '';
-            if (evento.audio_url) {
-                if (tieneVideo) {
-                    const videoWatchUrl = evento.audio_url.replace('embed/', 'watch?v=').replace('youtube-nocookie.com', 'youtube.com');
-                    mediaHTML = `
-                        <div class="ratio ratio-16x9 my-2 rounded-3 overflow-hidden shadow bg-black">
-                            <iframe src="${evento.audio_url}" title="${evento.titulo}" allowfullscreen style="border:0;"></iframe>
-                        </div>
-                        <a href="${videoWatchUrl}" target="_blank" class="btn btn-sm btn-outline-danger w-100 mb-2">
-                            <i class="fa-brands fa-youtube me-1"></i> Abrir en YouTube ↗
-                        </a>
-                    `;
-                } else {
-                    mediaHTML = `
-                        <div class="my-2">
-                            <label class="form-label small text-warning fw-bold"><i class="fa-solid fa-music me-1"></i> Escucha el ritmo:</label>
-                            <audio controls class="w-100">
-                                <source src="${evento.audio_url}" type="audio/mpeg">
-                            </audio>
-                        </div>
-                    `;
-                }
-            }
+            // Caratula real via embed oficial de Spotify (mismo patron que
+            // la seccion "Caratulas Iconicas"); si un hito no tiene album
+            // asociado, cae de vuelta a la imagen generica que traiga.
+            const caratulaHTML = evento.spotify_album_id
+                ? `<iframe style="border-radius:12px 12px 0 0; border:0;"
+                        src="https://open.spotify.com/embed/album/${evento.spotify_album_id}?utm_source=generator&theme=0"
+                        width="100%" height="152" frameBorder="0"
+                        allowfullscreen=""
+                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                        loading="lazy"></iframe>`
+                : `<img src="${evento.imagen_url || 'https://via.placeholder.com/400x250?text=SalsaQuest'}" class="card-img-top" alt="${evento.titulo}" style="height: 152px; object-fit: cover;">`;
 
             const triviaHTML = evento.trivia ? `
                 <div class="mt-auto pt-2 border-top border-secondary">
-                    <small class="text-info"><i class="fa-solid fa-lightbulb me-1"></i> <strong>Dato Curioso:</strong> ${evento.trivia}</small>
+                    <small class="text-info"><i class="fa-solid fa-lightbulb me-1"></i> ${evento.trivia}</small>
                 </div>
             ` : '';
 
             const eventCard = `
-                <div class="col-md-6 mb-4 timeline-card" data-anio="${evento.anio}">
-                    <div class="card h-100 card-glass text-white shadow-sm rounded-4 overflow-hidden">
-                        <img src="${imagenSrc}" class="card-img-top" alt="${evento.titulo}" style="height: 180px; object-fit: cover;">
-                        
-                        <div class="card-body d-flex flex-column p-4">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="badge bg-warning text-dark fw-bold px-3 py-2 fs-6">${evento.anio}</span>
-                                ${tieneVideo ? '<span class="badge bg-danger"><i class="fa-brands fa-youtube me-1"></i> Entrevista / Video</span>' : ''}
-                            </div>
-                            
-                            <h5 class="card-title text-warning fw-bold mt-1">${evento.titulo}</h5>
-                            <p class="card-text text-light small">${evento.descripcion}</p>
+                <div class="mb-4 timeline-card" data-anio="${evento.anio}">
+                    <div class="card h-100 card-glass text-white shadow-sm rounded-4 overflow-hidden hover-zoom">
+                        ${caratulaHTML}
 
-                            ${mediaHTML}
+                        <div class="card-body d-flex flex-column p-3">
+                            <span class="badge bg-warning text-dark fw-bold align-self-start mb-2">${evento.anio}</span>
+                            <h6 class="card-title text-warning fw-bold mb-0">${evento.titulo}</h6>
+                            <p class="small text-secondary mb-2">${evento.artista || ''}</p>
+                            <p class="card-text text-light small mb-2">${evento.descripcion || ''}</p>
+
                             ${triviaHTML}
 
                             <a href="${linkWhatsApp}" target="_blank" class="btn btn-sm btn-outline-success w-100 mt-3">
-                                <i class="fa-brands fa-whatsapp me-1"></i> Compartir en WhatsApp
+                                <i class="fa-brands fa-whatsapp me-1"></i> Compartir
                             </a>
                         </div>
                     </div>

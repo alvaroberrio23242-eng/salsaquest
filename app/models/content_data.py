@@ -113,7 +113,7 @@ ARTISTAS = [
             "Hoy se le reconoce como una precursora del soul latino y una influencia "
             "directa en generaciones de soneras."
         ),
-        "imagen_url": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600",
+        "imagen_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Cuban singer La Lupe performing in New York City LCCN2009632630 (cropped).jpg",
     },
     {
         "slug": "guaguanco",
@@ -181,7 +181,7 @@ ARTISTAS = [
             "callejera de los setenta, ganándose el apodo de 'El Caballero de "
             "la Salsa' y una carrera con múltiples premios Grammy Latino."
         ),
-        "imagen_url": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600",
+        "imagen_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Gilberto Santa Rosa en 2025.png",
     },
     {
         "slug": "willie-colon",
@@ -198,7 +198,7 @@ ARTISTAS = [
             "Más adelante también incursionó en la política y el activismo "
             "comunitario en Nueva York."
         ),
-        "imagen_url": "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=600",
+        "imagen_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Willie Colón (1969 Fania Records publicity photo).jpg",
     },
     {
         "slug": "ruben-blades",
@@ -216,7 +216,7 @@ ARTISTAS = [
             "marcados desde joven por el interés en contar historias urbanas y "
             "políticas a través de la música."
         ),
-        "imagen_url": "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=600",
+        "imagen_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Danilo Pérez, Herbie Hancock, Wayne Shorter, Rubén Blades.jpg",
     },
     {
         "slug": "oscar-de-leon",
@@ -532,6 +532,7 @@ ORQUESTAS = [
 INSTRUMENTOS = [
     {
         "slug": "tumbadoras",
+        "imagen_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Congas.JPG",
         "nombre": "Congas / Tumbadoras",
         "categoria": "Percusión",
         "texto": (
@@ -546,6 +547,7 @@ INSTRUMENTOS = [
     },
     {
         "slug": "bongo",
+        "imagen_url": "https://images.unsplash.com/photo-1519892300165-cb5542fb47c7?w=600",
         "nombre": "Bongó",
         "categoria": "Percusión",
         "texto": (
@@ -560,6 +562,7 @@ INSTRUMENTOS = [
     },
     {
         "slug": "timbales",
+        "imagen_url": "https://images.unsplash.com/photo-1541689592655-f2ec549f61f0?w=600",
         "nombre": "Timbales",
         "categoria": "Percusión",
         "texto": (
@@ -574,6 +577,7 @@ INSTRUMENTOS = [
     },
     {
         "slug": "clave",
+        "imagen_url": "https://images.unsplash.com/photo-1614963326505-843d3b1d99d3?w=600",
         "nombre": "Claves",
         "categoria": "Percusión / patrón rítmico",
         "texto": (
@@ -589,6 +593,7 @@ INSTRUMENTOS = [
     },
     {
         "slug": "maracas",
+        "imagen_url": "https://images.unsplash.com/photo-1619983081563-430f63602796?w=600",
         "nombre": "Maracas",
         "categoria": "Percusión",
         "texto": (
@@ -604,6 +609,7 @@ INSTRUMENTOS = [
     },
     {
         "slug": "guiro",
+        "imagen_url": "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600",
         "nombre": "Güiro",
         "categoria": "Percusión",
         "texto": (
@@ -618,6 +624,7 @@ INSTRUMENTOS = [
     },
     {
         "slug": "piano-montuno",
+        "imagen_url": "https://images.unsplash.com/photo-1552422535-c45813c61732?w=600",
         "nombre": "Piano (montuno)",
         "categoria": "Armonía / ritmo",
         "texto": (
@@ -633,6 +640,7 @@ INSTRUMENTOS = [
     },
     {
         "slug": "bajo",
+        "imagen_url": "https://images.unsplash.com/photo-1550985616-10810253b84d?w=600",
         "nombre": "Bajo",
         "categoria": "Armonía / ritmo",
         "texto": (
@@ -648,6 +656,7 @@ INSTRUMENTOS = [
     },
     {
         "slug": "trompeta",
+        "imagen_url": "https://images.unsplash.com/photo-1573871924872-e21f1eab24a6?w=600",
         "nombre": "Trompeta",
         "categoria": "Vientos",
         "texto": (
@@ -664,6 +673,7 @@ INSTRUMENTOS = [
     },
     {
         "slug": "trombon",
+        "imagen_url": "https://images.unsplash.com/photo-1621368286550-cba7a801e128?w=600",
         "nombre": "Trombón",
         "categoria": "Vientos",
         "texto": (
@@ -679,6 +689,7 @@ INSTRUMENTOS = [
     },
     {
         "slug": "saxofon",
+        "imagen_url": "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=600",
         "nombre": "Saxofón",
         "categoria": "Vientos",
         "texto": (
@@ -695,6 +706,7 @@ INSTRUMENTOS = [
     },
     {
         "slug": "tres-cubano",
+        "imagen_url": "https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=600",
         "nombre": "Tres cubano",
         "categoria": "Cuerdas",
         "texto": (
@@ -902,3 +914,279 @@ RANKING_ALBUMES = [
         "motivo": "El registro en vivo del concierto de 1971 que inmortalizó el documental 'Our Latin Thing'.",
     },
 ]
+
+# ==========================================
+# MEDELLÍN, CAPITAL MUNDIAL DE LA SALSA
+# ==========================================
+# NOTA HONESTA: bares y emisoras estan verificados por busqueda
+# cruzada (varias fuentes independientes, 2015-2026). Direcciones y
+# antiguedad son confiables; horarios/estado actual pueden cambiar,
+# así que se agrega un aviso en el frontend para que el usuario
+# confirme antes de ir. Categorias como "agenda de eventos",
+# "conciertos proximos", "DJs reconocidos", "coleccionistas" y
+# "campeones de baile" NO se hardcodean aqui: cambian todo el tiempo
+# o involucran a personas reales que requieren verificacion directa
+# con el usuario, no busqueda generica.
+
+MEDELLIN_HISTORIA = (
+    "La salsa en Medellín tiene una historia propia, distinta a la de "
+    "Cali. Desde los años setenta, Discos Fuentes -- el sello discográfico "
+    "más importante de Colombia -- funcionó como motor de producción "
+    "salsera desde la ciudad, lanzando a Fruko y sus Tesos, Afrosound y "
+    "Joe Arroyo (con Fruko), entre otros. En paralelo se desarrolló una "
+    "fuerte cultura de 'melómanos' y coleccionistas de vinilo, que "
+    "mantuvo viva la salsa clásica en bares del sector de San Juan y "
+    "Laureles durante décadas, incluso en años en que otros géneros "
+    "dominaban la radio comercial."
+)
+
+MEDELLIN_BARES = [
+    {
+        "slug": "son-havana-laureles",
+        "nombre": "Son Havana (Laureles)",
+        "direccion": "Cra. 73 # 44-56, Laureles, Medellín",
+        "descripcion": (
+            "Bar insignia de la salsa cubana en la ciudad, con música en "
+            "vivo y clases de baile. Es la sede original; luego abrió una "
+            "segunda sede en El Poblado."
+        ),
+        "lat": 6.2477, "lng": -75.5910,
+    },
+    {
+        "slug": "el-tibiri",
+        "nombre": "El Tibirí",
+        "direccion": "Cra. 70 # 43B-01, Laureles, Medellín",
+        "descripcion": (
+            "El sótano de salsa más conocido de Medellín, con más de dos "
+            "décadas de historia. Ambiente crudo, sin lujos, frecuentado "
+            "por bailadores y melómanos de todos los niveles."
+        ),
+        "lat": 6.2489, "lng": -75.5926,
+    },
+    {
+        "slug": "el-suave",
+        "nombre": "El Suave",
+        "direccion": "Av. 33 # 80A-30, Medellín",
+        "descripcion": (
+            "Discoteca clásica de salsa, con dos pisos, pista de baile y "
+            "un público mayormente de melómanos y amantes de la salsa "
+            "tradicional."
+        ),
+        "lat": 6.2298, "lng": -75.5847,
+    },
+    {
+        "slug": "eslabon-prendido",
+        "nombre": "El Eslabón Prendido",
+        "direccion": "Cerca al Parque del Periodista, Centro, Medellín",
+        "descripcion": (
+            "Abierto desde 2002, con música en vivo martes y jueves. Punto "
+            "de encuentro clásico del centro de la ciudad para son cubano "
+            "y ritmos afroantillanos."
+        ),
+        "lat": 6.2486, "lng": -75.5658,
+    },
+    {
+        "slug": "bururu-barara",
+        "nombre": "El Bururú Barará",
+        "direccion": "Calle 44 # 71-73, San Juan, Medellín",
+        "descripcion": (
+            "Una 'viejoteca' de culto: bar dedicado casi por completo a "
+            "vinilos de salsa y música antillana clásica, en el corazón de "
+            "la zona salsera de San Juan."
+        ),
+        "lat": 6.2469, "lng": -75.5893,
+    },
+]
+
+MEDELLIN_EMISORAS = [
+    {
+        "nombre": "Latina Stereo",
+        "descripcion": "Se autodenomina la emisora de salsa más emblemática de Medellín, con programas en vivo dedicados al género.",
+        "url": "https://latinastereo.com/",
+    },
+    {
+        "nombre": "El Sol Medellín",
+        "descripcion": "Emisora de salsa y música clásica tropical con transmisión en vivo online.",
+        "url": "https://mytuner-radio.com/es/emisora/el-sol-medellin/",
+    },
+    {
+        "nombre": "Radio Uno Medellín",
+        "descripcion": "Programación salsera dentro de la parrilla de Radio Uno para la ciudad.",
+        "url": "https://mytuner-radio.com/es/emisora/radio-uno-medellin/",
+    },
+    {
+        "nombre": "Tropicana Medellín",
+        "descripcion": "Salsa y música tropical, versión local de la cadena Tropicana.",
+        "url": "https://mytuner-radio.com/es/emisora/tropicana-medellin/",
+    },
+]
+
+MEDELLIN_PLAYLIST_URL = "https://open.spotify.com/search/salsa%20Medell%C3%ADn%20Discos%20Fuentes%20Fruko"
+
+# Eventos verificados por busqueda web (no inventados). Como las fechas
+# de conciertos cambian constantemente, para los "socials" semanales
+# (clases, noches de baile) enlazamos a un calendario en vivo en vez
+# de hardcodear fechas que se volverian obsoletas.
+MEDELLIN_EVENTOS = [
+    {
+        "titulo": "Feria de las Flores",
+        "fecha": "Finales de julio - inicios de agosto (anual)",
+        "lugar": "Toda la ciudad de Medellín",
+        "descripcion": (
+            "La feria más importante de Medellín abre cada año con 'Viva la "
+            "Salsa', un megaconcierto salsero en el Estadio Atanasio "
+            "Girardot que ha reunido a leyendas como El Gran Combo de "
+            "Puerto Rico, Oscar D'León y La Sonora Ponceña. Incluye el "
+            "Festival Nacional de la Trova en la Plaza Gardel y más de "
+            "500 actividades culturales, la mayoría de acceso público."
+        ),
+        "url": "https://tuticket.com.co/conciertos/tour-viva-la-salsa-2026-medellin/",
+    },
+    {
+        "titulo": "1er Festival Salsero de Amor y Amistad",
+        "fecha": "19 de septiembre de 2026",
+        "lugar": "Mulenze Salsa Bar, Envigado (área metropolitana)",
+        "descripcion": "Festival salsero organizado por Mulenze Salsa Bar en el área metropolitana de Medellín.",
+        "url": "https://www.ticketmaster.co/page/CONCIERTOS",
+    },
+]
+
+MEDELLIN_CALENDARIO_VIVO_URL = "https://www.salsavida.com/es/guides/colombia/medellin/calendar/"
+
+# Categorias explicitamente NO incluidas con datos falsos/inventados:
+# DJs reconocidos, coleccionistas destacados, campeones de baile,
+# academias de baile y tiendas de vinilo especificas. Se muestran como
+# "proximamente" en el frontend hasta tener datos reales confirmados
+# por el usuario o un panel de administracion.
+MEDELLIN_PENDIENTE = [
+    "DJs reconocidos y coleccionistas destacados",
+    "Campeones de baile",
+    "Academias de baile y tiendas de vinilo (mapa completo)",
+    "Murales y espacios culturales",
+]
+
+# ==========================================
+# ARTISTAS DE SALSA CON GRAMMY
+# ==========================================
+# Datos verificados por busqueda web (fuentes: grammy.com, Wikipedia,
+# AllMusic, Library of Congress). Cada uno gano un Grammy real, con
+# año y álbum verificables -- no incluye Latin Grammy (categoria
+# distinta) salvo que se indique explicitamente.
+GRAMMY_SALSA = [
+    {
+        "slug": "eddie-palmieri-1975",
+        "artista": "Eddie Palmieri",
+        "anio": 1975,
+        "album": "The Sun of Latin Music",
+        "categoria": "Best Latin Recording",
+        "descripcion": (
+            "El primer Grammy jamás otorgado en una categoría latina, y "
+            "Palmieri se convirtió en el primer artista latino en ganar "
+            "un Grammy en cualquier categoría. Grabado junto al entonces "
+            "joven cantante Lalo Rodríguez."
+        ),
+        "spotify_album_id": "",
+    },
+    {
+        "slug": "ruben-blades-1987",
+        "artista": "Rubén Blades",
+        "anio": 1987,
+        "album": "Escenas",
+        "categoria": "Best Tropical Latin Performance",
+        "descripcion": (
+            "Su primer Grammy, ganado en la 29ª entrega de los premios. "
+            "El álbum incluye un dueto en español con Linda Ronstadt."
+        ),
+        "spotify_album_id": "",
+    },
+    {
+        "slug": "celia-cruz-1990",
+        "artista": "Celia Cruz",
+        "anio": 1990,
+        "album": "Ritmo en el Corazón (con Ray Barretto)",
+        "categoria": "Best Tropical Latin Performance",
+        "descripcion": (
+            "El primero de los Grammy de Celia Cruz, en colaboración con "
+            "el conguero Ray Barretto (también su primer Grammy). A lo "
+            "largo de su carrera acumuló múltiples premios Grammy y "
+            "Grammy Latino, además de un Grammy honorífico a la "
+            "trayectoria."
+        ),
+        "spotify_album_id": "",
+    },
+    {
+        "slug": "marc-anthony-1999",
+        "artista": "Marc Anthony",
+        "anio": 1999,
+        "album": "Contra la Corriente",
+        "categoria": "Best Traditional Tropical Latin Album",
+        "descripcion": (
+            "Este álbum de 1997 hizo historia como el primer disco de "
+            "salsa en llegar al número 1 del Billboard 200, antes de "
+            "ganar el Grammy en la 41ª entrega de los premios."
+        ),
+        "spotify_album_id": "",
+    },
+    {
+        "slug": "los-van-van-1999",
+        "artista": "Los Van Van",
+        "anio": 1999,
+        "album": "Van Van Is Here",
+        "categoria": "Best Salsa Album",
+        "descripcion": (
+            "Le dio a Los Van Van el primer Grammy ganado por una "
+            "orquesta de timba cubana, consolidando el reconocimiento "
+            "internacional del género fuera de Cuba."
+        ),
+        "spotify_album_id": "",
+    },
+]
+
+
+# ==========================================
+# FOTOS REALES VERIFICADAS (Fase 3)
+# ==========================================
+# Filtradas a mano de los zips de fotos que subiste -- se descartaron
+# 12 falsos positivos que un script automatico habia agarrado solo por
+# coincidencia de texto (ver detalle en INFORME.md de esa entrega).
+# Todas usan el patron Special:FilePath de Wikimedia Commons, que
+# resuelve siempre al archivo actual sin importar donde este alojado.
+#
+# ATRIBUCION: la mayoria son licencia CC BY-SA (no dominio publico
+# total) -- muestra un credito visible, ej. un <small> bajo cada foto
+# o en el modal de detalle: "Foto: Wikimedia Commons".
+#
+# PENDIENTES -- no se encontro foto con licencia clara para: Fruko,
+# Grupo Niche, Ray Barretto, Cheo Feliciano, Fania All-Stars. Vale la
+# pena preguntarle a Julio/Son Havana si tienen fotos propias de
+# homenajes o material promocional para estos -- seria mejor
+# contenido (autentico, sin depender de licencias externas).
+FOTOS_VALIDADAS = {
+    "celia-cruz": [
+        "https://commons.wikimedia.org/wiki/Special:FilePath/Celia Cruz (13490118834).jpg",
+        "https://commons.wikimedia.org/wiki/Special:FilePath/Celia Cruz y Pedro Knight.jpg",
+        "https://commons.wikimedia.org/wiki/Special:FilePath/2024 Celia Cruz Womens Quarter.jpg",
+    ],
+    "la-lupe": [
+        "https://commons.wikimedia.org/wiki/Special:FilePath/Cuban singer La Lupe performing in New York City LCCN2009632630 (cropped).jpg",
+        "https://commons.wikimedia.org/wiki/Special:FilePath/Pacho Alonso, La Lupe & Benny Moré.jpg",
+    ],
+    "hector-lavoe": [
+        "https://commons.wikimedia.org/wiki/Special:FilePath/Héctor Lavoe (1969 Fania Records publicity photo).jpg",
+        "https://commons.wikimedia.org/wiki/Special:FilePath/Statuehectorlavoe.jpg",
+    ],
+    "willie-colon": [
+        "https://commons.wikimedia.org/wiki/Special:FilePath/Willie Colón (1969 Fania Records publicity photo).jpg",
+        "https://commons.wikimedia.org/wiki/Special:FilePath/Willie Colón and Héctor Lavoe (1969 Fania Records publicity photo).jpg",
+    ],
+    "tito-puente": [
+        "https://commons.wikimedia.org/wiki/Special:FilePath/TitoandRogerDawson.jpg",
+        "https://commons.wikimedia.org/wiki/Special:FilePath/Tito Puente PS117 2095 2nd Av 240 E109 St jeh.jpg",
+    ],
+    "ruben-blades": [
+        "https://commons.wikimedia.org/wiki/Special:FilePath/Danilo Pérez, Herbie Hancock, Wayne Shorter, Rubén Blades.jpg",
+    ],
+    "gilberto-santa-rosa": [
+        "https://commons.wikimedia.org/wiki/Special:FilePath/Gilberto Santa Rosa en 2025.png",
+    ],
+}
