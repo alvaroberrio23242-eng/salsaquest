@@ -3,7 +3,6 @@ Inicialización de la aplicación Flask y configuración de extensiones/blueprin
 """
 
 import os
-import secrets
 from datetime import timedelta
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -19,20 +18,8 @@ def crear_app():
 
     # Configuración básica y de la base de datos SQLite
     base_dir = os.path.abspath(os.path.dirname(__file__))
-
-    # SECRET_KEY: antes estaba hardcodeada en el codigo fuente (visible
-    # para cualquiera que vea el repo), lo que compromete la seguridad
-    # de las cookies de sesion del login de admin. Ahora se lee de la
-    # variable de entorno SECRET_KEY (ponla en tu .env local y en las
-    # variables de entorno de Render en produccion). Si no existe
-    # ninguna (por ejemplo, la primera vez que corres en local sin
-    # configurarla), se genera una aleatoria de forma automatica para
-    # que la app no se rompa -- pero eso invalida las sesiones activas
-    # cada vez que reinicies el servidor, asi que en produccion SIEMPRE
-    # define SECRET_KEY explicitamente.
-    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or secrets.token_hex(32)
-
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(base_dir, '..', 'salsaquest.db')
+    app.config['SECRET_KEY'] = 'salsa_quest_secret_key_2026'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(base_dir, '..', 'sonhavana.db')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     # "Recordar acceso": cuanto dura la cookie de sesion persistente

@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cargarEventosGrandes();
     cargarRecordsSalsa();
     cargarArtistas();
+    cargarGrammy();
     cargarTimba();
     cargarEntrevistas();
     cargarCaratulas();
@@ -16,6 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
     cargarMuseos();
     cargarMapaLugares();
     cargarRankingAlbumes();
+    cargarMedellin();
+    cargarSonHavana();
     cargarFiltrosTimeline();
     cargarVisitas();
 });
@@ -121,6 +124,47 @@ function abrirModalArtista(slug) {
     document.getElementById('modalArtistaTexto').innerText = artista.texto;
 
     const modalElement = document.getElementById('modalArtista');
+    if (modalElement) new bootstrap.Modal(modalElement).show();
+}
+
+// GRAMMY: fila horizontal estilo Netflix
+let cacheGrammy = [];
+async function cargarGrammy() {
+    const container = document.getElementById('grammy-container');
+    if (!container) return;
+
+    try {
+        const res = await fetch('/api/grammy');
+        cacheGrammy = await res.json();
+        container.innerHTML = '';
+
+        cacheGrammy.forEach(g => {
+            container.innerHTML += `
+                <div class="card card-glass text-white shadow-sm rounded-4 p-3 flex-shrink-0"
+                     style="width: 220px; cursor:pointer; scroll-snap-align: start;"
+                     onclick="abrirModalGrammy('${g.slug}')">
+                    <i class="fa-solid fa-award text-warning fa-2x mb-2"></i>
+                    <h6 class="text-warning fw-bold mb-1">${g.artista}</h6>
+                    <p class="small text-secondary mb-1">${g.anio}</p>
+                    <p class="small mb-0">${g.album}</p>
+                </div>
+            `;
+        });
+    } catch (e) {
+        container.innerHTML = '<p class="text-danger text-center w-100">No se pudieron cargar los Grammy.</p>';
+    }
+}
+
+function abrirModalGrammy(slug) {
+    const g = cacheGrammy.find(x => x.slug === slug);
+    if (!g) return;
+
+    document.getElementById('modalGrammyTitulo').innerText = `${g.artista} — Grammy ${g.anio}`;
+    document.getElementById('modalGrammyAlbum').innerText = g.album;
+    document.getElementById('modalGrammyCategoria').innerText = g.categoria;
+    document.getElementById('modalGrammyTexto').innerText = g.descripcion;
+
+    const modalElement = document.getElementById('modalGrammy');
     if (modalElement) new bootstrap.Modal(modalElement).show();
 }
 
@@ -335,6 +379,7 @@ async function cargarInstrumentos() {
             <div class="col-6 col-md-4 col-lg-2 mb-4">
                 <div class="card h-100 card-glass text-white shadow-sm rounded-4 p-3 instrumento-card"
                      role="button" style="cursor:pointer;" onclick="abrirInstrumento(${idx})">
+                    <img src="${i.imagen_url || 'https://via.placeholder.com/300x200?text=SalsaQuest'}" alt="${i.nombre}">
                     <span class="badge bg-warning text-dark fw-bold mb-2 align-self-start" style="font-size:0.65em;">${i.categoria}</span>
                     <h6 class="text-warning fw-bold mb-0">${i.nombre}</h6>
                     <p class="small text-secondary mt-2 mb-0"><i class="fa-solid fa-circle-info me-1"></i>Ver ficha</p>
@@ -344,7 +389,7 @@ async function cargarInstrumentos() {
             <!-- Modal de detalle de instrumento -->
             <div class="modal fade" id="modalInstrumento" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-lg">
-                    <div class="modal-content bg-dark text-white border border-warning">
+                    <div class="modal-content card-glass text-white border border-warning">
                         <div class="modal-header border-secondary">
                             <h5 class="modal-title text-warning fw-bold" id="modalInstrumentoTitulo"></h5>
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
@@ -450,5 +495,93 @@ async function cargarRankingAlbumes() {
             </p>`;
     } catch (e) {
         container.innerHTML = '<p class="text-danger text-center w-100">No se pudo cargar el ranking.</p>';
+    }
+}
+
+// 12. MEDELLÍN, CAPITAL MUNDIAL DE LA SALSA
+// SON HAVANA: reutiliza los datos de /api/medellin (ya trae el bar
+// "Son Havana (Laureles)" verificado), en vez de duplicar informacion.
+async function cargarSonHavana() {
+    const direccionEl = document.getElementById('son-havana-direccion');
+    const descripcionEl = document.getElementById('son-havana-descripcion');
+    const playlistLink = document.getElementById('son-havana-playlist-link');
+    if (!direccionEl) return;
+
+    try {
+        const res = await fetch('/api/medellin');
+        const data = await res.json();
+        const bar = (data.bares || []).find(b => b.slug === 'son-havana-laureles');
+
+        if (bar) {
+            direccionEl.innerHTML = `<i class="fa-solid fa-location-dot me-1"></i> ${bar.direccion}`;
+            if (descripcionEl) descripcionEl.textContent = bar.descripcion;
+        } else {
+            direccionEl.textContent = 'Información no disponible por ahora.';
+        }
+
+        if (playlistLink && data.playlist_url) {
+            playlistLink.href = data.playlist_url;
+        }
+    } catch (e) {
+        direccionEl.textContent = 'No se pudo cargar la información de Son Havana.';
+    }
+}
+
+async function cargarMedellin() {
+    const historiaEl = document.getElementById('medellin-historia');
+    const baresContainer = document.getElementById('medellin-bares-container');
+    const emisorasContainer = document.getElementById('medellin-emisoras-container');
+    const pendienteEl = document.getElementById('medellin-pendiente');
+    const mapaDiv = document.getElementById('mapa-medellin');
+    if (!historiaEl && !baresContainer) return;
+
+    try {
+        const res = await fetch('/api/medellin');
+        const data = await res.json();
+
+        if (historiaEl) historiaEl.textContent = data.historia;
+
+        if (baresContainer) {
+            baresContainer.innerHTML = data.bares.map(b => `
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 card-glass text-white shadow-sm rounded-4 p-3">
+                        <h6 class="text-warning fw-bold mb-1">${b.nombre}</h6>
+                        <p class="small text-secondary mb-2"><i class="fa-solid fa-location-dot me-1"></i>${b.direccion}</p>
+                        <p class="small text-light mb-0">${b.descripcion}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        if (emisorasContainer) {
+            emisorasContainer.innerHTML = data.emisoras.map(e => `
+                <div class="col-md-6 col-lg-3 mb-3">
+                    <a href="${e.url}" target="_blank" rel="noopener" class="text-decoration-none">
+                        <div class="card h-100 card-glass text-white shadow-sm rounded-4 p-3">
+                            <h6 class="text-warning fw-bold mb-1"><i class="fa-solid fa-radio me-1"></i>${e.nombre}</h6>
+                            <p class="small text-light mb-0">${e.descripcion}</p>
+                        </div>
+                    </a>
+                </div>
+            `).join('');
+        }
+
+        if (pendienteEl) {
+            pendienteEl.innerHTML = data.pendiente.map(p => `<li>${p}</li>`).join('');
+        }
+
+        if (mapaDiv && typeof L !== 'undefined') {
+            const mapaMed = L.map('mapa-medellin').setView([6.2477, -75.5850], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors',
+                maxZoom: 18,
+            }).addTo(mapaMed);
+            data.bares.forEach(b => {
+                L.marker([b.lat, b.lng]).addTo(mapaMed)
+                    .bindPopup(`<strong>${b.nombre}</strong><br><span style="font-size:0.85em">${b.direccion}</span>`);
+            });
+        }
+    } catch (e) {
+        if (baresContainer) baresContainer.innerHTML = '<p class="text-danger text-center w-100">No se pudo cargar la sección de Medellín.</p>';
     }
 }
