@@ -3,18 +3,15 @@ Inicialización de la aplicación Flask y configuración de extensiones/blueprin
 """
 
 import os
+import secrets
+from datetime import timedelta
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 
 # Instancia global de SQLAlchemy
 db = SQLAlchemy()
-
-# Instancia global de Flask-Login. Se inicializa (init_app) dentro de
-# crear_app(), pero se define aqui arriba para poder importarla desde
-# otros modulos si hiciera falta.
 login_manager = LoginManager()
-
 
 def crear_app():
     """Crea y configura la instancia de la aplicación Flask."""
@@ -22,16 +19,28 @@ def crear_app():
 
     # Configuración básica y de la base de datos SQLite
     base_dir = os.path.abspath(os.path.dirname(__file__))
-    app.config['SECRET_KEY'] = 'salsa_quest_secret_key_2026'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(base_dir, '..', 'sonhavana.db')
+
+    # SECRET_KEY: antes estaba hardcodeada en el codigo fuente (visible
+    # para cualquiera que vea el repo), lo que compromete la seguridad
+    # de las cookies de sesion del login de admin. Ahora se lee de la
+    # variable de entorno SECRET_KEY (ponla en tu .env local y en las
+    # variables de entorno de Render en produccion). Si no existe
+    # ninguna (por ejemplo, la primera vez que corres en local sin
+    # configurarla), se genera una aleatoria de forma automatica para
+    # que la app no se rompa -- pero eso invalida las sesiones activas
+    # cada vez que reinicies el servidor, asi que en produccion SIEMPRE
+    # define SECRET_KEY explicitamente.
+    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or secrets.token_hex(32)
+
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(base_dir, '..', 'salsaquest.db')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    # Inicializar la extensión de base de datos
-    db.init_app(app)
+    # "Recordar acceso": cuanto dura la cookie de sesion persistente
+    # cuando el login se hace con remember=True (ver auth.py)
+    app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=30)
 
-    # --- Flask-Login ---
-    # Sin esto, login_user()/current_user/@login_required no funcionan:
-    # no hay nada que guarde ni recupere la sesion del usuario logueado.
+    # Inicializar extensiones
+    db.init_app(app)
     login_manager.init_app(app)
     login_manager.login_view = 'auth_bp.admin_login'
 

@@ -1,9 +1,11 @@
 # app/routes/auth.py
 
+from functools import wraps
 from flask import Blueprint, request, jsonify, render_template, redirect, url_for
 from flask_login import login_user, logout_user, login_required, current_user
 from app import db
 from app.models.user import User
+from app.models.visit_counter import VisitCounter
 
 # Definición unificada del Blueprint
 auth_bp = Blueprint('auth_bp', __name__)
@@ -56,13 +58,14 @@ def login():
 
     username = data.get('username')
     password = data.get('password')
+    recordarme = bool(data.get('remember', False))
 
     user = User.query.filter_by(username=username).first()
 
     if not user or not user.check_password(password):
         return jsonify({'success': False, 'message': 'Usuario o contraseña incorrectos.'}), 401
 
-    login_user(user)
+    login_user(user, remember=recordarme)
 
     return jsonify({
         'success': True,
@@ -128,58 +131,70 @@ def registrar_usuario_o_puntaje():
 
 @auth_bp.route('/api/leaderboard', methods=['GET'])
 def obtener_leaderboard():
-    """Top 10 público. Solo nombre y puntaje: email/whatsapp NUNCA se
-    exponen aqui (para eso esta el panel de admin, con login)."""
+    """Retorna el Top 10 de mejores puntajes -- SIN datos de contacto,
+    porque este endpoint es publico (cualquiera puede consultarlo)."""
     try:
         top_jugadores = User.query.order_by(User.score.desc()).limit(10).all()
-        return jsonify([j.to_public_dict() for j in top_jugadores]), 200
+        return jsonify([j.to_dict_public() for j in top_jugadores]), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
 
 # ==========================================
-# 3. PANEL DE ADMINISTRACIÓN
+# 3. PANEL DE ADMINISTRADOR (ver quien se registro)
 # ==========================================
+
+def admin_required(f):
+    """Como @login_required, pero ademas exige is_admin=True."""
+    @wraps(f)
+    def decorada(*args, **kwargs):
+        if not current_user.is_authenticated or not current_user.is_admin:
+            return redirect(url_for('auth_bp.admin_login'))
+        return f(*args, **kwargs)
+    return decorada
+
 
 @auth_bp.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
-    """Login del administrador (formulario HTML tradicional, no JSON,
-    con casilla de 'recordarme' para no tener que loguearse cada vez)."""
-    if current_user.is_authenticated and getattr(current_user, 'is_admin', False):
-        return redirect(url_for('auth_bp.admin_dashboard'))
+    """Login del administrador, con casilla 'recordarme' para no tener
+    que iniciar sesion de nuevo cada vez (cookie persistente 30 dias)."""
+    if current_user.is_authenticated and current_user.is_admin:
+        return redirect(url_for('auth_bp.admin_panel'))
 
     error = None
     if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        recordarme = bool(request.form.get('recordarme'))
+        username = request.form.get('username', '')
+        password = request.form.get('password', '')
+        recordarme = request.form.get('remember') == 'on'
 
-        usuario = User.query.filter_by(username=username).first()
+        user = User.query.filter_by(username=username).first()
 
-        if usuario and usuario.check_password(password) and usuario.is_admin:
-            login_user(usuario, remember=recordarme)
-            return redirect(url_for('auth_bp.admin_dashboard'))
+        if user and user.is_admin and user.check_password(password):
+            login_user(user, remember=recordarme)
+            return redirect(url_for('auth_bp.admin_panel'))
 
-        error = 'Usuario, contraseña incorrectos, o sin permisos de administrador.'
+        error = 'Usuario o contraseña incorrectos, o esta cuenta no tiene acceso de administrador.'
 
     return render_template('admin_login.html', error=error)
 
 
-@auth_bp.route('/admin', methods=['GET'])
-def admin_dashboard():
-    """Panel de administración: lista de todos los que han dejado sus
-    datos (leads) en la página, con su contacto completo."""
-    if not current_user.is_authenticated or not getattr(current_user, 'is_admin', False):
-        return redirect(url_for('auth_bp.admin_login'))
+@auth_bp.route('/admin')
+@admin_required
+def admin_panel():
+    """Panel con la lista de todos los que dejaron sus datos
+    (nombre, email, whatsapp, puntaje, fecha) y el contador de visitas."""
+    usuarios = User.query.order_by(User.fecha_registro.desc()).all()
+    fila_visitas = VisitCounter.query.first()
+    total_visitas = fila_visitas.total if fila_visitas else 0
+    return render_template(
+        'admin_panel.html',
+        usuarios=usuarios,
+        total_visitas=total_visitas,
+        admin=current_user,
+    )
 
-    leads = User.query.filter(
-        (User.is_admin.is_(False)) | (User.is_admin.is_(None))
-    ).order_by(User.fecha_registro.desc()).all()
 
-    return render_template('admin_dashboard.html', leads=leads, admin_nombre=current_user.username)
-
-
-@auth_bp.route('/admin/logout', methods=['POST', 'GET'])
+@auth_bp.route('/admin/logout')
 @login_required
 def admin_logout():
     logout_user()
