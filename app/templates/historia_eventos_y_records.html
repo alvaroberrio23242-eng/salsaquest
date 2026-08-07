@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Grandes Eventos y Récords | SalsaQuest{% endblock %}
+
+{% block content %}
+    <section id="eventos-section" class="mb-5">
+        <h3 class="text-warning fw-bold mb-3 titulo-seccion-glass"><i class="fa-solid fa-star me-2"></i>Grandes Eventos de la Salsa</h3>
+        <div id="eventos-container" class="row g-4">
+            <div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>
+        </div>
+    </section>
+
+    <section id="records-section">
+        <h3 class="text-warning fw-bold mb-3 titulo-seccion-glass"><i class="fa-solid fa-medal me-2"></i>Récords de la Salsa</h3>
+        <div id="records-container" class="row g-4">
+            <div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>
+        </div>
+    </section>
+{% endblock %}

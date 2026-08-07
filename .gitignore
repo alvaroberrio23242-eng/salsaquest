@@ -6,3 +6,9 @@ __pycache__/
 .vscode/ 
 .env
 *.zip
+/models/
+/routes/
+/services/
+/static/
+/templates/
+/__init__.py

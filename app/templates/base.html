@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SalsaQuest | Son Havana{% endblock %}</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Leaflet (mapa interactivo) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+
+    <style>
+        body {
+            color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .bg-gold { background-color: #ffc107; color: #000; }
+        .text-gold { color: #ffc107; }
+        .card { border-radius: 15px; }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- FONDO DE VIDEO ROTATIVO (varios clips de La Habana en loop) -->
+    <div class="video-bg-container" aria-hidden="true">
+        <video id="video-bg" autoplay muted playsinline
+               data-base-url="{{ url_for('static', filename='videos/') }}"
+               poster="{{ url_for('static', filename='img/cuba-flag.jpg') }}"></video>
+        <div class="video-bg-overlay"></div>
+    </div>
+
+    <!-- NAVBAR NAVEGACIÓN -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-glass sticky-top border-bottom border-warning px-3 px-md-5">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold text-warning fs-3 neon-sign" href="{{ url_for('main.index') }}">
+                <i class="fa-solid fa-compact-disc fa-spin me-2"></i>SalsaQuest
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto me-3">
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_page == 'inicio' %}active{% endif %}" href="{{ url_for('main.index') }}">Inicio</a>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {% if active_page in ['timeline', 'eventos_records'] %}active{% endif %}" href="#" role="button" data-bs-toggle="dropdown">Historia</a>
+                        <ul class="dropdown-menu dropdown-menu-dark">
+                            <li><a class="dropdown-item" href="{{ url_for('main.historia_linea_de_tiempo') }}">Línea del Tiempo</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('main.historia_eventos_y_records') }}">Grandes Eventos y Récords</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {% if active_page in ['artistas', 'caratulas_albumes', 'orquestas_instrumentos', 'premios_entrevistas'] %}active{% endif %}" href="#" role="button" data-bs-toggle="dropdown">Música</a>
+                        <ul class="dropdown-menu dropdown-menu-dark">
+                            <li><a class="dropdown-item" href="{{ url_for('main.artistas') }}">Artistas y Timba</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('main.musica_caratulas_y_albumes') }}">Carátulas, Álbumes y Playlist</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('main.musica_orquestas_e_instrumentos') }}">Orquestas e Instrumentos</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('main.premios_y_entrevistas') }}">Premios y Entrevistas</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {% if active_page in ['lugares', 'medellin'] %}active{% endif %}" href="#" role="button" data-bs-toggle="dropdown">Lugares</a>
+                        <ul class="dropdown-menu dropdown-menu-dark">
+                            <li><a class="dropdown-item" href="{{ url_for('main.lugares') }}">Mapa y Museos</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('main.medellin') }}">Medellín Capital Salsera</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center gap-3">
+                    <span class="text-secondary small d-none d-md-inline" id="contador-visitas">
+                        <i class="fa-solid fa-eye me-1"></i> ...
+                    </span>
+                    <button type="button" class="btn btn-warning fw-bold text-dark px-3 rounded-pill shadow" onclick="abrirModalRegistro()">
+                        <i class="fa-solid fa-user-plus me-1"></i> Registrarse / Unirse
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container my-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- PIE DE PÁGINA -->
+    <footer class="footer-glass text-white text-center py-4 mt-5 border-top border-secondary">
+        <div class="d-flex justify-content-center gap-4 mb-2">
+            <a href="https://github.com/alvaroberrio23242-eng" target="_blank" class="text-white text-decoration-none">
+                <i class="fa-brands fa-github fa-lg me-1"></i>GitHub
+            </a>
+            <a href="https://wa.me/TU_NUMERO_AQUI" target="_blank" class="text-success text-decoration-none">
+                <i class="fa-brands fa-whatsapp fa-lg me-1"></i>WhatsApp
+            </a>
+        </div>
+        <p class="mb-0 text-muted">&copy; 2026 SalsaQuest - Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- MODAL EMERGENTE DE REGISTRO / CAPTURA LEAD -->
+    <div class="modal fade" id="modalRegistroLead" tabindex="-1" aria-labelledby="modalLeadLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-white border-warning rounded-4 shadow-lg">
+
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title text-warning fw-bold" id="modalLeadLabel">
+                        🏆 ¡Regístrate y Guarda tu Puntaje!
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+
+                <div class="modal-body p-4">
+                    <p class="text-light small">
+                        Ingresa tus datos para registrar tus puntos en el ranking de <strong>Son Havana</strong>.
+                    </p>
+
+                    <form id="form-captura-lead" onsubmit="guardarPuntajeConLead(event)">
+                        <div class="mb-3">
+                            <label for="lead-nombre" class="form-label text-warning small fw-bold">Nombre o Apodo *</label>
+                            <input type="text" class="form-control bg-secondary text-white border-0" id="lead-nombre" placeholder="Ej. El Sonero Mayor" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="lead-whatsapp" class="form-label text-warning small fw-bold">WhatsApp *</label>
+                            <input type="tel" class="form-control bg-secondary text-white border-0" id="lead-whatsapp" placeholder="+57 300 000 0000" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="lead-email" class="form-label text-warning small fw-bold">Correo (Opcional)</label>
+                            <input type="email" class="form-control bg-secondary text-white border-0" id="lead-email" placeholder="cliente@correo.com">
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="lead-consentimiento" checked>
+                            <label class="form-check-label text-secondary small" for="lead-consentimiento">
+                                Deseo recibir promociones e invitaciones exclusivas.
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-warning w-100 fw-bold py-2 text-dark rounded-3">
+                            🔥 Completar Registro
+                        </button>
+                    </form>
+
+                    <!-- Mensaje de éxito post-registro -->
+                    <div id="mensaje-recompensa" class="alert alert-success mt-3 d-none text-center rounded-3">
+                        🎉 <strong>¡Te has registrado con éxito!</strong><br>
+                        Tu puntaje ya quedó guardado en el ranking.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE DETALLE DE ARTISTA / RITMO -->
+    <div class="modal fade" id="modalArtista" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content bg-dark text-white border-warning rounded-4 shadow-lg">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title text-warning fw-bold" id="modalArtistaTitulo">Cargando...</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <img id="modalArtistaImagen" src="" alt="" class="rounded-3 mb-3 w-100" style="max-height: 280px; object-fit: cover;">
+                    <p id="modalArtistaTexto" class="text-light"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Fondo de video rotativo -->
+    <script src="{{ url_for('static', filename='js/video-bg.js') }}"></script>
+    <!-- Leaflet (mapas) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <!-- timeline.js (pese al nombre, es el modulo "principal": ademas
+         de pintar la linea del tiempo, aqui viven abrirModalRegistro()
+         y guardarPuntajeConLead() -- el modal de registro del navbar
+         que aparece en TODA pagina depende de estas funciones, y el
+         quiz/leaderboard de Inicio tambien. Cada funcion adentro ya
+         valida si su contenedor existe antes de actuar, asi que es
+         seguro cargarlo en todas las paginas. -->
+    <script src="{{ url_for('static', filename='js/timeline.js') }}"></script>
+    <!-- Módulo JS de contenido: se carga en TODA página porque el modal
+         de registro del navbar (abrirModalRegistro / guardarPuntajeConLead)
+         vive aquí y aparece en todas las páginas -->
+    <script src="{{ url_for('static', filename='js/content.js') }}"></script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

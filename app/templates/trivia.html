@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block titulo %}SalsaQuest | Trivia y Ranking{% endblock %}
+{% block content %}
+
+<header class="py-4 text-center">
+    <div class="p-4 rounded-4 card-glass border-secondary shadow hero-glass-box">
+        <h1 class="neon-title" data-text="Trivia &amp; Ranking">Trivia &amp; Ranking</h1>
+        <p class="hero-slogan-pulse mb-0">Ponete a prueba y subí al Top Salseros</p>
+    </div>
+</header>
+
+<!-- TRIVIA SALSERA -->
+<section id="desafio-section" class="mb-5 mt-4">
+    <div class="card card-glass text-white p-3 shadow-sm mx-auto" style="max-width: 640px;">
+        <h4 class="text-warning fw-bold border-bottom border-secondary pb-2">
+            <i class="fa-solid fa-circle-question me-2"></i>Trivia Salsera
+        </h4>
+        <div id="quiz-box" class="my-3">
+            <p class="text-secondary">Cargando pregunta...</p>
+        </div>
+        <div id="quiz-resultado" class="mt-2 text-center"></div>
+    </div>
+</section>
+
+<!-- TOP SALSEROS (leaderboard) -->
+<section id="ranking-section" class="mb-5">
+    <div class="card card-glass text-white p-3 shadow-sm mx-auto" style="max-width: 640px;">
+        <div class="d-flex justify-content-between align-items-center border-bottom border-secondary pb-2 mb-3">
+            <h4 class="text-warning fw-bold mb-0">
+                <i class="fa-solid fa-trophy me-2"></i>Top Salseros
+            </h4>
+            <button class="btn btn-sm btn-outline-warning" onclick="abrirModalRegistro()">
+                <i class="fa-solid fa-plus"></i> Sumar Score
+            </button>
+        </div>
+        <ul id="lista-leaderboard" class="list-group list-group-flush rounded">
+            <li class="list-group-item card-glass text-secondary text-center">Cargando posiciones...</li>
+        </ul>
+    </div>
+</section>
+
+{% endblock %}

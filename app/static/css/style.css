@@ -36,18 +36,43 @@
   background-color: var(--bg-dark); /* respaldo mientras carga o si falla el video */
 }
 
-#video-bg {
+/* Poster y capas de video sin z-index propio: el orden en el HTML
+   ya define el apilamiento (poster abajo, video-a, video-b, overlay
+   arriba del todo). Con z-index negativo en el overlay -como estaba
+   antes- terminaba pintandose DEBAJO del video en vez de encima. */
+.video-bg-poster,
+.video-bg-layer {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* Las dos capas de video se superponen exactamente y se cruzan con
+   un fundido de opacidad: la que entra sube a 1 mientras la que
+   sale baja a 0, así nunca hay corte duro ni pantalla en negro
+   entre un clip y el siguiente. */
+.video-bg-layer {
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+.video-bg-layer.is-active {
+  opacity: 1;
+}
+
+/* Modo estático: sin movimiento (accesibilidad) o ahorro de datos.
+   Se ocultan ambas capas de video y queda solo el poster fijo. */
+.video-bg-container.video-bg-estatico .video-bg-layer {
+  display: none;
 }
 
 .video-bg-overlay {
   position: absolute;
   inset: 0;
   background: rgba(15, 12, 27, 0.6);
-  z-index: -1;
 }
+
 
 /* ==========================================
    2. ESTILOS GENERALES
@@ -391,5 +416,8 @@ main img.card-img-top,
     transition: none !important;
     transform: none !important;
     opacity: 1 !important;
+  }
+  .video-bg-layer {
+    display: none !important;
   }
 }

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block titulo %}SalsaQuest | Salsa con Grammy{% endblock %}
+{% block content %}
+
+<header class="py-4 text-center">
+    <div class="p-4 rounded-4 card-glass border-secondary shadow hero-glass-box">
+        <h1 class="neon-title" data-text="Salsa con Grammy">Salsa con Grammy</h1>
+        <p class="hero-slogan-pulse mb-0">Los discos que se llevaron el premio mayor</p>
+    </div>
+</header>
+
+<!-- GRAMMY: fila horizontal estilo Netflix -->
+<section id="grammy-section" class="mb-5 mt-4">
+    <div id="grammy-container" class="d-flex overflow-auto gap-3 pb-2" style="scroll-snap-type: x mandatory;">
+        <div class="text-center py-4 w-100"><div class="spinner-border text-warning" role="status"></div></div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block modales %}
+<!-- MODAL DE DETALLE GRAMMY -->
+<div class="modal fade" id="modalGrammy" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content card-glass text-white border-warning rounded-4 shadow-lg">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title text-warning fw-bold" id="modalGrammyTitulo">Cargando...</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="mb-1"><i class="fa-solid fa-compact-disc me-2 text-warning"></i><strong id="modalGrammyAlbum"></strong></p>
+                <p class="mb-3 text-secondary" id="modalGrammyCategoria"></p>
+                <p id="modalGrammyTexto" class="text-light"></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

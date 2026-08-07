@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Premios y Entrevistas | SalsaQuest{% endblock %}
+
+{% block content %}
+    <section id="grammys-section" class="mb-5">
+        <h3 class="text-warning fw-bold mb-1 titulo-seccion-glass"><i class="fa-solid fa-trophy me-2"></i>Grammy & Latin Grammy de Salsa</h3>
+        <p class="small text-secondary mb-3">Desliza para ver la historia de premios, de 1978 a hoy.</p>
+        <div id="grammys-carrusel" class="grammy-carrusel"></div>
+    </section>
+
+    <section id="entrevistas-section">
+        <h3 class="text-warning fw-bold mb-3 titulo-seccion-glass"><i class="fa-solid fa-video me-2"></i>Entrevistas Inéditas</h3>
+        <div id="entrevistas-container" class="row g-4">
+            <div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>
+        </div>
+    </section>
+{% endblock %}

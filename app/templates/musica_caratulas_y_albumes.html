@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Carátulas y Álbumes | SalsaQuest{% endblock %}
+
+{% block content %}
+    <section id="caratulas-section" class="mb-5">
+        <h3 class="text-warning fw-bold mb-3 titulo-seccion-glass"><i class="fa-solid fa-record-vinyl me-2"></i>Carátulas Icónicas</h3>
+        <div id="caratulas-container" class="row g-4">
+            <div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>
+        </div>
+    </section>
+
+    <!-- OJO: este id era "ranking-section", igual al del leaderboard en la
+         página de Inicio -- un id duplicado en la misma app. Aquí queda
+         separado en su propia página, así que se renombra a
+         "ranking-albumes-section" para que sea único. -->
+    <section id="ranking-albumes-section" class="mb-5">
+        <h3 class="text-warning fw-bold mb-3 titulo-seccion-glass"><i class="fa-solid fa-trophy me-2"></i>Los Álbumes Más Influyentes</h3>
+        <div id="ranking-container" class="row g-4">
+            <div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>
+        </div>
+    </section>
+
+    <section id="spotify-section">
+        <div class="card shadow border-secondary rounded-3 p-4 bg-dark text-white">
+            <h3 class="h4 fw-bold text-success mb-2">
+                <i class="fa-brands fa-spotify me-2"></i>Playlist Oficial de Salsa
+            </h3>
+            <p class="text-muted small mb-3">Disfruta de la mejor selección de éxitos salseros mientras juegas.</p>
+            <div>
+                <iframe style="border-radius:12px"
+                        src="https://open.spotify.com/embed/playlist/37i9dQZF1E4p5uwhOPeD4R?utm_source=generator"
+                        width="100%"
+                        height="352"
+                        frameBorder="0"
+                        allowfullscreen=""
+                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                        loading="lazy">
+                </iframe>
+            </div>
+        </div>
+    </section>
+{% endblock %}
