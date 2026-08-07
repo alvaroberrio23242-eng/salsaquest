@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block titulo %}SalsaQuest | Son Havana{% endblock %}
+{% block content %}
+
+<!-- SECCIÓN HERO -->
+<header class="py-4 text-center">
+    <div class="p-4 rounded-4 card-glass border-secondary shadow hero-glass-box">
+        <h1 class="neon-title-hero mb-1">SalsaQuest</h1>
+        <p class="hero-slogan-pulse mb-3">Aquí la salsa importa</p>
+        <div id="quiz-instruccion" class="mt-2 small text-light">
+            <span class="badge bg-danger mb-2">🔥 RETO DIARIO</span><br>Cargando reto del día...
+        </div>
+    </div>
+</header>
+
+<!-- LÍNEA DEL TIEMPO (justo debajo del hero) -->
+<section id="timeline-section" class="mb-5">
+    <h3 class="glass-header"><i class="fa-solid fa-timeline me-2"></i>Línea del Tiempo</h3>
+    <div id="timeline-filtros" class="d-flex flex-wrap gap-2 mb-3"></div>
+    <div id="timeline-container" class="row g-4">
+        <div class="text-center py-5">
+            <div class="spinner-border text-warning" role="status"></div>
+            <p class="text-secondary mt-2">Cargando hitos históricos...</p>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

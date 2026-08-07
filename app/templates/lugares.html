@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Lugares Salseros | SalsaQuest{% endblock %}
+
+{% block content %}
+    <section id="mapa-section" class="mb-5">
+        <h3 class="text-warning fw-bold mb-3 titulo-seccion-glass"><i class="fa-solid fa-map-location-dot me-2"></i>Lugares Salseros del Mundo</h3>
+        <div id="mapa-lugares" style="height: 420px; border-radius: 1rem; overflow: hidden;"></div>
+    </section>
+
+    <section id="museos-section">
+        <h3 class="text-warning fw-bold mb-3 titulo-seccion-glass"><i class="fa-solid fa-landmark me-2"></i>Museos Dedicados a la Salsa</h3>
+        <div id="museos-container" class="row g-4">
+            <div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>
+        </div>
+    </section>
+{% endblock %}

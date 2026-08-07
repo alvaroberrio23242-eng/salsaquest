@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Línea del Tiempo | SalsaQuest{% endblock %}
+
+{% block content %}
+    <section id="timeline-section">
+        <h3 class="text-warning fw-bold mb-3 titulo-seccion-glass"><i class="fa-solid fa-timeline me-2"></i>Línea del Tiempo</h3>
+        <div id="timeline-filtros" class="d-flex flex-wrap gap-2 mb-3"></div>
+        <div id="timeline-container" class="row g-4">
+            <div class="text-center py-5">
+                <div class="spinner-border text-warning" role="status"></div>
+                <p class="text-secondary mt-2">Cargando hitos históricos...</p>
+            </div>
+        </div>
+    </section>
+{% endblock %}

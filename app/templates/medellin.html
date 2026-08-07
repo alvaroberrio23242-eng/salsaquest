@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Medellín, Capital Mundial de la Salsa | SalsaQuest{% endblock %}
+
+{% block content %}
+    <section id="medellin-section">
+        <div class="card border-warning rounded-4 p-4" style="background: rgba(15, 12, 20, 0.72); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);">
+            <h3 class="text-warning fw-bold mb-3 titulo-seccion-glass"><i class="fa-solid fa-city me-2"></i>Medellín, Capital Mundial de la Salsa</h3>
+
+            <p class="text-light" id="medellin-historia">Cargando...</p>
+
+            <h5 class="text-warning fw-bold mt-4 mb-2"><i class="fa-solid fa-map-location-dot me-2"></i>Ruta Salsera: Bares Históricos</h5>
+            <div id="mapa-medellin" style="height: 360px; border-radius: 1rem; overflow: hidden;" class="mb-3"></div>
+            <p class="small text-secondary">Direcciones verificadas por varias fuentes, pero horarios y estado actual pueden cambiar -- confirma antes de ir.</p>
+            <div id="medellin-bares-container" class="row g-4 mb-2">
+                <div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>
+            </div>
+
+            <h5 class="text-warning fw-bold mt-4 mb-3"><i class="fa-solid fa-people-arrows me-2"></i>Escuelas de Baile</h5>
+            <div id="medellin-escuelas-container" class="row g-3 mb-2"></div>
+
+            <h5 class="text-warning fw-bold mt-4 mb-3"><i class="fa-solid fa-radio me-2"></i>Emisoras que Programan Salsa</h5>
+            <div id="medellin-emisoras-container" class="row g-3 mb-2"></div>
+
+            <h5 class="text-warning fw-bold mt-4 mb-2"><i class="fa-brands fa-spotify me-2"></i>Playlist Salsera de Medellín</h5>
+            <p class="small text-light">Canciones emblemáticas de la ciudad y sus sellos históricos.</p>
+            <a id="medellin-playlist-link" href="https://open.spotify.com/search/salsa%20Medell%C3%ADn%20Discos%20Fuentes%20Fruko" target="_blank" rel="noopener" class="btn btn-outline-success btn-sm align-self-start mb-2">
+                <i class="fa-brands fa-spotify me-1"></i>Escuchar en Spotify
+            </a>
+
+            <h5 class="text-warning fw-bold mt-4 mb-2"><i class="fa-solid fa-hourglass-half me-2"></i>Próximamente</h5>
+            <p class="small text-secondary mb-1">
+                Esto requiere datos locales actualizados que no se pueden generar por búsqueda genérica sin
+                riesgo de error -- se irá completando con información confirmada:
+            </p>
+            <ul class="small text-light" id="medellin-pendiente"></ul>
+        </div>
+    </section>
+{% endblock %}

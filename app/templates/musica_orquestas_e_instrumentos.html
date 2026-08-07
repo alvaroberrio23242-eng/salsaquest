@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Orquestas e Instrumentos | SalsaQuest{% endblock %}
+
+{% block content %}
+    <section id="orquestas-section" class="mb-5">
+        <h3 class="text-warning fw-bold mb-3 titulo-seccion-glass"><i class="fa-solid fa-people-group me-2"></i>Orquestas Influyentes</h3>
+        <div id="orquestas-container" class="row g-4">
+            <div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>
+        </div>
+    </section>
+
+    <section id="instrumentos-section">
+        <h3 class="text-warning fw-bold mb-1 titulo-seccion-glass"><i class="fa-solid fa-drum me-2"></i>Instrumentos de la Salsa</h3>
+        <p class="small text-secondary mb-3">Haz clic en cada instrumento para ver su ficha completa.</p>
+        <div id="instrumentos-container" class="row g-4">
+            <div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>
+        </div>
+    </section>
+{% endblock %}

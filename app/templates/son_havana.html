@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block titulo %}SalsaQuest | Son Havana{% endblock %}
+{% block content %}
+
+<header class="py-4 text-center">
+    <div class="p-4 rounded-4 card-glass border-secondary shadow hero-glass-box">
+        <h1 class="neon-title" data-text="Son Havana">Son Havana</h1>
+        <p class="hero-slogan-pulse mb-0">El corazón salsero de Medellín</p>
+    </div>
+</header>
+
+<!-- SON HAVANA -->
+<section id="son-havana-section" class="mb-5 mt-4">
+    <div class="card border-warning rounded-4 p-4 card-glass text-white mx-auto" style="max-width: 720px;">
+        <h3 class="text-warning fw-bold mb-3"><i class="fa-solid fa-champagne-glasses me-2"></i>Son Havana</h3>
+        <p class="text-light mb-1" id="son-havana-direccion">Cargando...</p>
+        <p class="text-light" id="son-havana-descripcion"></p>
+
+        <h6 class="text-warning fw-bold mt-3 mb-1"><i class="fa-solid fa-calendar-days me-2"></i>Eventos</h6>
+        <p class="small text-secondary mb-3">
+            La agenda de música en vivo cambia semana a semana -- confirma la programación
+            actual directamente con Son Havana antes de ir.
+        </p>
+
+        <h6 class="text-warning fw-bold mb-2"><i class="fa-brands fa-spotify me-2"></i>Música</h6>
+        <a id="son-havana-playlist-link" href="#" target="_blank" rel="noopener" class="btn btn-outline-success btn-sm align-self-start">
+            <i class="fa-brands fa-spotify me-1"></i>Escuchar playlist salsera
+        </a>
+    </div>
+</section>
+
+<!-- GRANDES EVENTOS DE LA SALSA -->
+<section id="eventos-section" class="mb-5">
+    <h3 class="glass-header"><i class="fa-solid fa-star me-2"></i>Grandes Eventos de la Salsa</h3>
+    <div id="eventos-container" class="row g-4">
+        <div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>
+    </div>
+</section>
+
+{% endblock %}

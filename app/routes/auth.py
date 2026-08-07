@@ -34,8 +34,8 @@ def register():
 
     # Crear usuario completo
     nuevo_usuario = User(
-        username=username, 
-        nombre_jugador=username, 
+        username=username,
+        nombre_jugador=username,
         email=email
     )
     nuevo_usuario.set_password(password)
@@ -109,9 +109,13 @@ def registrar_usuario_o_puntaje():
     acepta = data.get('acepta_promociones', True)
 
     try:
+        # 'username' es solo para cuentas con login tradicional
+        # (register/login). Un lead del modal de leaderboard NO debe
+        # setear username: como es unique=True, dos leads anonimos
+        # (sin email, con nombre_jugador por defecto "Salsero Anonimo")
+        # chocarian y el segundo se perderia con un error silencioso.
         nuevo_usuario = User(
             nombre_jugador=nombre,
-            username=nombre if not email else None,
             whatsapp=whatsapp,
             email=email if email else None,
             score=puntaje,
