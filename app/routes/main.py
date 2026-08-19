@@ -6,7 +6,7 @@ main_bp = Blueprint('main', __name__)
 
 @main_bp.route('/')
 def index():
-    return render_template('index.html', active_page='inicio')
+    return render_template('inicio.html', active_page='inicio')
 
 
 @main_bp.route('/desafio')
@@ -56,6 +56,31 @@ def medellin():
 @main_bp.route('/premios-y-entrevistas')
 def premios_y_entrevistas():
     return render_template('premios_y_entrevistas.html', active_page='premios_entrevistas')
+
+
+@main_bp.route('/son-havana')
+def son_havana():
+    return render_template('son_havana.html', active_page='son_havana')
+
+
+@main_bp.route('/grammy')
+def grammy():
+    return render_template('grammy.html', active_page='grammy')
+
+
+@main_bp.route('/timba')
+def timba():
+    return render_template('timba.html', active_page='timba')
+
+
+@main_bp.route('/trivia')
+def trivia_page():
+    return render_template('trivia.html', active_page='trivia')
+
+
+@main_bp.route('/recursos')
+def recursos():
+    return render_template('recursos.html', active_page='recursos')
 
 
 @main_bp.route('/api/trivia', methods=['GET'])

@@ -8,10 +8,12 @@
    ========================================================== */
 
 /* ---------- 1. Encabezados unificados (glassmorphism) ---------- */
-/* Aplica esta clase a CUALQUIER <h3> de sección, reemplazando
-   "text-warning fw-bold mb-3" suelto que usas hoy.  Ejemplo:
-   <h3 class="glass-header"><i class="fa-solid fa-star me-2"></i>Grandes Eventos</h3> */
-.glass-header {
+/* Esta clase ya está aplicada en todos los <h3> de sección del
+   proyecto (historia_linea_de_tiempo.html, artistas.html, lugares.html,
+   musica_caratulas_y_albumes.html, historia_eventos_y_records.html,
+   musica_orquestas_e_instrumentos.html, premios_y_entrevistas.html).
+   Ejemplo: <h3 class="titulo-seccion-glass"><i class="fa-solid fa-star me-2"></i>Grandes Eventos</h3> */
+.titulo-seccion-glass {
     display: inline-block;
     color: #ffc107;
     font-weight: 700;
