@@ -12,3 +12,5 @@ __pycache__/
 /static/
 /templates/
 /__init__.py
+app/static/videos/originales_sin_comprimir/
+app/static/videos/originales_sin_comprimir/
