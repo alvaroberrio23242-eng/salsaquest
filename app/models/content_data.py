@@ -23,6 +23,11 @@ GRANDES_EVENTOS = [
             "Salsa como movimiento."
         ),
         "imagen_url": "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=600",
+        "imagen_credito": {
+            "autor": "Unsplash",
+            "licencia": "Licencia Unsplash",
+            "nota": "Foto ilustrativa",
+        },
     },
     {
         "id": "yankee-stadium-1973",
@@ -35,6 +40,11 @@ GRANDES_EVENTOS = [
             "demostrando el poder de convocatoria que ya tenía la Salsa."
         ),
         "imagen_url": "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=600",
+        "imagen_credito": {
+            "autor": "Unsplash",
+            "licencia": "Licencia Unsplash",
+            "nota": "Foto ilustrativa",
+        },
     },
     {
         "id": "feria-cali",
@@ -47,6 +57,11 @@ GRANDES_EVENTOS = [
             "uno de los desfiles bailados más grandes del mundo."
         ),
         "imagen_url": "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600",
+        "imagen_credito": {
+            "autor": "Unsplash",
+            "licencia": "Licencia Unsplash",
+            "nota": "Foto ilustrativa",
+        },
     },
     {
         "id": "world-salsa-congress-2001",
@@ -59,6 +74,11 @@ GRANDES_EVENTOS = [
             "replicó en ciudades de todo el mundo."
         ),
         "imagen_url": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600",
+        "imagen_credito": {
+            "autor": "Unsplash",
+            "licencia": "Licencia Unsplash",
+            "nota": "Foto ilustrativa",
+        },
     },
 ]
 
@@ -97,6 +117,11 @@ RECORDS_SALSA = [
     },
 ]
 
+# Politica de fotos de personas reales: solo archivos de Wikimedia
+# Commons con licencia libre verificada via API (autor/licencia en
+# imagen_credito, visible en el frontend). Si no hay foto libre, NO se
+# pone un stock generico que finja ser la persona: se deja sin
+# imagen_url y el frontend muestra un placeholder local.
 ARTISTAS = [
     {
         "slug": "la-lupe",
@@ -113,7 +138,12 @@ ARTISTAS = [
             "Hoy se le reconoce como una precursora del soul latino y una influencia "
             "directa en generaciones de soneras."
         ),
-        "imagen_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Cuban singer La Lupe performing in New York City LCCN2009632630 (cropped).jpg",
+        "imagen_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Cuban singer La Lupe performing in New York City LCCN2009632630 (cropped).jpg?width=800",
+        "imagen_credito": {
+            "autor": "Charlotte Brooks (Library of Congress)",
+            "licencia": "Dominio público",
+            "fuente_url": "https://commons.wikimedia.org/wiki/File:Cuban_singer_La_Lupe_performing_in_New_York_City_LCCN2009632630_(cropped).jpg",
+        },
     },
     {
         "slug": "guaguanco",
@@ -131,6 +161,11 @@ ARTISTAS = [
             "forma en que después se construyeron los arreglos de salsa."
         ),
         "imagen_url": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600",
+        "imagen_credito": {
+            "autor": "Unsplash",
+            "licencia": "Licencia Unsplash",
+            "nota": "Foto ilustrativa (ambiente de baile)",
+        },
     },
     {
         "slug": "fruko",
@@ -148,7 +183,8 @@ ARTISTAS = [
             "consolidando a Medellín y la Costa Caribe colombiana como polos "
             "de producción salsera."
         ),
-        "imagen_url": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600",
+        # Sin foto libre verificada en Commons: queda placeholder local
+        # (el stock generico anterior simulaba un retrato que no era el).
     },
     {
         "slug": "afrosound",
@@ -164,7 +200,7 @@ ARTISTAS = [
             "donde la música de Discos Fuentes tuvo una recepción sorprendente "
             "y duradera."
         ),
-        "imagen_url": "https://images.unsplash.com/photo-1509824227185-9c5a01ceba0d?w=600",
+        # Sin foto libre verificada en Commons: queda placeholder local.
     },
     {
         "slug": "gilberto-santa-rosa",
@@ -181,7 +217,12 @@ ARTISTAS = [
             "callejera de los setenta, ganándose el apodo de 'El Caballero de "
             "la Salsa' y una carrera con múltiples premios Grammy Latino."
         ),
-        "imagen_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Gilberto Santa Rosa en 2025.png",
+        "imagen_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Gilberto Santa Rosa en 2025.png?width=800",
+        "imagen_credito": {
+            "autor": "Gobierno Regional del Callao",
+            "licencia": "Dominio público",
+            "fuente_url": "https://commons.wikimedia.org/wiki/File:Gilberto_Santa_Rosa_en_2025.png",
+        },
     },
     {
         "slug": "willie-colon",
@@ -198,7 +239,12 @@ ARTISTAS = [
             "Más adelante también incursionó en la política y el activismo "
             "comunitario en Nueva York."
         ),
-        "imagen_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Willie Colón (1969 Fania Records publicity photo).jpg",
+        "imagen_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Willie Colón (1969 Fania Records publicity photo).jpg?width=800",
+        "imagen_credito": {
+            "autor": "Fania Records",
+            "licencia": "Dominio público (foto publicitaria sin aviso de copyright)",
+            "fuente_url": "https://commons.wikimedia.org/wiki/File:Willie_Col%C3%B3n_(1969_Fania_Records_publicity_photo).jpg",
+        },
     },
     {
         "slug": "ruben-blades",
@@ -216,7 +262,12 @@ ARTISTAS = [
             "marcados desde joven por el interés en contar historias urbanas y "
             "políticas a través de la música."
         ),
-        "imagen_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Danilo Pérez, Herbie Hancock, Wayne Shorter, Rubén Blades.jpg",
+        "imagen_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Danilo Pérez, Herbie Hancock, Wayne Shorter, Rubén Blades.jpg?width=800",
+        "imagen_credito": {
+            "autor": "Embajada de EE. UU. en Panamá",
+            "licencia": "Dominio público",
+            "fuente_url": "https://commons.wikimedia.org/wiki/File:Danilo_P%C3%A9rez,_Herbie_Hancock,_Wayne_Shorter,_Rub%C3%A9n_Blades.jpg",
+        },
     },
     {
         "slug": "oscar-de-leon",
@@ -232,7 +283,12 @@ ARTISTAS = [
             "de los suyos— le valieron el apodo de 'El Sonero del Mundo' y del "
             "'León de la Salsa'."
         ),
-        "imagen_url": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600",
+        "imagen_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Oscar D'León 2009 (cropped).jpg?width=800",
+        "imagen_credito": {
+            "autor": "hvd69",
+            "licencia": "CC BY-SA 4.0",
+            "fuente_url": "https://commons.wikimedia.org/wiki/File:Oscar_D%27Le%C3%B3n_2009_(cropped).jpg",
+        },
     },
 ]
 
@@ -430,6 +486,21 @@ CARATULAS_ICONICAS = [
 # ==========================================
 # ORQUESTAS INFLUYENTES
 # ==========================================
+# imagen_credito se muestra SIEMPRE junto a la foto (autor + licencia +
+# enlace al archivo en Commons). Si no existe foto con licencia libre
+# verificada (ej. Fania All-Stars), NO se pone imagen_url: el frontend
+# muestra un placeholder local, nunca un stock genérico que finja ser
+# la banda.
+#
+# acordes: progresiones didácticas ORIGINALES de SalsaQuest, compuestas
+# para evocar la sonoridad de cada orquesta. No son transcripciones de
+# canciones concretas ni tabs copiadas; el frontend lo declara así.
+ACORDES_NOTA_GLOBAL = (
+    "Progresión didáctica original de SalsaQuest: evoca la sonoridad de "
+    "la orquesta sobre una clave de son. No es la transcripción de "
+    "ninguna canción en particular."
+)
+
 ORQUESTAS = [
     {
         "slug": "el-gran-combo",
@@ -445,6 +516,22 @@ ORQUESTAS = [
             "Voces como las de Charlie Aponte y Jerry Rivas la mantuvieron "
             "vigente por más de seis décadas, algo excepcional en la salsa."
         ),
+        "imagen_url": "https://commons.wikimedia.org/wiki/Special:FilePath/El Gran Combo de Puerto Rico.jpg?width=800",
+        "imagen_credito": {
+            "autor": "Magiciandude",
+            "licencia": "CC BY-SA 3.0",
+            "fuente_url": "https://commons.wikimedia.org/wiki/File:El_Gran_Combo_de_Puerto_Rico.jpg",
+        },
+        "acordes": {
+            "titulo": "Montuno de universidad",
+            "clave": "2-3",
+            "progresion": ["Cmaj7", "Cmaj7", "Fmaj7", "G7"],
+            "nota": (
+                "Ciclo mayor brillante y directo, montuno a dos manos: el "
+                "pulso limpio y los coros en llamada-respuesta que definieron "
+                "el sonido de la Universidad de la Salsa."
+            ),
+        },
     },
     {
         "slug": "sonora-poncena",
@@ -460,6 +547,22 @@ ORQUESTAS = [
             "de Papo la distinguieron de la salsa más cruda de la época, sin "
             "perder nunca el peso rítmico bailable."
         ),
+        "imagen_url": "https://commons.wikimedia.org/wiki/Special:FilePath/La Sonora Ponceña.jpg?width=800",
+        "imagen_credito": {
+            "autor": "SigmaIota",
+            "licencia": "CC BY-SA 4.0",
+            "fuente_url": "https://commons.wikimedia.org/wiki/File:La_Sonora_Ponce%C3%B1a.jpg",
+        },
+        "acordes": {
+            "titulo": "Jazz boricua",
+            "clave": "2-3",
+            "progresion": ["Dm9", "G13", "Cmaj9", "A7alt"],
+            "nota": (
+                "Un ii-V-I con dominante alterado de remate: el guiño del "
+                "'Salsa Meets Jazz' del Village Gate y las extensiones de "
+                "novena y trecena típicas del piano de Papo Lucca."
+            ),
+        },
     },
     {
         "slug": "sonora-matancera",
@@ -475,6 +578,22 @@ ORQUESTAS = [
             "directa para el son montuno y la guaracha que después "
             "alimentaron a la salsa neoyorquina."
         ),
+        "imagen_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Celia Cruz y La Sonora Matancera.jpg?width=800",
+        "imagen_credito": {
+            "autor": "Ibrahim Arce (Narcy Studios)",
+            "licencia": "Dominio público",
+            "fuente_url": "https://commons.wikimedia.org/wiki/File:Celia_Cruz_y_La_Sonora_Matancera.jpg",
+        },
+        "acordes": {
+            "titulo": "Guaracha clásica",
+            "clave": "3-2",
+            "progresion": ["C", "F", "G7", "C"],
+            "nota": (
+                "Tríadas puras, sin extensiones: la armonía sencilla y "
+                "cantable del conjunto de trompetas y coro que la Matancera "
+                "llevó de Matanzas al mundo entero."
+            ),
+        },
     },
     {
         "slug": "fania-all-stars",
@@ -490,6 +609,20 @@ ORQUESTAS = [
             "en Kinshasa, Zaire (1974). Sus conciertos convirtieron a la "
             "salsa en un fenómeno de alcance mundial."
         ),
+        # Sin foto: no existe en Commons una imagen libre VERIFICADA de la
+        # agrupacion real (las que aparecen son bandas tributo). El
+        # frontend muestra un placeholder local, no un stock que finja
+        # ser la banda.
+        "acordes": {
+            "titulo": "Descarga estelar",
+            "clave": "2-3",
+            "progresion": ["Am7", "D7b9", "G7", "G7"],
+            "nota": (
+                "Menor con dominantes encendidos y compás cedido al solo: "
+                "el espíritu de descarga del Cheetah Club, donde cada "
+                "estrella entraba a brillar por turnos."
+            ),
+        },
     },
     {
         "slug": "grupo-niche-orquesta",
@@ -505,6 +638,22 @@ ORQUESTAS = [
             "influyentes internacionalmente. Varela dirigió la orquesta "
             "hasta su muerte en 2012."
         ),
+        "imagen_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Feria de Cali Grupo Niche WV 01.jpg?width=800",
+        "imagen_credito": {
+            "autor": "Tefita228",
+            "licencia": "CC BY-SA 4.0",
+            "fuente_url": "https://commons.wikimedia.org/wiki/File:Feria_de_Cali_Grupo_Niche_WV_01.jpg",
+        },
+        "acordes": {
+            "titulo": "Ascenso caleño",
+            "clave": "2-3",
+            "progresion": ["Dm7", "Em7", "Fmaj7", "G7sus4"],
+            "nota": (
+                "Escalera diatónica ascendente con suspensión final: melodía "
+                "cantable y coros suaves sobre vientos gordos, la marca "
+                "melódica del estilo caleño de Jairo Varela."
+            ),
+        },
     },
     {
         "slug": "spanish-harlem-orchestra",
@@ -520,6 +669,22 @@ ORQUESTAS = [
             "neoyorquina de los setenta, en una época en que el género "
             "había virado hacia la salsa romántica."
         ),
+        "imagen_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Spanish Harlem Orchestra.jpg?width=800",
+        "imagen_credito": {
+            "autor": "ataelw",
+            "licencia": "CC BY 2.0",
+            "fuente_url": "https://commons.wikimedia.org/wiki/File:Spanish_Harlem_Orchestra.jpg",
+        },
+        "acordes": {
+            "titulo": "Dura neoyorquina",
+            "clave": "3-2",
+            "progresion": ["Cm7", "F7b9", "Dm7b5", "G7alt"],
+            "nota": (
+                "Vamp menor con dominantes alterados que gira sin parar "
+                "sobre sí mismo: armonía densa y metales agresivos, el "
+                "estándar de la salsa dura que esta orquesta rescata."
+            ),
+        },
     },
 ]
 
@@ -532,7 +697,12 @@ ORQUESTAS = [
 INSTRUMENTOS = [
     {
         "slug": "tumbadoras",
-        "imagen_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Congas.JPG",
+        "imagen_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Congas.JPG?width=800",
+        "imagen_credito": {
+            "autor": "Añoranza",
+            "licencia": "CC BY-SA 3.0",
+            "fuente_url": "https://commons.wikimedia.org/wiki/File:Congas.JPG",
+        },
         "nombre": "Congas / Tumbadoras",
         "categoria": "Percusión",
         "texto": (
@@ -547,7 +717,12 @@ INSTRUMENTOS = [
     },
     {
         "slug": "bongo",
-        "imagen_url": "https://images.unsplash.com/photo-1519892300165-cb5542fb47c7?w=600",
+        "imagen_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Konga-bongo.jpg?width=800",
+        "imagen_credito": {
+            "autor": "Žiga",
+            "licencia": "CC0",
+            "fuente_url": "https://commons.wikimedia.org/wiki/File:Konga-bongo.jpg",
+        },
         "nombre": "Bongó",
         "categoria": "Percusión",
         "texto": (
@@ -562,7 +737,12 @@ INSTRUMENTOS = [
     },
     {
         "slug": "timbales",
-        "imagen_url": "https://images.unsplash.com/photo-1541689592655-f2ec549f61f0?w=600",
+        "imagen_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Timbales-by-fontplay.jpg?width=800",
+        "imagen_credito": {
+            "autor": "Dennis Hill (fontplay)",
+            "licencia": "CC BY 2.0",
+            "fuente_url": "https://commons.wikimedia.org/wiki/File:Timbales-by-fontplay.jpg",
+        },
         "nombre": "Timbales",
         "categoria": "Percusión",
         "texto": (
@@ -577,7 +757,12 @@ INSTRUMENTOS = [
     },
     {
         "slug": "clave",
-        "imagen_url": "https://images.unsplash.com/photo-1614963326505-843d3b1d99d3?w=600",
+        "imagen_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Claves hg.jpg?width=800",
+        "imagen_credito": {
+            "autor": "Hannes Grobe",
+            "licencia": "CC BY 3.0",
+            "fuente_url": "https://commons.wikimedia.org/wiki/File:Claves_hg.jpg",
+        },
         "nombre": "Claves",
         "categoria": "Percusión / patrón rítmico",
         "texto": (
@@ -593,7 +778,12 @@ INSTRUMENTOS = [
     },
     {
         "slug": "maracas",
-        "imagen_url": "https://images.unsplash.com/photo-1619983081563-430f63602796?w=600",
+        "imagen_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Maracas.jpg?width=800",
+        "imagen_credito": {
+            "autor": "Axel Heymann",
+            "licencia": "CC BY-SA 3.0",
+            "fuente_url": "https://commons.wikimedia.org/wiki/File:Maracas.jpg",
+        },
         "nombre": "Maracas",
         "categoria": "Percusión",
         "texto": (
@@ -609,7 +799,12 @@ INSTRUMENTOS = [
     },
     {
         "slug": "guiro",
-        "imagen_url": "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600",
+        "imagen_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Güiro.jpg?width=800",
+        "imagen_credito": {
+            "autor": "Miguel Andrade",
+            "licencia": "Dominio público",
+            "fuente_url": "https://commons.wikimedia.org/wiki/File:G%C3%BCiro.jpg",
+        },
         "nombre": "Güiro",
         "categoria": "Percusión",
         "texto": (
@@ -624,7 +819,12 @@ INSTRUMENTOS = [
     },
     {
         "slug": "piano-montuno",
-        "imagen_url": "https://images.unsplash.com/photo-1552422535-c45813c61732?w=600",
+        "imagen_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Steinway grand piano strings and keys.JPG?width=800",
+        "imagen_credito": {
+            "autor": "Wingchi Poon",
+            "licencia": "CC BY-SA 3.0",
+            "fuente_url": "https://commons.wikimedia.org/wiki/File:Steinway_grand_piano_strings_and_keys.JPG",
+        },
         "nombre": "Piano (montuno)",
         "categoria": "Armonía / ritmo",
         "texto": (
@@ -640,7 +840,12 @@ INSTRUMENTOS = [
     },
     {
         "slug": "bajo",
-        "imagen_url": "https://images.unsplash.com/photo-1550985616-10810253b84d?w=600",
+        "imagen_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Mexican Double Bass Player (4390311387).jpg?width=800",
+        "imagen_credito": {
+            "autor": "Tony Hisgett",
+            "licencia": "CC BY 2.0",
+            "fuente_url": "https://commons.wikimedia.org/wiki/File:Mexican_Double_Bass_Player_(4390311387).jpg",
+        },
         "nombre": "Bajo",
         "categoria": "Armonía / ritmo",
         "texto": (
@@ -656,7 +861,12 @@ INSTRUMENTOS = [
     },
     {
         "slug": "trompeta",
-        "imagen_url": "https://images.unsplash.com/photo-1573871924872-e21f1eab24a6?w=600",
+        "imagen_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Trompette - corps.JPG?width=800",
+        "imagen_credito": {
+            "autor": "Eusebius",
+            "licencia": "CC BY 3.0",
+            "fuente_url": "https://commons.wikimedia.org/wiki/File:Trompette_-_corps.JPG",
+        },
         "nombre": "Trompeta",
         "categoria": "Vientos",
         "texto": (
@@ -673,7 +883,12 @@ INSTRUMENTOS = [
     },
     {
         "slug": "trombon",
-        "imagen_url": "https://images.unsplash.com/photo-1621368286550-cba7a801e128?w=600",
+        "imagen_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Trombone instrument.jpg?width=800",
+        "imagen_credito": {
+            "autor": "Josef Pich",
+            "licencia": "CC BY-SA 4.0",
+            "fuente_url": "https://commons.wikimedia.org/wiki/File:Trombone_instrument.jpg",
+        },
         "nombre": "Trombón",
         "categoria": "Vientos",
         "texto": (
@@ -689,7 +904,12 @@ INSTRUMENTOS = [
     },
     {
         "slug": "saxofon",
-        "imagen_url": "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=600",
+        "imagen_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Alto saxophone-E 1685-IMG 7092-black.jpg?width=800",
+        "imagen_credito": {
+            "autor": "Rama",
+            "licencia": "CC BY-SA 3.0 fr",
+            "fuente_url": "https://commons.wikimedia.org/wiki/File:Alto_saxophone-E_1685-IMG_7092-black.jpg",
+        },
         "nombre": "Saxofón",
         "categoria": "Vientos",
         "texto": (
@@ -706,7 +926,12 @@ INSTRUMENTOS = [
     },
     {
         "slug": "tres-cubano",
-        "imagen_url": "https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=600",
+        "imagen_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Trescubano.jpg?width=800",
+        "imagen_credito": {
+            "autor": "Claireislovely",
+            "licencia": "Dominio público",
+            "fuente_url": "https://commons.wikimedia.org/wiki/File:Trescubano.jpg",
+        },
         "nombre": "Tres cubano",
         "categoria": "Cuerdas",
         "texto": (
@@ -1144,49 +1369,79 @@ GRAMMY_SALSA = [
 
 
 # ==========================================
-# FOTOS REALES VERIFICADAS (Fase 3)
+# FOTOS REALES VERIFICADAS
 # ==========================================
-# Filtradas a mano de los zips de fotos que subiste -- se descartaron
-# 12 falsos positivos que un script automatico habia agarrado solo por
-# coincidencia de texto (ver detalle en INFORME.md de esa entrega).
 # Todas usan el patron Special:FilePath de Wikimedia Commons, que
-# resuelve siempre al archivo actual sin importar donde este alojado.
+# resuelve siempre al archivo actual. Cada entrada lleva su credito
+# (autor + licencia) verificado via API de Commons, para que cualquier
+# consumidor del endpoint /api/fotos-artista muestre la atribucion.
 #
-# ATRIBUCION: la mayoria son licencia CC BY-SA (no dominio publico
-# total) -- muestra un credito visible, ej. un <small> bajo cada foto
-# o en el modal de detalle: "Foto: Wikimedia Commons".
+# Falsos positivos ELIMINADOS en la auditoria (no eran quien decian):
+# - "Celia Cruz (13490118834).jpg": es una quimica homonima de la FDA,
+#   no la cantante.
+# - "Tito Puente PS117 2095...": es el colegio nombrado en su honor,
+#   no el musico.
 #
-# PENDIENTES -- no se encontro foto con licencia clara para: Fruko,
-# Grupo Niche, Ray Barretto, Cheo Feliciano, Fania All-Stars. Vale la
-# pena preguntarle a Julio/Son Havana si tienen fotos propias de
-# homenajes o material promocional para estos -- seria mejor
-# contenido (autentico, sin depender de licencias externas).
+# PENDIENTES -- sin foto libre clara: Fruko, Afrosound (banda), Ray
+# Barretto, Cheo Feliciano, Fania All-Stars. Vale la pena pedirle a
+# Julio/Son Havana fotos propias de homenajes o material promocional.
 FOTOS_VALIDADAS = {
     "celia-cruz": [
-        "https://commons.wikimedia.org/wiki/Special:FilePath/Celia Cruz (13490118834).jpg",
-        "https://commons.wikimedia.org/wiki/Special:FilePath/Celia Cruz y Pedro Knight.jpg",
-        "https://commons.wikimedia.org/wiki/Special:FilePath/2024 Celia Cruz Womens Quarter.jpg",
+        {
+            "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Celia Cruz y Pedro Knight.jpg?width=800",
+            "credito": "Autor desconocido · Dominio público · commons.wikimedia.org",
+        },
+        {
+            "url": "https://commons.wikimedia.org/wiki/Special:FilePath/2024 Celia Cruz Womens Quarter.jpg?width=800",
+            "credito": "Diseño de moneda: Phebe Hemphill (US Mint) · Dominio público",
+        },
     ],
     "la-lupe": [
-        "https://commons.wikimedia.org/wiki/Special:FilePath/Cuban singer La Lupe performing in New York City LCCN2009632630 (cropped).jpg",
-        "https://commons.wikimedia.org/wiki/Special:FilePath/Pacho Alonso, La Lupe & Benny Moré.jpg",
+        {
+            "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Cuban singer La Lupe performing in New York City LCCN2009632630 (cropped).jpg?width=800",
+            "credito": "Charlotte Brooks (Library of Congress) · Dominio público",
+        },
+        {
+            "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Pacho Alonso, La Lupe & Benny Moré.jpg?width=800",
+            "credito": "Santos · Dominio público · commons.wikimedia.org",
+        },
     ],
     "hector-lavoe": [
-        "https://commons.wikimedia.org/wiki/Special:FilePath/Héctor Lavoe (1969 Fania Records publicity photo).jpg",
-        "https://commons.wikimedia.org/wiki/Special:FilePath/Statuehectorlavoe.jpg",
+        {
+            "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Héctor Lavoe (1969 Fania Records publicity photo).jpg?width=800",
+            "credito": "Fania Records · Dominio público (foto publicitaria sin aviso de copyright)",
+        },
+        {
+            "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Statuehectorlavoe.jpg?width=800",
+            "credito": "MrGato · Dominio público · commons.wikimedia.org",
+        },
     ],
     "willie-colon": [
-        "https://commons.wikimedia.org/wiki/Special:FilePath/Willie Colón (1969 Fania Records publicity photo).jpg",
-        "https://commons.wikimedia.org/wiki/Special:FilePath/Willie Colón and Héctor Lavoe (1969 Fania Records publicity photo).jpg",
+        {
+            "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Willie Colón (1969 Fania Records publicity photo).jpg?width=800",
+            "credito": "Fania Records · Dominio público (foto publicitaria sin aviso de copyright)",
+        },
+        {
+            "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Willie Colón and Héctor Lavoe (1969 Fania Records publicity photo).jpg?width=800",
+            "credito": "Fania Records · Dominio público (foto publicitaria sin aviso de copyright)",
+        },
     ],
     "tito-puente": [
-        "https://commons.wikimedia.org/wiki/Special:FilePath/TitoandRogerDawson.jpg",
-        "https://commons.wikimedia.org/wiki/Special:FilePath/Tito Puente PS117 2095 2nd Av 240 E109 St jeh.jpg",
+        {
+            "url": "https://commons.wikimedia.org/wiki/Special:FilePath/TitoandRogerDawson.jpg?width=800",
+            "credito": "Stephborel · Dominio público · commons.wikimedia.org",
+        },
     ],
     "ruben-blades": [
-        "https://commons.wikimedia.org/wiki/Special:FilePath/Danilo Pérez, Herbie Hancock, Wayne Shorter, Rubén Blades.jpg",
+        {
+            "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Danilo Pérez, Herbie Hancock, Wayne Shorter, Rubén Blades.jpg?width=800",
+            "credito": "Embajada de EE. UU. en Panamá · Dominio público",
+        },
     ],
     "gilberto-santa-rosa": [
-        "https://commons.wikimedia.org/wiki/Special:FilePath/Gilberto Santa Rosa en 2025.png",
+        {
+            "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Gilberto Santa Rosa en 2025.png?width=800",
+            "credito": "Gobierno Regional del Callao · Dominio público",
+        },
     ],
 }

@@ -55,7 +55,8 @@ async function cargarTimeline() {
 
             // Caratula real via embed oficial de Spotify (mismo patron que
             // la seccion "Caratulas Iconicas"); si un hito no tiene album
-            // asociado, cae de vuelta a la imagen generica que traiga.
+            // asociado, cae a la imagen del hito o al placeholder local
+            // (via.placeholder.com esta muerto y romperia la ficha).
             const caratulaHTML = evento.spotify_album_id
                 ? `<iframe style="border-radius:12px 12px 0 0; border:0;"
                         src="https://open.spotify.com/embed/album/${evento.spotify_album_id}?utm_source=generator&theme=0"
@@ -63,7 +64,8 @@ async function cargarTimeline() {
                         allowfullscreen=""
                         allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                         loading="lazy"></iframe>`
-                : `<img src="${evento.imagen_url || 'https://via.placeholder.com/400x250?text=SalsaQuest'}" class="card-img-top" alt="${evento.titulo}" style="height: 152px; object-fit: cover;">`;
+                : `<img src="${evento.imagen_url || '/static/img/ficha-placeholder.svg'}" class="card-img-top" alt="${evento.titulo}" style="height: 152px; object-fit: cover;"
+                       onerror="this.onerror=null;this.src='/static/img/ficha-placeholder.svg'">`;
 
             const triviaHTML = evento.trivia ? `
                 <div class="mt-auto pt-2 border-top border-secondary">

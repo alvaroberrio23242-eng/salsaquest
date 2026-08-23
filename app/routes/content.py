@@ -95,7 +95,8 @@ def get_grammy():
 @content_bp.route('/api/fotos-artista/<slug>', methods=['GET'])
 def get_fotos_artista(slug):
     """Galeria de fotos reales verificadas (Wikimedia Commons) para un
-    artista, ademas de la imagen_url principal que ya trae ARTISTAS."""
+    artista: lista de {url, credito}. La atribucion viaja con la foto
+    para que el frontend siempre pueda mostrarla."""
     return jsonify(FOTOS_VALIDADAS.get(slug, []))
 
 

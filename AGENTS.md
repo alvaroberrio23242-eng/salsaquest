@@ -46,6 +46,19 @@ Rutas multipágina reales en `main.py`: `/historia/linea-de-tiempo`, `/historia/
 - **No asumir que un script subido/pegado es el que está en producción** sin confirmarlo (ya pasó con `trivia.js`, que resultó ser el script de `/desafio`, no el de `/trivia`).
 - **Antes de eliminar código sospechoso de estar huérfano**, verificar con grep/búsqueda en todo el repo (routes, templates, JS) que ningún otro archivo lo consume — no asumir por el nombre.
 
+## Estándar de trabajo obligatorio (loop construir-probar-auditar)
+
+Todo cambio de desarrollo sigue el loop: PLANIFICAR → CONSTRUIR → EJECUTAR → PROBAR → AUDITAR → CORREGIR → VOLVER A PROBAR → ENTREGAR. Reglas clave:
+
+- **"Compila/arranca" no es terminado:** comprobar funcionamiento real (páginas abiertas vía HTTP, respuesta real de APIs, imágenes que cargan con content-type correcto, datos que llegan al usuario).
+- **Nunca mostrar:** `None`, `null`, `undefined`, `NaN`, 404, URLs rotas ni texto de debug. Dato faltante → estado explícito profesional ("Imagen no disponible", "Información pendiente de verificación").
+- **Imágenes:** verificar identidad del sujeto por API/fuente (no fiarse del nombre del archivo), que la URL responde y es imagen, y registrar fuente+autor+licencia+URL. Coincidencia dudosa → marcar `NEEDS_REVIEW`, nunca confirmar por similitud.
+- **Sin licencia compatible → placeholder honesto local** (`app/static/img/ficha-placeholder.svg`); nunca usar imagen protegida para llenar el diseño.
+- **Acordes/progresiones:** material didáctico propio declarado como tal en pantalla; no transcribir tabs protegidas.
+- **Regresión:** tras modificar algo, revisar funciones relacionadas (navegación, APIs compartidas, estilos, páginas vecinas).
+- **Evidencia:** reporte final con tabla de casos de prueba (prueba/acción/resultado PASS-FAIL) distinguiendo VERIFICADO EJECUTANDO vs REVISADO POR INSPECCIÓN. No inventar evidencia jamás.
+- **READY solo si:** pruebas críticas pasan, cada requisito del pedido auditado uno a uno, errores corregidos y re-testeados, sin placeholders rotos, sin None visibles, sin errores críticos conocidos.
+
 ## Empaquetado
 
 Para generar un `.tar` del proyecto en Git Bash, hacerlo **fuera** de la carpeta del proyecto (si se genera adentro, se auto-incluye). Excluir: `.git`, `.venv`, `__pycache__`, `*.pyc`, `app/static/videos`, `instance`, `node_modules`, `*.tar.gz`.

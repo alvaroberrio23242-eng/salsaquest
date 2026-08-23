@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400" role="img" aria-label="SalsaQuest">
+  <rect width="600" height="400" fill="#1c1a17"/>
+  <rect x="8" y="8" width="584" height="384" fill="none" stroke="#3a352e" stroke-width="2" rx="18"/>
+  <g transform="translate(300 178)">
+    <circle r="86" fill="#141210"/>
+    <circle r="86" fill="none" stroke="#4d453b" stroke-width="2"/>
+    <circle r="66" fill="none" stroke="#332e28" stroke-width="1.5"/>
+    <circle r="48" fill="none" stroke="#332e28" stroke-width="1.5"/>
+    <circle r="30" fill="none" stroke="#332e28" stroke-width="1.5"/>
+    <circle r="14" fill="#e2a63d"/>
+    <circle r="4" fill="#1c1a17"/>
+    <path d="M -60 34 L 60 34" stroke="#e2a63d" stroke-width="3" stroke-linecap="round"/>
+  </g>
+  <text x="300" y="322" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="26" font-style="italic" fill="#e2a63d">SalsaQuest</text>
+  <text x="300" y="350" text-anchor="middle" font-family="Verdana, Geneva, sans-serif" font-size="13" fill="#8d8377">Foto no disponible</text>
+</svg>

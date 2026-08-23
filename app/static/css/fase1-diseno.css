@@ -186,3 +186,52 @@ main, .navbar, footer {
     border-radius: 12px;
     margin-bottom: 0.6rem;
 }
+/* ---------- Creditos de licencia de fotos (auditoria) ---------- */
+/* Se muestran SIEMPRE bajo toda foto de artista/orquesta/instrumento */
+.foto-credito {
+    font-size: 0.68rem;
+    color: #8d8377;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+}
+
+.card-body .foto-credito,
+.acordes-bloque + .foto-credito {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.modal-body .foto-credito {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.foto-credito a {
+    color: #a89c8d;
+    text-decoration: underline;
+}
+.foto-credito a:hover {
+    color: #ffc107;
+}
+
+/* ---------- Bloque de acordes didacticos (orquestas) ---------- */
+.acordes-bloque {
+    background: rgba(255, 193, 7, 0.07);
+    border: 1px solid rgba(255, 193, 7, 0.22);
+}
+
+.acorde-chip {
+    background: rgba(255, 193, 7, 0.15);
+    border: 1px solid rgba(255, 193, 7, 0.45);
+    color: #ffc107;
+    font-family: "Courier New", Courier, monospace;
+    font-weight: 700;
+    font-size: 0.78rem;
+    padding: 0.35em 0.7em;
+}
+
+.acorde-flecha {
+    color: #6c655b;
+    margin: 0 0.4rem;
+    align-self: center;
+}

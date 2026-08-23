@@ -4,8 +4,59 @@
 // filtros de la línea del tiempo, y contador de visitas.
 // ==========================================
 
-document.addEventListener('DOMContentLoaded', () => {
-    cargarEventosGrandes();
+// Placeholder local para fichas sin foto libre verificada (y como
+// fallback onerror). Reemplaza a via.placeholder.com (servicio muerto).
+const PLACEHOLDER_IMG = '/static/img/ficha-placeholder.svg';
+
+// Debe coincidir con ACORDES_NOTA_GLOBAL en content_data.py.
+const ACORDES_NOTA_GLOBAL =
+    'Progresión didáctica original de SalsaQuest: evoca la sonoridad de ' +
+    'la orquesta sobre una clave de son. No es la transcripción de ' +
+    'ninguna canción en particular.';
+
+// <img> con fallback automatico al placeholder local si la URL falla
+// o si no hay foto libre verificada para la ficha.
+function imgFicha(src, alt, clase, estilo) {
+    const url = src || PLACEHOLDER_IMG;
+    return `<img src="${url}" alt="${alt}" loading="lazy" class="${clase || ''}" style="${estilo || ''}"
+                 onerror="this.onerror=null;this.src='${PLACEHOLDER_IMG}'">`;
+}
+
+// Credito de licencia visible (autor + licencia + enlace a la fuente).
+function creditoFoto(credito) {
+    if (!credito) return '';
+    const autor = credito.autor || 'Autor desconocido';
+    const quien = credito.fuente_url
+        ? `<a href="${credito.fuente_url}" target="_blank" rel="noopener" class="text-secondary">${autor}</a>`
+        : autor;
+    let html = `Foto: ${quien}`;
+    if (credito.licencia) html += ` · ${credito.licencia}`;
+    if (credito.nota) html += ` · ${credito.nota}`;
+    return `<small class="foto-credito d-block">${html}</small>`;
+}
+
+// Bloque de acordes (progresion didactica original por orquesta).
+function bloqueAcordes(acordes) {
+    if (!acordes || !Array.isArray(acordes.progresion) || !acordes.progresion.length) return '';
+    const chips = acordes.progresion
+        .map(a => `<span class="badge rounded-pill acorde-chip">${a}</span>`)
+        .join('<span class="acorde-flecha">&rarr;</span>');
+    const claveBadge = acordes.clave
+        ? `<span class="badge bg-secondary ms-auto flex-shrink-0">Clave ${acordes.clave}</span>` : '';
+    return `
+        <div class="acordes-bloque mt-3 p-2 rounded-3">
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <i class="fa-solid fa-music text-warning"></i>
+                <strong class="small text-warning">${acordes.titulo || 'Progresión'}</strong>
+                ${claveBadge}
+            </div>
+            <div class="d-flex flex-wrap align-items-center">${chips}</div>
+            ${acordes.nota ? `<p class="small text-secondary mt-2 mb-0">${acordes.nota}</p>` : ''}
+        </div>
+        <p class="foto-credito mt-1 mb-0">${ACORDES_NOTA_GLOBAL}</p>`;
+}
+
+document.addEventListener('DOMContentLoaded', () => {    cargarEventosGrandes();
     cargarRecordsSalsa();
     cargarArtistas();
     cargarGrammy();
@@ -37,7 +88,8 @@ async function cargarEventosGrandes() {
             container.innerHTML += `
                 <div class="col-md-6 col-lg-3 mb-4">
                     <div class="card h-100 card-glass text-white shadow-sm rounded-4 overflow-hidden">
-                        <img src="${ev.imagen_url}" class="card-img-top" alt="${ev.titulo}" style="height: 160px; object-fit: cover;">
+                        ${imgFicha(ev.imagen_url, ev.titulo, 'card-img-top', 'height: 160px; object-fit: cover;')}
+                        ${creditoFoto(ev.imagen_credito)}
                         <div class="card-body p-3">
                             <span class="badge bg-warning text-dark fw-bold mb-2">${ev.anio}</span>
                             <h6 class="text-warning fw-bold">${ev.titulo}</h6>
@@ -96,9 +148,10 @@ async function cargarArtistas() {
             const etiqueta = a.tipo === 'ritmo' ? 'Ritmo' : 'Artista';
             container.innerHTML += `
                 <div class="col-md-6 col-lg-3 mb-4">
-                    <div class="card h-100 card-glass text-white shadow-sm rounded-4 overflow-hidden" 
+                    <div class="card h-100 card-glass text-white shadow-sm rounded-4 overflow-hidden"
                          style="cursor:pointer" onclick="abrirModalArtista('${a.slug}')">
-                        <img src="${a.imagen_url}" class="card-img-top" alt="${a.nombre}" style="height: 150px; object-fit: cover;">
+                        ${imgFicha(a.imagen_url, a.nombre, 'card-img-top', 'height: 150px; object-fit: cover;')}
+                        ${creditoFoto(a.imagen_credito)}
                         <div class="card-body p-3">
                             <span class="badge bg-secondary small mb-2">${etiqueta}</span>
                             <h6 class="text-warning fw-bold">${a.nombre}</h6>
@@ -119,9 +172,15 @@ function abrirModalArtista(slug) {
     if (!artista) return;
 
     document.getElementById('modalArtistaTitulo').innerText = artista.nombre;
-    document.getElementById('modalArtistaImagen').src = artista.imagen_url;
-    document.getElementById('modalArtistaImagen').alt = artista.nombre;
+
+    const img = document.getElementById('modalArtistaImagen');
+    img.onerror = function () { this.onerror = null; this.src = PLACEHOLDER_IMG; };
+    img.src = artista.imagen_url || PLACEHOLDER_IMG;
+    img.alt = artista.nombre;
     document.getElementById('modalArtistaTexto').innerText = artista.texto;
+
+    const creditoEl = document.getElementById('modalArtistaCredito');
+    if (creditoEl) creditoEl.innerHTML = creditoFoto(artista.imagen_credito);
 
     const modalElement = document.getElementById('modalArtista');
     if (modalElement) new bootstrap.Modal(modalElement).show();
@@ -345,7 +404,7 @@ async function cargarCaratulas() {
     }
 }
 
-// 7. ORQUESTAS INFLUYENTES
+// 7. ORQUESTAS INFLUYENTES (foto con credito + acordes didacticos)
 async function cargarOrquestas() {
     const container = document.getElementById('orquestas-container');
     if (!container) return;
@@ -354,10 +413,15 @@ async function cargarOrquestas() {
         const orquestas = await res.json();
         container.innerHTML = orquestas.map(o => `
             <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card h-100 card-glass text-white shadow-sm rounded-4 p-3">
-                    <h6 class="text-warning fw-bold mb-1">${o.nombre}</h6>
-                    <p class="small text-secondary mb-2"><i class="fa-solid fa-location-dot me-1"></i>${o.lugar} · Fundada en ${o.fundacion}</p>
-                    <p class="small text-light mb-0">${o.texto}</p>
+                <div class="card h-100 card-glass text-white shadow-sm rounded-4 overflow-hidden">
+                    ${imgFicha(o.imagen_url, o.nombre, 'card-img-top', 'height: 170px; object-fit: cover;')}
+                    ${creditoFoto(o.imagen_credito)}
+                    <div class="card-body p-3">
+                        <h6 class="text-warning fw-bold mb-1">${o.nombre}</h6>
+                        <p class="small text-secondary mb-2"><i class="fa-solid fa-location-dot me-1"></i>${o.lugar} · Fundada en ${o.fundacion}</p>
+                        <p class="small text-light mb-0">${o.texto}</p>
+                        ${bloqueAcordes(o.acordes)}
+                    </div>
                 </div>
             </div>
         `).join('');
@@ -379,8 +443,8 @@ async function cargarInstrumentos() {
             <div class="col-6 col-md-4 col-lg-2 mb-4">
                 <div class="card h-100 card-glass text-white shadow-sm rounded-4 p-3 instrumento-card"
                      role="button" style="cursor:pointer;" onclick="abrirInstrumento(${idx})">
-                    <img src="${i.imagen_url || 'https://via.placeholder.com/300x200?text=SalsaQuest'}" alt="${i.nombre}">
-                    <span class="badge bg-warning text-dark fw-bold mb-2 align-self-start" style="font-size:0.65em;">${i.categoria}</span>
+                    ${imgFicha(i.imagen_url, i.nombre, '', 'width:100%; height:110px; object-fit:cover; border-radius:10px;')}
+                    <span class="badge bg-warning text-dark fw-bold mb-2 mt-2 align-self-start" style="font-size:0.65em;">${i.categoria}</span>
                     <h6 class="text-warning fw-bold mb-0">${i.nombre}</h6>
                     <p class="small text-secondary mt-2 mb-0"><i class="fa-solid fa-circle-info me-1"></i>Ver ficha</p>
                 </div>
@@ -410,6 +474,8 @@ function abrirInstrumento(idx) {
     document.getElementById('modalInstrumentoTitulo').innerHTML =
         `<i class="fa-solid fa-music me-2"></i>${i.nombre}`;
     document.getElementById('modalInstrumentoBody').innerHTML = `
+        ${imgFicha(i.imagen_url, i.nombre, 'rounded-3 mb-3', 'width:100%; max-height:200px; object-fit:cover;')}
+        ${creditoFoto(i.imagen_credito)}
         <span class="badge bg-warning text-dark fw-bold mb-3">${i.categoria}</span>
         <h6 class="text-warning small text-uppercase mt-2">Historia</h6>
         <p class="text-light">${i.texto}</p>
