@@ -1,5 +1,5 @@
 # app/routes/main.py
-from flask import Blueprint, render_template, jsonify
+from flask import Blueprint, render_template
 
 main_bp = Blueprint('main', __name__)
 
@@ -82,30 +82,6 @@ def trivia_page():
 def recursos():
     return render_template('recursos.html', active_page='recursos')
 
-
-@main_bp.route('/api/trivia', methods=['GET'])
-def get_trivia():
-    preguntas = [
-        {
-            "id": 1,
-            "pregunta": "¿En qué década comenzó a consolidarse el término 'Salsa' en Nueva York?",
-            "opciones": ["1950", "1960 - 1970", "1990", "2000"],
-            "correcta": 1
-        },
-        {
-            "id": 2,
-            "pregunta": "¿Qué famosa orquesta neoyorquina reunió a grandes figuras como Celia Cruz, Willie Colón y Héctor Lavoe?",
-            "opciones": ["Fania All-Stars", "El Gran Combo", "Sonora Matancera", "Grupo Niche"],
-            "correcta": 0
-        },
-        {
-            "id": 3,
-            "pregunta": "¿Qué instrumento es considerado la columna vertebral del ritmo en la salsa?",
-            "opciones": ["El Piano", "El Bajo", "La Clave", "El Saxofón"],
-            "correcta": 2
-        }
-    ]
-    return jsonify(preguntas)
 
 # NOTA: la ruta /api/leaderboard (GET y POST) se quito de aqui. Vivia
 # duplicada tambien en app/routes/auth.py con distinta logica (esa si

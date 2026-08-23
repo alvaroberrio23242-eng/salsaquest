@@ -1,6 +1,7 @@
 # app/routes/auth.py
 
 from functools import wraps
+import re
 from flask import Blueprint, request, jsonify, render_template, redirect, url_for
 from flask_login import login_user, logout_user, login_required, current_user
 from app import db
@@ -97,16 +98,82 @@ def get_current_user():
 # 2. CAPTURA DE LEADS Y LEADERBOARD (Ranking)
 # ==========================================
 
+# Validacion del POST publico del leaderboard. SQLite no aplica los
+# VARCHAR(n) del modelo, asi que las longitudes se controlan aqui.
+_EMAIL_RE = re.compile(r'^[^@\s]+@[^@\s]+\.[^@\s]+$')
+_PUNTAJE_MAX = 100000
+
+
+def _validar_payload_leaderboard(data):
+    """Retorna (campos_validos, None) o (None, mensaje_de_error_400)."""
+    # La raiz del JSON debe ser un objeto; listas/strings/numeros se
+    # rechazan con 400 en vez de romper con AttributeError.
+    if not isinstance(data, dict):
+        return None, 'El cuerpo debe ser un objeto JSON.'
+
+    # P2: sin ningun campo con datos reales (ej. {}, solo
+    # acepta_promociones o puntaje 0) se rechaza con 400 y no se crea
+    # un lead anonimo con score 0.
+    nombre_bruto = data.get('nombre_jugador') or data.get('username')
+    puntaje_bruto = data.get('puntaje')
+    hay_datos_reales = (
+        (isinstance(nombre_bruto, str) and nombre_bruto.strip())
+        or str(data.get('whatsapp') or '').strip()
+        or str(data.get('email') or '').strip()
+        or (isinstance(puntaje_bruto, int)
+            and not isinstance(puntaje_bruto, bool)
+            and puntaje_bruto > 0)
+    )
+    if not hay_datos_reales:
+        return None, 'Debe enviar al menos un campo con datos.'
+
+    nombre = data.get('nombre_jugador') or data.get('username') or 'Salsero Anónimo'
+    if not isinstance(nombre, str):
+        return None, 'El nombre debe ser texto.'
+    nombre = nombre.strip()
+    if len(nombre) > 100:
+        return None, 'El nombre no puede superar 100 caracteres.'
+
+    whatsapp = data.get('whatsapp', '')
+    if not isinstance(whatsapp, str) or len(whatsapp) > 20:
+        return None, 'WhatsApp inválido (máximo 20 caracteres).'
+
+    email = data.get('email', '')
+    if not isinstance(email, str) or len(email) > 120:
+        return None, 'Email inválido (máximo 120 caracteres).'
+    if email and not _EMAIL_RE.match(email):
+        return None, 'Email inválido.'
+
+    puntaje = data.get('puntaje', 0)
+    if isinstance(puntaje, bool) or not isinstance(puntaje, int) \
+            or not 0 <= puntaje <= _PUNTAJE_MAX:
+        return None, 'Puntaje inválido (entero entre 0 y %d).' % _PUNTAJE_MAX
+
+    acepta = data.get('acepta_promociones', True)
+    if not isinstance(acepta, bool):
+        return None, 'acepta_promociones debe ser booleano.'
+
+    return {
+        'nombre': nombre or 'Salsero Anónimo',
+        'whatsapp': whatsapp,
+        'email': email,
+        'puntaje': puntaje,
+        'acepta': acepta,
+    }, None
+
+
 @auth_bp.route('/api/leaderboard', methods=['POST'])
 def registrar_usuario_o_puntaje():
     """Recibe los datos del modal de registro rápido / captura de WhatsApp."""
-    data = request.get_json() or {}
+    data = request.get_json(silent=True)
+    if data is None:
+        if request.get_data():
+            return jsonify({'error': 'Cuerpo JSON inválido.'}), 400
+        data = {}
 
-    nombre = data.get('nombre_jugador') or data.get('username') or 'Salsero Anónimo'
-    whatsapp = data.get('whatsapp', '')
-    email = data.get('email', '')
-    puntaje = data.get('puntaje', 0)
-    acepta = data.get('acepta_promociones', True)
+    campos, error = _validar_payload_leaderboard(data)
+    if error:
+        return jsonify({'error': error}), 400
 
     try:
         # 'username' es solo para cuentas con login tradicional
@@ -115,11 +182,11 @@ def registrar_usuario_o_puntaje():
         # (sin email, con nombre_jugador por defecto "Salsero Anonimo")
         # chocarian y el segundo se perderia con un error silencioso.
         nuevo_usuario = User(
-            nombre_jugador=nombre,
-            whatsapp=whatsapp,
-            email=email if email else None,
-            score=puntaje,
-            acepta_promociones=acepta
+            nombre_jugador=campos['nombre'],
+            whatsapp=campos['whatsapp'],
+            email=campos['email'] if campos['email'] else None,
+            score=campos['puntaje'],
+            acepta_promociones=campos['acepta']
         )
         db.session.add(nuevo_usuario)
         db.session.commit()

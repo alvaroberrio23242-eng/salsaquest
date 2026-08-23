@@ -18,7 +18,15 @@ def crear_app():
 
     # Configuración básica y de la base de datos SQLite
     base_dir = os.path.abspath(os.path.dirname(__file__))
-    app.config['SECRET_KEY'] = 'salsa_quest_secret_key_2026'
+    # La clave de sesiones NUNCA se hardcodea: sin SECRET_KEY en el
+    # entorno la app se niega a arrancar (fail-fast).
+    secret_key = os.environ.get('SECRET_KEY')
+    if not secret_key:
+        raise RuntimeError(
+            "SECRET_KEY no esta configurada. Definela como variable de "
+            "entorno antes de arrancar la aplicacion."
+        )
+    app.config['SECRET_KEY'] = secret_key
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(base_dir, '..', 'sonhavana.db')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 

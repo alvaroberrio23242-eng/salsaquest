@@ -1,7 +1,7 @@
 # init_db.py
 """
 Script para inicializar y poblar la base de datos de SalsaQuest.
-Crea la estructura de tablas, registra un usuario administrador y carga los eventos históricos de salsa.
+Crea la estructura de tablas, registra un administrador SOLO si ADMIN_USERNAME/ADMIN_PASSWORD están en el entorno, y carga los eventos históricos de salsa.
 
 IMPORTANTE: este script ahora es IDEMPOTENTE -- se puede correr las
 veces que sea (por ejemplo, en cada despliegue en Render) sin borrar
@@ -82,15 +82,27 @@ def poblar_base_datos():
     with app.app_context():
         db.create_all()
 
-        # --- Usuario administrador: solo se crea si NO existe ya ---
-        admin_existente = User.query.filter_by(username='admin_salsa').first()
-        if not admin_existente:
-            admin = User(username='admin_salsa', email='admin@sonhavana.com', score=200, is_admin=True)
-            admin.set_password('salsa2026')
-            db.session.add(admin)
-            print("Usuario administrador creado.")
+        # --- Usuario administrador: solo con credenciales del entorno.
+        # Sin ADMIN_USERNAME/ADMIN_PASSWORD no se crea ningun admin;
+        # los administradores existentes nunca se modifican aqui.
+        admin_username = os.environ.get('ADMIN_USERNAME')
+        admin_password = os.environ.get('ADMIN_PASSWORD')
+        if admin_username and admin_password:
+            admin_existente = User.query.filter_by(username=admin_username).first()
+            if not admin_existente:
+                admin = User(
+                    username=admin_username,
+                    email=os.environ.get('ADMIN_EMAIL'),
+                    score=200,
+                    is_admin=True,
+                )
+                admin.set_password(admin_password)
+                db.session.add(admin)
+                print("Usuario administrador creado desde variables de entorno.")
+            else:
+                print("El usuario administrador ya existia, no se modifico.")
         else:
-            print("El usuario administrador ya existia, no se modifico.")
+            print("ADMIN_USERNAME/ADMIN_PASSWORD no configuradas: no se crea ningun administrador.")
 
         # --- Eventos de la timeline: solo se siembran si la tabla esta vacia ---
         if TimelineData.query.count() == 0:
