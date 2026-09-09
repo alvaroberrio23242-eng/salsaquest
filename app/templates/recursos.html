@@ -1,10 +1,6 @@
 {% extends "base.html" %}
 {% block title %}SalsaQuest | Recursos{% endblock %}
 
-{% block extra_head %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-{% endblock %}
-
 {% block content %}
 
 <header class="py-4 text-center">
@@ -16,7 +12,7 @@
 
 <!-- CARÁTULAS ICÓNICAS -->
 <section id="caratulas-section" class="mb-5 mt-4">
-    <h3 class="glass-header"><i class="fa-solid fa-record-vinyl me-2"></i>Carátulas Icónicas</h3>
+    <h3 class="titulo-seccion-glass"><i class="fa-solid fa-record-vinyl me-2"></i>Carátulas Icónicas</h3>
     <div id="caratulas-container" class="row g-4">
         <div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>
     </div>
@@ -24,7 +20,7 @@
 
 <!-- RANKING DE ÁLBUMES MÁS INFLUYENTES -->
 <section id="ranking-albumes-section" class="mb-5">
-    <h3 class="glass-header"><i class="fa-solid fa-trophy me-2"></i>Los Álbumes Más Influyentes</h3>
+    <h3 class="titulo-seccion-glass"><i class="fa-solid fa-trophy me-2"></i>Los Álbumes Más Influyentes</h3>
     <div id="ranking-container" class="row g-4">
         <div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>
     </div>
@@ -32,13 +28,13 @@
 
 <!-- MAPA DE LUGARES SALSEROS (mundial) -->
 <section id="mapa-section" class="mb-5">
-    <h3 class="glass-header"><i class="fa-solid fa-map-location-dot me-2"></i>Lugares Salseros del Mundo</h3>
+    <h3 class="titulo-seccion-glass"><i class="fa-solid fa-map-location-dot me-2"></i>Lugares Salseros del Mundo</h3>
     <div id="mapa-lugares" class="mapa-compacto" style="height: 260px; border-radius: 1rem; overflow: hidden;"></div>
 </section>
 
 <!-- INSTRUMENTOS -->
 <section id="instrumentos-section" class="mb-5">
-    <h3 class="glass-header"><i class="fa-solid fa-drum me-2"></i>Instrumentos de la Salsa</h3>
+    <h3 class="titulo-seccion-glass"><i class="fa-solid fa-drum me-2"></i>Instrumentos de la Salsa</h3>
     <p class="small text-secondary mb-3">Haz clic en cada instrumento para ver su ficha completa.</p>
     <div id="instrumentos-container" class="row g-4">
         <div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>
@@ -47,7 +43,7 @@
 
 <!-- MUSEOS -->
 <section id="museos-section" class="mb-5">
-    <h3 class="glass-header"><i class="fa-solid fa-landmark me-2"></i>Museos Dedicados a la Salsa</h3>
+    <h3 class="titulo-seccion-glass"><i class="fa-solid fa-landmark me-2"></i>Museos Dedicados a la Salsa</h3>
     <div id="museos-container" class="row g-4">
         <div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>
     </div>
@@ -55,7 +51,7 @@
 
 <!-- ENTREVISTAS INÉDITAS -->
 <section id="entrevistas-section" class="mb-5">
-    <h3 class="glass-header"><i class="fa-solid fa-video me-2"></i>Entrevistas Inéditas</h3>
+    <h3 class="titulo-seccion-glass"><i class="fa-solid fa-video me-2"></i>Entrevistas Inéditas</h3>
     <div id="entrevistas-container" class="row g-4">
         <div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>
     </div>
@@ -85,5 +81,4 @@
 {% endblock %}
 
 {% block extra_scripts %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 {% endblock %}

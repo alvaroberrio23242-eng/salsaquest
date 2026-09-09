@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SalsaQuest - Desafío de Trivia</title>
+    <title>SalsaQuest - Desafio de Trivia</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
@@ -12,7 +12,7 @@
 
     <nav class="navbar navbar-dark navbar-glass shadow mb-4">
         <div class="container">
-            <a class="navbar-brand fw-bold text-warning neon-sign" href="/">💃 SalsaQuest</a>
+            <a class="navbar-brand fw-bold text-warning neon-sign" href="/">SalsaQuest</a>
             <a href="/" class="btn btn-outline-light btn-sm"><i class="fa-solid fa-house me-1"></i> Volver al Inicio</a>
         </div>
     </nav>
@@ -21,30 +21,24 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 
-                <!-- Tarjeta de Juego -->
                 <div id="quiz-card" class="card bg-secondary text-white shadow-lg border-0 rounded-4 p-4">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <span class="badge bg-warning text-dark fs-6" id="score-badge">Puntos: 0</span>
                         <span class="text-light" id="question-count">Pregunta 1</span>
                     </div>
 
-                    <h3 id="question-text" class="fw-bold mb-4">Cargando desafío...</h3>
+                    <h3 id="question-text" class="fw-bold mb-4">Cargando desafio...</h3>
 
-                    <!-- Opciones de Respuesta -->
-                    <div id="options-container" class="d-grid gap-3">
-                        <!-- Las opciones se generarán dinámicamente con JS -->
-                    </div>
+                    <div id="options-container" class="d-grid gap-3"></div>
 
-                    <!-- Mensaje de Retroalimentación -->
                     <div id="feedback" class="mt-4 text-center d-none"></div>
 
-                    <button id="next-btn" class="btn btn-warning w-100 fw-bold mt-4 d-none">Siguiente Pregunta ➡️</button>
+                    <button id="next-btn" class="btn btn-warning w-100 fw-bold mt-4 d-none" onclick="nextQuestion()">Siguiente Pregunta</button>
                 </div>
 
-                <!-- Tarjeta de Resultados -->
                 <div id="result-card" class="card bg-secondary text-white shadow-lg border-0 rounded-4 p-5 text-center d-none">
-                    <h1 class="display-4 fw-bold text-warning mb-3">🏆 ¡Desafío Completado!</h1>
-                    <p class="fs-4">Tu puntuación final es: <strong id="final-score" class="text-info">0</strong></p>
+                    <h1 class="display-4 fw-bold text-warning mb-3">Desafio Completado!</h1>
+                    <p class="fs-4">Tu puntuacion final es: <strong id="final-score" class="text-info">0</strong></p>
                     <div class="mt-4">
                         <button onclick="location.reload()" class="btn btn-warning btn-lg me-2">Intentar de nuevo</button>
                         <a href="/" class="btn btn-outline-light btn-lg">Volver al Inicio</a>
@@ -55,7 +49,88 @@
         </div>
     </main>
 
-    <!-- Script de la lógica del Quiz -->
-    <script src="{{ url_for('static', filename='js/trivia.js') }}"></script>
+    <script>
+    const preguntas = [
+        { p: "Quien es conocido como 'El Sonero Mayor'?", o: ["Oscar D'Leon", "Hector Lavoe", "Willie Colon"], c: 0 },
+        { p: "Cual es el album de salsa mas vendido de la historia?", o: ["Siembra", "El Malo", "Comedia"], c: 0 },
+        { p: "En que ano se fundo la Fania All-Stars?", o: ["1974", "1968", "1980"], c: 0 },
+        { p: "Quien compuso 'Pedro Navaja'?", o: ["Ruben Blades", "Hector Lavoe", "Celia Cruz"], c: 0 },
+        { p: "Cual es el ritmo raiz de la salsa?", o: ["GuaguancSon", "Son montuno", "Timba"], c: 1 },
+        { p: "Quien era conocido como 'El Cantante de los Cantantes'?", o: ["Hector Lavoe", "Ismael Rivera", "Cheo Feliciano"], c: 1 },
+        { p: "En que ciudad nacio el Grupo Niche?", o: ["Cali", "Bogota", "Medellin"], c: 0 },
+        { p: "Que orquesta popularizo la salsa en Nueva York?", o: ["Fania All-Stars", "Gran Combo", "Niche"], c: 0 },
+        { p: "Cual es el instrumento principal del son cubano?", o: ["Tres cubano", "Piano", "Trompeta"], c: 0 },
+        { p: "Quien canto 'La Vida Es Un Carnaval'?", o: ["Celia Cruz", "La Lupe", "Ivy Queen"], c: 0 },
+        { p: "Cual es la feria de salsa mas importante del mundo?", o: ["Feria de Cali", "Festival de Barranquilla", "Carnaval de Rosa"], c: 0 }
+    ];
+
+    let score = 0;
+    let current = 0;
+    let answered = false;
+    let shuffled = [];
+
+    function shuffle(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    function loadQuestion() {
+        if (current >= shuffled.length) {
+            document.getElementById('quiz-card').classList.add('d-none');
+            document.getElementById('result-card').classList.remove('d-none');
+            document.getElementById('final-score').textContent = score;
+            return;
+        }
+        const q = shuffled[current];
+        document.getElementById('question-text').textContent = q.p;
+        document.getElementById('question-count').textContent = 'Pregunta ' + (current + 1) + ' de ' + shuffled.length;
+        document.getElementById('score-badge').textContent = 'Puntos: ' + score;
+        document.getElementById('feedback').classList.add('d-none');
+        document.getElementById('next-btn').classList.add('d-none');
+        var container = document.getElementById('options-container');
+        container.innerHTML = '';
+        answered = false;
+        q.o.forEach(function(opt, i) {
+            var btn = document.createElement('button');
+            btn.className = 'btn btn-outline-warning text-white text-start py-3 px-4';
+            btn.textContent = opt;
+            btn.onclick = function() { selectAnswer(i, q.c); };
+            container.appendChild(btn);
+        });
+    }
+
+    function selectAnswer(selected, correct) {
+        if (answered) return;
+        answered = true;
+        var buttons = document.getElementById('options-container').querySelectorAll('button');
+        buttons.forEach(function(btn, i) {
+            btn.disabled = true;
+            if (i === correct) btn.className = 'btn btn-success text-white text-start py-3 px-4';
+            else if (i === selected) btn.className = 'btn btn-danger text-white text-start py-3 px-4';
+        });
+        var fb = document.getElementById('feedback');
+        fb.classList.remove('d-none');
+        if (selected === correct) {
+            score += 50;
+            fb.innerHTML = '<p class="text-success fw-bold mb-0">Correcto! +50 puntos</p>';
+        } else {
+            fb.innerHTML = '<p class="text-danger fw-bold mb-0">Incorrecto!</p>';
+        }
+        document.getElementById('score-badge').textContent = 'Puntos: ' + score;
+        document.getElementById('next-btn').classList.remove('d-none');
+    }
+
+    function nextQuestion() {
+        current++;
+        loadQuestion();
+    }
+
+    shuffled = shuffle(preguntas);
+    loadQuestion();
+    </script>
 </body>
 </html>

@@ -2,8 +2,23 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}SalsaQuest{% endblock %}</title>
-        <!-- Bootstrap 5 CSS -->
+    <meta name="description" content="{% block meta_description %}SalsaQuest: el museo interactivo de la cultura salsera. Línea del tiempo histórica, artistas, música, trivia y más.{% endblock %}">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="SalsaQuest">
+    <meta property="og:title" content="{% block og_title %}SalsaQuest — Donde la salsa importa{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}El museo interactivo de la cultura salsera. Historia, artistas, música y trivia.{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{{ url_for('static', filename='img/cuba-flag.jpg', _external=True) }}{% endblock %}">
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block twitter_title %}SalsaQuest — Donde la salsa importa{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}El museo interactivo de la cultura salsera. Historia, artistas, música y trivia.{% endblock %}">
+
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -16,12 +31,44 @@
     <style>
         body {
             color: #f8f9fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         .bg-gold { background-color: #ffc107; color: #000; }
         .text-gold { color: #ffc107; }
         .card { border-radius: 15px; }
     </style>
+
+    <!-- schema.org: WebSite + Organization -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "SalsaQuest",
+        "url": "{{ url_for('main.index', _external=True) }}",
+        "description": "El museo interactivo de la cultura salsera. Línea del tiempo histórica, artistas, música, trivia y más.",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "{{ url_for('main.index', _external=True) }}?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "SalsaQuest",
+        "url": "{{ url_for('main.index', _external=True) }}",
+        "logo": "{{ url_for('static', filename='img/cuba-flag.jpg', _external=True) }}",
+        "sameAs": [
+            "https://github.com/alvaroberrio23242-eng"
+        ],
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "customer service",
+            "availableLanguage": "Spanish"
+        }
+    }
+    </script>
 
     {% block extra_css %}{% endblock %}
 </head>
@@ -41,8 +88,8 @@
     <!-- NAVBAR NAVEGACIÓN -->
     <nav class="navbar navbar-expand-lg navbar-dark navbar-glass sticky-top border-bottom border-warning px-3 px-md-5">
         <div class="container-fluid">
-            <a class="navbar-brand fw-bold text-warning fs-3 neon-sign" href="{{ url_for('main.index') }}">
-                <i class="fa-solid fa-compact-disc fa-spin me-2"></i>SalsaQuest
+            <a class="navbar-brand fw-bold text-warning fs-3" href="{{ url_for('main.index') }}">
+                SalsaQuest
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -188,7 +235,7 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body p-4">
-                    <img id="modalArtistaImagen" src="" alt="" class="rounded-3 mb-1 w-100" style="max-height: 280px; object-fit: cover;">
+                    <img id="modalArtistaImagen" src="" alt="" class="rounded-3 mb-1 w-100" style="max-height: 280px; object-fit: cover;" loading="lazy">
                     <small id="modalArtistaCredito" class="foto-credito d-block mb-3"></small>
                     <p id="modalArtistaTexto" class="text-light"></p>
                 </div>
@@ -205,8 +252,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Fondo de video rotativo -->
     <script src="{{ url_for('static', filename='js/video-bg.js') }}"></script>
-    <!-- Leaflet (mapas) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <!-- timeline.js (pese al nombre, es el modulo "principal": ademas
          de pintar la linea del tiempo, aqui viven abrirModalRegistro()
          y guardarPuntajeConLead() -- el modal de registro del navbar
@@ -219,6 +264,13 @@
          de registro del navbar (abrirModalRegistro / guardarPuntajeConLead)
          vive aquí y aparece en todas las páginas -->
     <script src="{{ url_for('static', filename='js/content.js') }}"></script>
+    <!-- Scroll reveal animations -->
+    <script src="{{ url_for('static', filename='js/scroll-reveal.js') }}"></script>
+    <!-- Cursor glow effect -->
+    <script src="{{ url_for('static', filename='js/cursor-interactivo.js') }}"></script>
+    <!-- Leaflet (mapas): se carga en todas las páginas; content.js
+         valida si el contenedor del mapa existe antes de usar L. -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 
     <!-- Bloque para scripts específicos de cada página (ej. Leaflet en
          recursos.html) que no tienen sentido cargados en TODAS las

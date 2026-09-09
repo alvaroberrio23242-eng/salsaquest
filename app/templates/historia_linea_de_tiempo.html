@@ -5,11 +5,16 @@
     <section id="timeline-section">
         <h3 class="text-warning fw-bold mb-3 titulo-seccion-glass"><i class="fa-solid fa-timeline me-2"></i>Línea del Tiempo</h3>
         <div id="timeline-filtros" class="d-flex flex-wrap gap-2 mb-3"></div>
-        <div id="timeline-container" class="row g-4">
-            <div class="text-center py-5">
-                <div class="spinner-border text-warning" role="status"></div>
-                <p class="text-secondary mt-2">Cargando hitos históricos...</p>
+        <div class="timeline-scroll-wrapper">
+            <div id="timeline-container" class="timeline-track">
+                <div class="text-center py-5 w-100">
+                    <div class="spinner-border text-warning" role="status"></div>
+                    <p class="text-secondary mt-2">Cargando hitos históricos...</p>
+                </div>
             </div>
+        </div>
+        <div class="timeline-scroll-hint d-none d-md-none" id="scroll-hint">
+            <i class="fa-solid fa-hand-pointer me-1"></i> Desliza para explorar
         </div>
     </section>
 {% endblock %}

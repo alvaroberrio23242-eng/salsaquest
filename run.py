@@ -3,6 +3,9 @@ Punto de entrada de la aplicación SalsaQuest.
 Inicializa la base de datos y levanta el servidor Flask / WSGI.
 """
 
+from dotenv import load_dotenv
+load_dotenv()
+
 from app import crear_app, db
 
 # Crear la instancia de la aplicación Flask

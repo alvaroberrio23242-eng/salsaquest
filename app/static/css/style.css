@@ -293,6 +293,77 @@ textarea:focus {
 }
 
 /* ==========================================
+   6b. TIMELINE HORIZONTAL SCROLL
+   ========================================== */
+.timeline-scroll-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--neon-gold) rgba(255,255,255,0.1);
+  padding-bottom: 1rem;
+  margin: 0 -0.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.timeline-scroll-wrapper::-webkit-scrollbar {
+  height: 6px;
+}
+.timeline-scroll-wrapper::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.05);
+  border-radius: 3px;
+}
+.timeline-scroll-wrapper::-webkit-scrollbar-thumb {
+  background: var(--neon-gold);
+  border-radius: 3px;
+}
+
+.timeline-track {
+  display: flex;
+  gap: 1.25rem;
+  min-width: min-content;
+  padding: 0.25rem 0;
+}
+
+.timeline-track .timeline-card {
+  flex: 0 0 300px;
+  min-height: 380px;
+}
+
+.timeline-scroll-hint {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  animation: hint-fade 2s ease-in-out infinite;
+}
+
+@keyframes hint-fade {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+@media (min-width: 769px) {
+  .timeline-track .timeline-card {
+    flex: 0 0 280px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .timeline-scroll-wrapper {
+    overflow-x: visible;
+  }
+  .timeline-track {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.25rem;
+    min-width: auto;
+  }
+}
+
+/* ==========================================
    7. LETRERO DE NEÓN ANIMADO (título "SalsaQuest")
    ========================================== */
 .neon-sign {

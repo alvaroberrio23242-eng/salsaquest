@@ -30,9 +30,45 @@ function obtenerEventosTimeline() {
 }
 window.obtenerEventosTimeline = obtenerEventosTimeline;
 
+// URL de embed de video aceptada. Solo youtube-nocookie con ID valido:
+// el dataset antiguo guardaba IDs inventados que daban 404 y rompian
+// los embeds; cualquier otra cosa se trata como "sin video".
+const _RE_VIDEO_HITO = /^https:\/\/www\.youtube-nocookie\.com\/embed\/[\w-]+$/;
+
+// Bloque superior de la tarjeta: embed oficial de Spotify (album real)
+// > video verificado > foto del hito con su credito > placeholder local.
+function mediaHitoHTML(evento) {
+    if (evento.spotify_album_id) {
+        return `<iframe style="border-radius:12px 12px 0 0; border:0;"
+                        src="https://open.spotify.com/embed/album/${evento.spotify_album_id}?utm_source=generator&theme=0"
+                        width="100%" height="152" frameBorder="0"
+                        allowfullscreen=""
+                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                        loading="lazy"></iframe>`;
+    }
+
+    const videoOK = _RE_VIDEO_HITO.test(evento.audio_url || '');
+    if (videoOK) {
+        return `<div class="ratio ratio-16x9">
+                    <iframe src="${evento.audio_url}" title="Video del hito: ${evento.titulo}"
+                            style="border:0;" loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerpolicy="strict-origin-when-cross-origin"
+                            allowfullscreen></iframe>
+                </div>`;
+    }
+
+    // Caratula/foto via imagen_url o placeholder local honesto.
+    const creditoHTML = evento.imagen_credito
+        ? `<small class="foto-credito d-block px-3 pt-1 text-secondary">${evento.imagen_credito}</small>`
+        : '';
+    return `<img src="${evento.imagen_url || '/static/img/ficha-placeholder.svg'}" class="card-img-top" alt="${evento.titulo}" style="height: 152px; object-fit: cover;" loading="lazy"
+                   onerror="this.onerror=null;this.src='/static/img/ficha-placeholder.svg'">${creditoHTML}`;
+}
+
 async function cargarTimeline() {
-    const container = document.getElementById('timeline-container') || 
-                      document.getElementById('timeline-track') || 
+    const container = document.getElementById('timeline-container') ||
+                      document.getElementById('timeline-track') ||
                       document.getElementById('timeline');
 
     if (!container) return;
@@ -46,26 +82,10 @@ async function cargarTimeline() {
             return;
         }
 
-        // Grilla de 5 columnas en pantallas grandes (row-cols de Bootstrap)
-        container.classList.add('row-cols-1', 'row-cols-md-3', 'row-cols-lg-5');
-
-        eventos.forEach((evento) => {
+        // Grilla horizontal: el layout lo maneja CSS (.timeline-track)
+        const tarjetas = eventos.map((evento) => {
             const textoShare = encodeURIComponent(`🔥 ¡Mira este hito histórico en SalsaQuest! ${evento.titulo} (${evento.anio}) de ${evento.artista || ''}: ${evento.trivia || evento.descripcion}`);
             const linkWhatsApp = `https://api.whatsapp.com/send?text=${textoShare}`;
-
-            // Caratula real via embed oficial de Spotify (mismo patron que
-            // la seccion "Caratulas Iconicas"); si un hito no tiene album
-            // asociado, cae a la imagen del hito o al placeholder local
-            // (via.placeholder.com esta muerto y romperia la ficha).
-            const caratulaHTML = evento.spotify_album_id
-                ? `<iframe style="border-radius:12px 12px 0 0; border:0;"
-                        src="https://open.spotify.com/embed/album/${evento.spotify_album_id}?utm_source=generator&theme=0"
-                        width="100%" height="152" frameBorder="0"
-                        allowfullscreen=""
-                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                        loading="lazy"></iframe>`
-                : `<img src="${evento.imagen_url || '/static/img/ficha-placeholder.svg'}" class="card-img-top" alt="${evento.titulo}" style="height: 152px; object-fit: cover;"
-                       onerror="this.onerror=null;this.src='/static/img/ficha-placeholder.svg'">`;
 
             const triviaHTML = evento.trivia ? `
                 <div class="mt-auto pt-2 border-top border-secondary">
@@ -73,10 +93,10 @@ async function cargarTimeline() {
                 </div>
             ` : '';
 
-            const eventCard = `
-                <div class="mb-4 timeline-card" data-anio="${evento.anio}">
-                    <div class="card h-100 card-glass text-white shadow-sm rounded-4 overflow-hidden hover-zoom">
-                        ${caratulaHTML}
+            return `
+                <div class="timeline-card" data-anio="${evento.anio}">
+                    <div class="card h-100 card-glass text-white shadow-sm rounded-4 overflow-hidden">
+                        ${mediaHitoHTML(evento)}
 
                         <div class="card-body d-flex flex-column p-3">
                             <span class="badge bg-warning text-dark fw-bold align-self-start mb-2">${evento.anio}</span>
@@ -86,25 +106,74 @@ async function cargarTimeline() {
 
                             ${triviaHTML}
 
-                            <a href="${linkWhatsApp}" target="_blank" class="btn btn-sm btn-outline-success w-100 mt-3">
+                            <a href="${linkWhatsApp}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-success w-100 mt-3">
                                 <i class="fa-brands fa-whatsapp me-1"></i> Compartir
                             </a>
                         </div>
                     </div>
                 </div>
             `;
-
-            container.innerHTML += eventCard;
         });
 
+        container.innerHTML = tarjetas.join('');
+
+        // Soporte swipe táctil para scroll horizontal en móvil
+        const wrapper = container.closest('.timeline-scroll-wrapper');
+        if (wrapper && window.innerWidth < 1200) {
+            initTimelineSwipe(wrapper);
+        }
+
+        // Mostrar/ocultar hint de scroll
+        const hint = document.getElementById('scroll-hint');
+        if (hint && wrapper && window.innerWidth < 769) {
+            hint.classList.remove('d-none');
+            wrapper.addEventListener('scroll', function onScroll() {
+                if (wrapper.scrollLeft > 50) {
+                    hint.classList.add('d-none');
+                    wrapper.removeEventListener('scroll', onScroll);
+                }
+            });
+        }
+
     } catch (error) {
-        console.error("Error al cargar la línea de tiempo:", error);
+        console.error("Error al cargar la línea del tiempo:", error);
         container.innerHTML = `
-            <div class="col-12 text-center text-danger py-3">
+            <div class="text-center text-danger py-3">
                 <p class="mb-0">⚠️ Ocurrió un error al cargar la línea del tiempo.</p>
             </div>
         `;
     }
+}
+
+// Swipe táctil: permite arrastrar para hacer scroll horizontal
+function initTimelineSwipe(el) {
+    let isDown = false, startX, scrollLeft;
+
+    el.addEventListener('mousedown', (e) => {
+        isDown = true;
+        el.style.cursor = 'grabbing';
+        startX = e.pageX - el.offsetLeft;
+        scrollLeft = el.scrollLeft;
+    });
+    el.addEventListener('mouseleave', () => { isDown = false; el.style.cursor = ''; });
+    el.addEventListener('mouseup', () => { isDown = false; el.style.cursor = ''; });
+    el.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - el.offsetLeft;
+        el.scrollLeft = scrollLeft - (x - startX) * 1.5;
+    });
+
+    // Touch events para móvil
+    let touchStartX, touchScrollLeft;
+    el.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].pageX;
+        touchScrollLeft = el.scrollLeft;
+    }, { passive: true });
+    el.addEventListener('touchmove', (e) => {
+        const x = e.touches[0].pageX;
+        el.scrollLeft = touchScrollLeft + (touchStartX - x) * 1.2;
+    }, { passive: true });
 }
 
 // 2. QUIZ Y TRIVIA INTERACTIVA
