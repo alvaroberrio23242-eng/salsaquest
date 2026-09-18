@@ -571,6 +571,13 @@ async function cargarSonHavana() {
     const direccionEl = document.getElementById('son-havana-direccion');
     const descripcionEl = document.getElementById('son-havana-descripcion');
     const playlistLink = document.getElementById('son-havana-playlist-link');
+    const whatsappLink = document.getElementById('son-havana-whatsapp');
+    const instagramLink = document.getElementById('son-havana-instagram');
+    const sitioLink = document.getElementById('son-havana-sitio');
+    const taRating = document.getElementById('sh-ta-rating');
+    const taOpiniones = document.getElementById('sh-ta-opiniones');
+    const taRanking = document.getElementById('sh-ta-ranking');
+    const taLink = document.getElementById('son-havana-ta-link');
     if (!direccionEl) return;
 
     try {
@@ -581,6 +588,18 @@ async function cargarSonHavana() {
         if (bar) {
             direccionEl.innerHTML = `<i class="fa-solid fa-location-dot me-1"></i> ${bar.direccion}`;
             if (descripcionEl) descripcionEl.textContent = bar.descripcion;
+
+            if (whatsappLink && bar.whatsapp_url) whatsappLink.href = bar.whatsapp_url;
+            if (instagramLink && bar.instagram) instagramLink.href = bar.instagram;
+            if (sitioLink && bar.sitio_web) sitioLink.href = bar.sitio_web;
+
+            if (bar.tripadvisor) {
+                const ta = bar.tripadvisor;
+                if (taRating) taRating.textContent = ta.rating.toFixed(1);
+                if (taOpiniones) taOpiniones.textContent = `${ta.opiniones} opiniones`;
+                if (taRanking) taRanking.textContent = ta.ranking;
+                if (taLink) taLink.href = ta.url;
+            }
         } else {
             direccionEl.textContent = 'Información no disponible por ahora.';
         }

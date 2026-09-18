@@ -1,0 +1,50 @@
+# app/static/css/ruta_salsera.css
+"""
+Estilos mínimos para La Ruta Salsera de Medellín.
+Solo estructura: eventos, curiosidades, fuentes.
+Los componentes principales (cards, timeline, mapa) usan
+estilos de style.css y fase1-diseno.css ya cargados en base.html.
+"""
+
+/* Evento card */
+.ruta-evento-card {
+    background: rgba(30, 27, 38, 0.75);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 193, 7, 0.2);
+    border-radius: 1rem;
+    padding: 1.25rem;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.ruta-evento-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 193, 7, 0.5);
+}
+
+/* Curiosidades (sabías que...) */
+.ruta-curiosidad {
+    background: rgba(30, 27, 38, 0.65);
+    border-left: 3px solid #ffc107;
+    border-radius: 0 0.75rem 0.75rem 0;
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.75rem;
+}
+
+/* Fuentes */
+.ruta-fuente-item {
+    font-size: 0.85rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.ruta-fuente-item:last-child {
+    border-bottom: none;
+}
+
+/* Referencia académica */
+.ruta-referencia {
+    font-size: 0.85rem;
+    color: #adb5bd;
+    font-style: italic;
+}

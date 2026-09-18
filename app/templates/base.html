@@ -121,10 +121,11 @@
                     </li>
 
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle {% if active_page in ['lugares', 'medellin'] %}active{% endif %}" href="#" role="button" data-bs-toggle="dropdown">Lugares</a>
+                        <a class="nav-link dropdown-toggle {% if active_page in ['lugares', 'medellin', 'ruta_salsera'] %}active{% endif %}" href="#" role="button" data-bs-toggle="dropdown">Lugares</a>
                         <ul class="dropdown-menu dropdown-menu-dark">
                             <li><a class="dropdown-item" href="{{ url_for('main.lugares') }}">Mapa y Museos</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('main.medellin') }}">Medellín Capital Salsera</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('main.ruta_salsera') }}">La Ruta Salsera</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('main.son_havana') }}">Son Havana</a></li>
                         </ul>
                     </li>

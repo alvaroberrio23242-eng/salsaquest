@@ -83,6 +83,11 @@ def recursos():
     return render_template('recursos.html', active_page='recursos')
 
 
+@main_bp.route('/ruta-salsera')
+def ruta_salsera():
+    return render_template('ruta_salsera.html', active_page='ruta_salsera')
+
+
 # NOTA: la ruta /api/leaderboard (GET y POST) se quito de aqui. Vivia
 # duplicada tambien en app/routes/auth.py con distinta logica (esa si
 # guarda el registro/lead en la base de datos), y al haber dos rutas

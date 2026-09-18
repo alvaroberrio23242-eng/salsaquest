@@ -6,6 +6,7 @@ from app.models.content_data import (
     MEDELLIN_HISTORIA, MEDELLIN_BARES, MEDELLIN_EMISORAS, MEDELLIN_PLAYLIST_URL, MEDELLIN_PENDIENTE,
     MEDELLIN_EVENTOS, MEDELLIN_CALENDARIO_VIVO_URL, GRAMMY_SALSA, FOTOS_VALIDADAS
 )
+from app.models.ruta_salsera_data import get_ruta_salsera_data
 from app.models.visit_counter import VisitCounter
 
 content_bp = Blueprint('content', __name__)
@@ -107,3 +108,8 @@ def get_visitas():
         return jsonify({"total": total})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+@content_bp.route('/api/ruta-salsera', methods=['GET'])
+def get_ruta_salsera():
+    return jsonify(get_ruta_salsera_data())

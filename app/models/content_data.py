@@ -1171,10 +1171,26 @@ MEDELLIN_BARES = [
         "nombre": "Son Havana (Laureles)",
         "direccion": "Cra. 73 # 44-56, Laureles, Medellín",
         "descripcion": (
-            "Bar insignia de la salsa cubana en la ciudad, con música en "
-            "vivo y clases de baile. Es la sede original; luego abrió una "
-            "segunda sede en El Poblado."
+            "Son Havana — club de salsa y son cubano en Medellín. "
+            "Programación en vivo, reservas, contratación de orquestas "
+            "y merch. Reserva por WhatsApp."
         ),
+        "descripcion Instagram": (
+            "¡Aquí se viene a bailar, gozar, vivir la salsa, y ayudar "
+            "como debe ser!"
+        ),
+        "tagline": "SON HAVANA — ¡La Revolución de la Rumba!",
+        "instagram": "https://instagram.com/sonhavana",
+        "instagram_handle": "@sonhavana",
+        "sitio_web": "https://sonhavana.co",
+        "telefono": "310 515 6550",
+        "whatsapp_url": "https://wa.me/573105156550",
+        "tripadvisor": {
+            "rating": 4.0,
+            "opiniones": 36,
+            "ranking": "58 de 335 en Vida nocturna en Medellín",
+            "url": "https://tripadvisor.es/Attraction_Review-g297478-d9604959-Reviews-Son_Havana-Medellin_Antioquia.html",
+        },
         "lat": 6.2477, "lng": -75.5910,
     },
     {

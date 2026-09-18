@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}La Ruta Salsera de Medellín | SalsaQuest{% endblock %}
+{% block meta_description %}Recorrido por la historia, los lugares, las orquestas y la radio que convirtieron a Medellín en un epicentro de la cultura salsera colombiana.{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/ruta_salsera.css') }}">
+{% endblock %}
+
+{% block content %}
+<section id="ruta-salsera-section">
+    <div class="card border-warning rounded-4 p-4" style="background: rgba(15, 12, 20, 0.72); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);">
+
+        <h3 class="text-warning fw-bold mb-3 titulo-seccion-glass">
+            <i class="fa-solid fa-route me-2"></i>La Ruta Salsera de Medellín
+        </h3>
+
+        <p class="text-light" id="ruta-intro">Cargando...</p>
+
+        <!-- Timeline -->
+        <h5 class="text-warning fw-bold mt-4 mb-2">
+            <i class="fa-solid fa-timeline me-2"></i>Línea del Tiempo
+        </h5>
+        <div id="ruta-timeline-container" class="mb-4">
+            <div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>
+        </div>
+
+        <!-- Lugares -->
+        <h5 class="text-warning fw-bold mt-4 mb-2">
+            <i class="fa-solid fa-map-location-dot me-2"></i>Lugares de la Ruta
+        </h5>
+        <div id="mapa-ruta-salsera" style="height: 360px; border-radius: 1rem; overflow: hidden;" class="mb-3"></div>
+        <p class="small text-secondary mb-3">Direcciones verificadas por varias fuentes, pero horarios y estado actual pueden cambiar — confirma antes de ir.</p>
+        <div id="ruta-lugares-container" class="row g-4 mb-4">
+            <div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>
+        </div>
+
+        <!-- Orquestas -->
+        <h5 class="text-warning fw-bold mt-4 mb-2">
+            <i class="fa-solid fa-music me-2"></i>Orquestas y Artistas de Medellín
+        </h5>
+        <div id="ruta-orquestas-container" class="row g-3 mb-4">
+            <div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>
+        </div>
+
+        <!-- Radio -->
+        <h5 class="text-warning fw-bold mt-4 mb-2">
+            <i class="fa-solid fa-radio me-2"></i>Radio Salsera
+        </h5>
+        <div id="ruta-radio-container" class="row g-3 mb-4">
+            <div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>
+        </div>
+
+        <!-- Sellos -->
+        <h5 class="text-warning fw-bold mt-4 mb-2">
+            <i class="fa-solid fa-compact-disc me-2"></i>Sellos Discográficos
+        </h5>
+        <div id="ruta-sellos-container" class="row g-3 mb-4">
+            <div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>
+        </div>
+
+        <!-- Eventos -->
+        <h5 class="text-warning fw-bold mt-4 mb-2">
+            <i class="fa-solid fa-calendar-days me-2"></i>Próximos Eventos
+        </h5>
+        <div id="ruta-eventos-container" class="row g-3 mb-4">
+            <div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>
+        </div>
+
+        <!-- Sabías que... -->
+        <h5 class="text-warning fw-bold mt-4 mb-2">
+            <i class="fa-solid fa-lightbulb me-2"></i>¿Sabías que...?
+        </h5>
+        <div id="ruta-curiosidades-container" class="mb-4">
+            <div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>
+        </div>
+
+        <!-- Fuentes -->
+        <h5 class="text-warning fw-bold mt-4 mb-2">
+            <i class="fa-solid fa-book me-2"></i>Fuentes y Referencias
+        </h5>
+        <div id="ruta-fuentes-container" class="mb-2">
+            <div class="text-center py-4"><div class="spinner-border text-warning" role="status"></div></div>
+        </div>
+
+        <p class="small text-secondary mt-3 mb-0" id="ruta-disclaimer"></p>
+
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/ruta_salsera.js') }}"></script>
+{% endblock %}
