@@ -1,7 +1,8 @@
 // app/static/js/ruta_salsera.js
-// La Ruta Salsera de Medellín — Frontend module
+// La Ruta Salsera de Medellín — Professional Product Module
 // Fetches /api/ruta-salsera and renders: timeline, venues, map,
 // orchestras, radio, labels, events, curiosities, sources.
+// Adds: category filtering, smooth scroll, enhanced map popups.
 
 (function () {
     "use strict";
@@ -11,7 +12,7 @@
 
     const API = "/api/ruta-salsera";
 
-    // --- helpers ---
+    // ── helpers ──────────────────────────────────────────────────
     function el(tag, attrs, ...children) {
         const e = document.createElement(tag);
         if (attrs) Object.entries(attrs).forEach(([k, v]) => {
@@ -33,28 +34,27 @@
     }
 
     function statusBadge(status) {
-        const colors = {
-            VERIFIED_PRIMARY: "success",
-            VERIFIED_SECONDARY: "info",
-            ATTRIBUTED: "warning",
-            PROBABLE: "secondary",
-            PENDING: "secondary",
-            CONTRADICTED: "danger",
+        const map = {
+            VERIFIED_PRIMARY:   { cls: "success",   label: "Verificado" },
+            VERIFIED_SECONDARY: { cls: "info",      label: "Verificado" },
+            ATTRIBUTED:         { cls: "warning",   label: "Atribuido" },
+            PROBABLE:           { cls: "secondary",  label: "Probable" },
+            PENDING:            { cls: "secondary",  label: "Pendiente" },
+            CONTRADICTED:       { cls: "danger",    label: "Contradictado" },
+            NEEDS_REVIEW:       { cls: "warning",   label: "Revisar" },
+            UNVERIFIED:         { cls: "secondary",  label: "No verificado" },
         };
-        return `<span class="badge bg-${colors[status] || "secondary"} ms-2" style="font-size:0.7rem">${status}</span>`;
+        const info = map[status] || { cls: "secondary", label: status };
+        return `<span class="badge bg-${info.cls} ms-2" style="font-size:0.65rem">${info.label}</span>`;
     }
 
-    // --- renderers ---
+    // ── renderers ────────────────────────────────────────────────
 
     function renderIntro(meta) {
         const intro = document.getElementById("ruta-intro");
-        if (intro) {
-            intro.innerHTML = meta.description;
-        }
+        if (intro) intro.textContent = meta.description;
         const disclaimer = document.getElementById("ruta-disclaimer");
-        if (disclaimer) {
-            disclaimer.textContent = meta.disclaimer || "";
-        }
+        if (disclaimer) disclaimer.textContent = meta.disclaimer || "";
     }
 
     function renderTimeline(events) {
@@ -67,30 +67,30 @@
             return ya - yb;
         });
 
-        const timeline = el("div", { className: "timeline-vertical" });
+        const wrap = el("div", { className: "rs-timeline" });
 
         sorted.forEach(ev => {
-            const item = el("div", { className: "timeline-item mb-3" });
+            const item = el("div", { className: "timeline-item" });
             const yearLabel = ev.year_end
-                ? `${ev.year_start}–${ev.year_end}`
+                ? `${ev.year_start} – ${ev.year_end}`
                 : ev.year_start;
 
             item.innerHTML = `
                 <div class="d-flex align-items-start gap-3">
-                    <div class="text-warning fw-bold fs-5" style="min-width: 90px;">${yearLabel}</div>
+                    <div class="text-warning fw-bold" style="min-width:85px;font-size:0.95rem;">${yearLabel}</div>
                     <div class="flex-grow-1">
-                        <h6 class="text-warning fw-bold mb-1">
+                        <h6 class="text-warning fw-bold mb-1" style="font-family:'Fraunces',serif;font-size:1rem;">
                             ${ev.title}${statusBadge(ev.evidence_status)}
                         </h6>
-                        <p class="text-light small mb-1">${ev.description}</p>
-                        ${ev.attribution ? `<p class="text-secondary small fst-italic mb-0">${ev.attribution}</p>` : ""}
+                        <p class="small mb-1" style="color:var(--rs-muted);line-height:1.6;">${ev.description}</p>
+                        ${ev.attribution ? `<p class="small fst-italic mb-0" style="color:#7a7590;font-size:0.78rem;">${ev.attribution}</p>` : ""}
                     </div>
                 </div>
             `;
-            timeline.appendChild(item);
+            wrap.appendChild(item);
         });
 
-        c.appendChild(timeline);
+        c.appendChild(wrap);
     }
 
     function renderVenues(venues) {
@@ -98,20 +98,24 @@
         if (!c || !venues.length) return;
 
         venues.forEach(v => {
-            const col = el("div", { className: "col-md-4" });
+            const col = el("div", { className: "col-md-4 col-sm-6" });
             col.innerHTML = `
-                <div class="card h-100" style="background: rgba(30, 27, 38, 0.75); backdrop-filter: blur(10px); border: 1px solid rgba(255, 193, 7, 0.2); border-radius: 1rem;">
+                <div class="card h-100">
                     <div class="card-body">
-                        <h6 class="card-title text-warning fw-bold">
-                            ${v.name}${v.is_underground ? ' <i class="fa-solid fa-arrow-down ms-1" style="font-size:0.7rem"></i>' : ""}
+                        <h6 class="card-title fw-bold" style="font-family:'Fraunces',serif;">
+                            ${v.name}${v.is_underground ? ' <i class="fa-solid fa-arrow-down ms-1" style="font-size:0.65rem;opacity:0.6"></i>' : ""}${statusBadge(v.evidence_status)}
                         </h6>
-                        <p class="text-light small mb-1"><i class="fa-solid fa-location-dot me-1 text-warning"></i>${v.address}</p>
-                        ${v.phone ? `<p class="text-light small mb-1"><i class="fa-solid fa-phone me-1 text-warning"></i>${v.phone}</p>` : ""}
-                        ${v.operating_hours ? `<p class="text-light small mb-1"><i class="fa-solid fa-clock me-1 text-warning"></i>${v.operating_hours}</p>` : ""}
-                        <p class="text-secondary small mb-1"><em>${v.music_style}</em></p>
-                        <p class="text-light small">${v.description}</p>
-                        ${v.whatsapp_url ? `<a href="${v.whatsapp_url}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-success mt-1"><i class="fa-brands fa-whatsapp me-1"></i>WhatsApp</a>` : ""}
-                        ${v.external_links?.google_maps ? `<a href="${v.external_links.google_maps}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-warning mt-1"><i class="fa-solid fa-map me-1"></i>Mapa</a>` : ""}
+                        <p class="small mb-1" style="color:var(--rs-text);">
+                            <i class="fa-solid fa-location-dot me-1" style="color:var(--rs-gold)"></i>${v.address}
+                        </p>
+                        ${v.phone ? `<p class="small mb-1" style="color:var(--rs-text);"><i class="fa-solid fa-phone me-1" style="color:var(--rs-gold)"></i>${v.phone}</p>` : ""}
+                        ${v.operating_hours ? `<p class="small mb-1" style="color:var(--rs-text);"><i class="fa-solid fa-clock me-1" style="color:var(--rs-gold)"></i>${v.operating_hours}</p>` : ""}
+                        <p class="small mb-1" style="color:var(--rs-muted);font-style:italic;">${v.music_style}</p>
+                        <p class="small mb-2" style="color:var(--rs-muted);line-height:1.55;">${v.description}</p>
+                        <div class="d-flex gap-2 flex-wrap">
+                            ${v.whatsapp_url ? `<a href="${v.whatsapp_url}" target="_blank" rel="noopener" class="btn btn-sm" style="border:1px solid #25d366;color:#25d366;border-radius:20px;font-size:0.78rem;"><i class="fa-brands fa-whatsapp me-1"></i>WhatsApp</a>` : ""}
+                            ${v.external_links?.google_maps ? `<a href="${v.external_links.google_maps}" target="_blank" rel="noopener" class="btn btn-sm" style="border:1px solid var(--rs-gold);color:var(--rs-gold);border-radius:20px;font-size:0.78rem;"><i class="fa-solid fa-map me-1"></i>Mapa</a>` : ""}
+                        </div>
                     </div>
                 </div>
             `;
@@ -124,17 +128,32 @@
         const mapEl = document.getElementById("mapa-ruta-salsera");
         if (!mapEl || !venues.length) return;
 
-        const map = L.map(mapEl);
+        const map = L.map(mapEl, {
+            scrollWheelZoom: false,
+            zoomControl: true,
+        });
+
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-            attribution: '&copy; OpenStreetMap',
+            attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a>',
             maxZoom: 18,
         }).addTo(map);
+
+        const goldIcon = L.divIcon({
+            className: "rs-marker",
+            html: '<div style="width:14px;height:14px;background:#ffc107;border:2px solid #000;border-radius:50%;box-shadow:0 0 8px rgba(255,193,7,0.5);"></div>',
+            iconSize: [14, 14],
+            iconAnchor: [7, 7],
+        });
 
         const markers = [];
         venues.forEach(v => {
             if (!v.coordinates) return;
-            const m = L.marker([v.coordinates.lat, v.coordinates.lng]).addTo(map);
-            m.bindPopup(`<strong>${v.name}</strong><br>${v.address}`);
+            const m = L.marker([v.coordinates.lat, v.coordinates.lng], { icon: goldIcon }).addTo(map);
+            m.bindPopup(`
+                <strong>${v.name}</strong><br>
+                <span style="color:#a09abc;font-size:0.82rem;">${v.address}</span>
+                ${v.music_style ? `<br><span style="color:#ffc107;font-size:0.78rem;font-style:italic;">${v.music_style}</span>` : ""}
+            `, { maxWidth: 240 });
             markers.push(m);
         });
 
@@ -153,14 +172,16 @@
         orchestras.forEach(o => {
             const col = el("div", { className: "col-md-4 col-sm-6" });
             col.innerHTML = `
-                <div class="card h-100" style="background: rgba(30, 27, 38, 0.75); backdrop-filter: blur(10px); border: 1px solid rgba(255, 193, 7, 0.15); border-radius: 1rem;">
+                <div class="card h-100">
                     <div class="card-body">
-                        <h6 class="card-title text-warning fw-bold">${o.name}${statusBadge(o.evidence_status)}</h6>
-                        ${o.founding_year ? `<p class="text-light small mb-1"><i class="fa-solid fa-calendar me-1 text-warning"></i>${o.founding_year}</p>` : ""}
-                        ${o.label ? `<p class="text-light small mb-1"><i class="fa-solid fa-compact-disc me-1 text-warning"></i>${o.label}</p>` : ""}
-                        <p class="text-light small mb-1">${o.contribution}</p>
-                        ${o.notable_works.length ? `<p class="text-secondary small mb-0"><em>Obras: ${o.notable_works.join(", ")}</em></p>` : ""}
-                        ${o.attribution ? `<p class="text-secondary small fst-italic mt-1 mb-0">${o.attribution}</p>` : ""}
+                        <h6 class="card-title fw-bold" style="font-family:'Fraunces',serif;">
+                            ${o.name}${statusBadge(o.evidence_status)}
+                        </h6>
+                        ${o.founding_year ? `<p class="small mb-1" style="color:var(--rs-text);"><i class="fa-solid fa-calendar me-1" style="color:var(--rs-gold)"></i>${o.founding_year}</p>` : ""}
+                        ${o.label ? `<p class="small mb-1" style="color:var(--rs-text);"><i class="fa-solid fa-compact-disc me-1" style="color:var(--rs-gold)"></i>${o.label}</p>` : ""}
+                        <p class="small mb-1" style="color:var(--rs-muted);line-height:1.55;">${o.contribution}</p>
+                        ${o.notable_works.length ? `<p class="small mb-0" style="color:#7a7590;font-style:italic;">Obras: ${o.notable_works.join(", ")}</p>` : ""}
+                        ${o.attribution ? `<p class="small fst-italic mt-1 mb-0" style="color:#7a7590;font-size:0.75rem;">${o.attribution}</p>` : ""}
                     </div>
                 </div>
             `;
@@ -175,15 +196,15 @@
         radio.forEach(r => {
             const col = el("div", { className: "col-md-6" });
             col.innerHTML = `
-                <div class="card h-100" style="background: rgba(30, 27, 38, 0.75); backdrop-filter: blur(10px); border: 1px solid rgba(255, 193, 7, 0.15); border-radius: 1rem;">
+                <div class="card h-100">
                     <div class="card-body">
-                        <h6 class="card-title text-warning fw-bold">
+                        <h6 class="card-title fw-bold" style="font-family:'Fraunces',serif;">
                             <i class="fa-solid fa-radio me-1"></i>${r.name}${statusBadge(r.evidence_status)}
                         </h6>
-                        <p class="text-light small mb-1"><i class="fa-solid fa-signal me-1 text-warning"></i>${r.frequency}</p>
-                        <p class="text-light small mb-1"><em>"${r.slogan}"</em></p>
-                        <p class="text-light small mb-0">${r.role}</p>
-                        ${r.attribution ? `<p class="text-secondary small fst-italic mt-1 mb-0">${r.attribution}</p>` : ""}
+                        <p class="small mb-1" style="color:var(--rs-text);"><i class="fa-solid fa-signal me-1" style="color:var(--rs-gold)"></i>${r.frequency}</p>
+                        <p class="small mb-1" style="color:var(--rs-muted);font-style:italic;">"${r.slogan}"</p>
+                        <p class="small mb-0" style="color:var(--rs-muted);">${r.role}</p>
+                        ${r.attribution ? `<p class="small fst-italic mt-1 mb-0" style="color:#7a7590;font-size:0.75rem;">${r.attribution}</p>` : ""}
                     </div>
                 </div>
             `;
@@ -198,14 +219,14 @@
         labels.forEach(l => {
             const col = el("div", { className: "col-md-6" });
             col.innerHTML = `
-                <div class="card h-100" style="background: rgba(30, 27, 38, 0.75); backdrop-filter: blur(10px); border: 1px solid rgba(255, 193, 7, 0.15); border-radius: 1rem;">
+                <div class="card h-100">
                     <div class="card-body">
-                        <h6 class="card-title text-warning fw-bold">
+                        <h6 class="card-title fw-bold" style="font-family:'Fraunces',serif;">
                             <i class="fa-solid fa-compact-disc me-1"></i>${l.name}${statusBadge(l.evidence_status)}
                         </h6>
-                        <p class="text-light small mb-1"><i class="fa-solid fa-calendar me-1 text-warning"></i>${l.founding_year} — ${l.founding_location}</p>
-                        <p class="text-light small mb-0">${l.description}</p>
-                        ${l.attribution ? `<p class="text-secondary small fst-italic mt-1 mb-0">${l.attribution}</p>` : ""}
+                        <p class="small mb-1" style="color:var(--rs-text);"><i class="fa-solid fa-calendar me-1" style="color:var(--rs-gold)"></i>${l.founding_year} — ${l.founding_location}</p>
+                        <p class="small mb-0" style="color:var(--rs-muted);line-height:1.55;">${l.description}</p>
+                        ${l.attribution ? `<p class="small fst-italic mt-1 mb-0" style="color:#7a7590;font-size:0.75rem;">${l.attribution}</p>` : ""}
                     </div>
                 </div>
             `;
@@ -221,12 +242,12 @@
             const col = el("div", { className: "col-md-6" });
             col.innerHTML = `
                 <div class="ruta-evento-card">
-                    <h6 class="text-warning fw-bold mb-1">
+                    <h6 class="fw-bold mb-1" style="color:var(--rs-gold);font-family:'Fraunces',serif;">
                         ${ev.title}${statusBadge(ev.evidence_status)}
                     </h6>
-                    <p class="text-light small mb-1"><i class="fa-solid fa-calendar me-1 text-warning"></i>${ev.date}</p>
-                    <p class="text-light small mb-1"><i class="fa-solid fa-location-dot me-1 text-warning"></i>${ev.location}</p>
-                    <p class="text-light small mb-0">${ev.description}</p>
+                    <p class="small mb-1" style="color:var(--rs-text);"><i class="fa-solid fa-calendar me-1" style="color:var(--rs-gold)"></i>${ev.date}</p>
+                    <p class="small mb-1" style="color:var(--rs-text);"><i class="fa-solid fa-location-dot me-1" style="color:var(--rs-gold)"></i>${ev.location}</p>
+                    <p class="small mb-0" style="color:var(--rs-muted);line-height:1.55;">${ev.description}</p>
                 </div>
             `;
             c.appendChild(col);
@@ -240,8 +261,8 @@
         items.forEach(item => {
             const div = el("div", { className: "ruta-curiosidad" });
             div.innerHTML = `
-                <p class="text-light small mb-1">${item.text}</p>
-                ${item.attribution ? `<p class="text-secondary small fst-italic mb-0">${item.attribution}</p>` : ""}
+                <p class="small mb-1" style="color:var(--rs-text);line-height:1.6;">${item.text}</p>
+                ${item.attribution ? `<p class="small fst-italic mb-0" style="color:#7a7590;font-size:0.78rem;">${item.attribution}</p>` : ""}
             `;
             c.appendChild(div);
         });
@@ -254,15 +275,58 @@
         Object.values(sources).forEach(s => {
             const div = el("div", { className: "ruta-fuente-item" });
             div.innerHTML = `
-                <a href="${s.url}" target="_blank" rel="noopener" class="text-warning text-decoration-none">${s.title}</a>
-                <span class="text-secondary ms-1">— ${s.publisher}</span>
-                <span class="badge bg-secondary ms-1" style="font-size:0.65rem">Nivel ${s.source_level}</span>
+                <a href="${s.url}" target="_blank" rel="noopener" style="color:var(--rs-gold);text-decoration:none;">${s.title}</a>
+                <span style="color:var(--rs-muted);margin-left:0.5rem;">— ${s.publisher}</span>
+                <span class="badge bg-secondary ms-1" style="font-size:0.6rem">Nivel ${s.source_level}</span>
             `;
             c.appendChild(div);
         });
     }
 
-    // --- init ---
+    // ── category filter ──────────────────────────────────────────
+
+    function initFilters() {
+        const pills = document.querySelectorAll(".rs-filter-pill");
+        const sections = document.querySelectorAll(".rs-section[data-cat]");
+        if (!pills.length || !sections.length) return;
+
+        pills.forEach(pill => {
+            pill.addEventListener("click", function () {
+                const cat = this.dataset.category;
+
+                pills.forEach(p => p.classList.remove("active"));
+                this.classList.add("active");
+
+                sections.forEach(sec => {
+                    if (cat === "all" || sec.dataset.cat === cat || sec.dataset.cat === "all") {
+                        sec.classList.remove("rs-hidden");
+                    } else {
+                        sec.classList.add("rs-hidden");
+                    }
+                });
+            });
+        });
+    }
+
+    // ── smooth scroll for anchor links ───────────────────────────
+
+    function initSmoothScroll() {
+        document.querySelectorAll('a[href^="#"]').forEach(link => {
+            link.addEventListener("click", function (e) {
+                const target = document.querySelector(this.getAttribute("href"));
+                if (target) {
+                    e.preventDefault();
+                    target.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
+            });
+        });
+    }
+
+    // ── init ─────────────────────────────────────────────────────
+
+    initFilters();
+    initSmoothScroll();
+
     fetch(API)
         .then(r => {
             if (!r.ok) throw new Error(`HTTP ${r.status}`);
@@ -284,7 +348,7 @@
             console.error("Ruta Salsera API error:", err);
             const intro = document.getElementById("ruta-intro");
             if (intro) {
-                intro.innerHTML = '<span class="text-danger">Error al cargar datos. Intenta de nuevo más tarde.</span>';
+                intro.innerHTML = '<span style="color:#ef3f5d;">Error al cargar datos. Intenta de nuevo más tarde.</span>';
             }
         });
 })();

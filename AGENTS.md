@@ -68,3 +68,9 @@ Para generar un `.tar` del proyecto en Git Bash, hacerlo **fuera** de la carpeta
 - No reintroducir el logo neón del navbar (`fa-compact-disc` + `.neon-sign`) — fue eliminado deliberadamente de `base.html`.
 - No usar PowerShell por defecto en este entorno.
 - No modificar nada en modo `build` sin que el usuario lo haya pedido explícitamente para esa tarea — para exploración/auditoría, preferir modo `plan` o el subagente `explore` (solo lectura).
+
+## Seguridad — Secretos
+
+**Nunca incluyas valores reales de API keys, tokens o contraseñas en archivos de documentación (.md), reportes, logs commiteados, ni en ningún archivo que no esté en .gitignore.** Usa siempre placeholders como `YOUR_API_KEY_HERE` o referencias a variables de entorno. Esto aplica para humanos y agentes de IA por igual.
+
+El repo tiene un pre-commit hook (`detect-secrets`) que bloquea automáticamente commits que contengan patrones de secretos. Si necesitas agregar un falso positivo al baseline: `detect-secrets scan --update .secrets.baseline`.

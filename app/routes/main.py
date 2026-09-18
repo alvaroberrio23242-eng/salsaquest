@@ -1,12 +1,12 @@
 # app/routes/main.py
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, redirect, url_for
 
 main_bp = Blueprint('main', __name__)
 
 
 @main_bp.route('/')
 def index():
-    return render_template('inicio.html', active_page='inicio')
+    return redirect(url_for('main.ruta_salsera'))
 
 
 @main_bp.route('/desafio')

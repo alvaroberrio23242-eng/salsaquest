@@ -1,16 +1,29 @@
-.venv/ 
-__pycache__/ 
-*.pyc 
-*.db 
-*.sqlite3 
-.vscode/ 
+.venv/
+__pycache__/
+*.pyc
+*.db
+*.sqlite3
+.vscode/
+
+# Entorno y secretos
 .env
-*.zip
-/models/
-/routes/
-/services/
-/static/
-/templates/
-/__init__.py
+.env.local
+.env.production
+.env.*
+!.env.example
+
+# Backups
+*.bundle
+
+# Base de detect-secrets (no necesita versionarse)
+.secrets.baseline
+
+# Python
+*.egg-info/
+dist/
+build/
+
+# Videos pesados (no se versionan)
 app/static/videos/originales_sin_comprimir/
-app/static/videos/originales_sin_comprimir/
+
+app/static/videos/originales_backup/
