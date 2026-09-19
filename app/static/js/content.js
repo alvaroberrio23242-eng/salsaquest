@@ -610,6 +610,72 @@ async function cargarSonHavana() {
     } catch (e) {
         direccionEl.textContent = 'No se pudo cargar la información de Son Havana.';
     }
+
+    // Galería de fotos y enlaces externos (fuente adicional aislada)
+    try {
+        const extraRes = await fetch('/api/son-havana-extra');
+        const extra = await extraRes.json();
+
+        // -- Galería de fotos --
+        const gallerySection = document.getElementById('son-havana-gallery');
+        const galleryContainer = document.getElementById('son-havana-gallery-container');
+        if (gallerySection && galleryContainer && extra.photos && extra.photos.length) {
+            const cats = {};
+            extra.photos.forEach(p => {
+                const c = p.category || 'otra';
+                if (!cats[c]) cats[c] = [];
+                cats[c].push(p);
+            });
+            const catLabels = {
+                actual: 'Actual', historica: 'Histórica', archivo: 'Archivo',
+                prensa: 'Prensa', oficial_cedida: 'Cedida oficialmente',
+                ilustrativa: 'Ilustrativa', propia: 'Propia', otra: 'Otras',
+            };
+            let html = '';
+            Object.entries(cats).forEach(([cat, photos]) => {
+                html += `<div class="col-12 mb-3">`;
+                html += `<h6 class="text-secondary fw-bold small text-uppercase mb-2">${catLabels[cat] || cat}</h6>`;
+                html += `<div class="d-flex flex-wrap gap-2">`;
+                photos.forEach(p => {
+                    const alt = (p.alt && p.alt.es) || '';
+                    const caption = (p.caption && p.caption.es) || '';
+                    const creditParts = [];
+                    if (p.credit) {
+                        if (p.credit.author) creditParts.push(p.credit.author);
+                        if (p.credit.license) creditParts.push(p.credit.license);
+                    }
+                    html += `<div class="son-havana-photo">`;
+                    html += `<img src="/static/${p.file}" alt="${alt}" loading="lazy" class="img-fluid rounded-3" style="max-height:220px;">`;
+                    if (caption) html += `<small class="text-secondary d-block mt-1">${caption}</small>`;
+                    if (creditParts.length) html += `<small class="text-secondary">${creditParts.join(' · ')}</small>`;
+                    html += `</div>`;
+                });
+                html += `</div></div>`;
+            });
+            galleryContainer.innerHTML = html;
+            gallerySection.style.display = '';
+        }
+
+        // -- Enlaces externos --
+        const extSection = document.getElementById('son-havana-external-links');
+        const extContainer = document.getElementById('son-havana-external-container');
+        if (extSection && extContainer && extra.external_links && extra.external_links.length) {
+            const validLinks = extra.external_links.filter(l => l.url && l.url.trim());
+            if (validLinks.length) {
+                let html = '';
+                validLinks.forEach(l => {
+                    const label = (l.label && l.label.es) || l.platform;
+                    html += `<a href="${l.url}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-secondary btn-sm">`;
+                    html += `${label} <span class="ms-1" aria-hidden="true">&#8599;</span>`;
+                    html += `</a>`;
+                });
+                extContainer.innerHTML = html;
+                extSection.style.display = '';
+            }
+        }
+    } catch (e) {
+        // Silencioso: datos opcionales, no afectan la página principal
+    }
 }
 
 async function cargarMedellin() {
