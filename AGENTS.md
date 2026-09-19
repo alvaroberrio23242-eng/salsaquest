@@ -1,76 +1,112 @@
-# AGENTS.md — SalsaQuest
+# SalsaQuest - Reglas del proyecto
 
-Contexto persistente del repositorio para agentes de IA (OpenCode, y cualquier otro asistente que trabaje aquí). Léelo antes de proponer o ejecutar cambios.
+## Reglas obligatorias
 
-## Qué es este proyecto
+### Git
+- Nunca ejecutes git add, commit, push, reset, rebase ni stash sin mi
+  autorización explícita en el mismo mensaje.
+- Antes de pedir autorización para un commit, muéstrame el git diff.
+- El commit y el push son autorizaciones separadas: que yo autorice el
+  commit NO implica autorización para el push. Espera confirmación
+  explícita para cada uno.
 
-SalsaQuest es una app web interactiva (pensada como museo interactivo de la cultura salsera, no solo trivia) dirigida a turistas en lugares como Son Havana. Incluye storytelling, línea del tiempo histórica, museo de carátulas, biografías de artistas, mapa de lugares emblemáticos, sección Medellín salsera, trivia/desafío como elemento de gamificación, login y cartelera de eventos.
+### Sistema de evidencia (no negociable)
+- Todo contenido histórico o factual debe clasificarse con uno de estos
+  niveles: VERIFIED_PRIMARY, VERIFIED_SECONDARY, ATTRIBUTED, PROBABLE,
+  PENDING, CONTRADICTED, DO_NOT_USE.
+- Nunca presentes información PENDING, PROBABLE o CONTRADICTED como hecho
+  confirmado.
+- Términos subjetivos ("capital salsera", "epicentro", "himno", "el más
+  importante") requieren atribución explícita a una fuente o deben
+  eliminarse — nunca como hecho objetivo.
+- "Content Contract": ningún contenido nuevo (fotos, historias, datos)
+  entra a producción sin verificación equivalente a la auditoría ya
+  hecha. No inventes datos; lo no verificado se marca como PENDING o se
+  omite.
 
-## Stack
+### Opiniones de visitantes y enlaces externos
+- Nunca copies ni parafrasees reseñas de Google, Tripadvisor, Wanderlog
+  ni ninguna otra plataforma. Solo enlaces salientes (target="_blank"
+  rel="noopener noreferrer").
+- Nunca almacenes ni muestres calificaciones numéricas de terceros
+  (rating, score) dentro de SalsaQuest.
+- Antes de etiquetar una cuenta de redes sociales como "oficial",
+  verifica coherencia con el sitio web del lugar y/o prensa — no asumas
+  por el nombre de usuario.
 
-- **Backend:** Python / Flask
-- **Base de datos:** SQLite / SQLAlchemy
-- **Frontend:** HTML5 / CSS3 / JavaScript (sin framework)
-- **Hosting:** Render (deploy en vivo); requiere backend real, no puede vivir en GitHub Pages
-- **Entorno local:** Windows, ruta `D:\Proyectos\sonhavanagame`, terminal Git Bash (MINGW64) — no usar PowerShell salvo excepciones puntuales (ej. `Compress-Archive`)
+### Fotos
+- Solo fuentes reutilizables legalmente: Wikimedia Commons con licencia
+  CC-BY/CC0, material propio, o material con autorización explícita.
+  Nunca descargues masivamente de Google.
+- Categoriza siempre: actual / historica / archivo / prensa /
+  oficial_cedida / ilustrativa / propia.
+- Cada foto necesita datos de crédito (autor, fuente, licencia). No
+  inventes créditos si no los tienes — déjalos vacíos y márcalo como
+  pendiente.
+- Si una foto es people_identifiable=True, no la publiques sin
+  confirmación explícita mía de que hay consentimiento.
 
-## Estructura
+### Secretos
+- No leas ni imprimas valores de .env, SECRET_KEY, DATABASE_URL ni
+  ninguna clave/token, y no los escribas en archivos nuevos.
+- Si encuentras un secreto expuesto, repórtalo solo así:
+  SECRET DETECTED / FILE / LINE / TYPE / SEVERITY — nunca el valor.
+- Verifica si .env está en .gitignore y si hay evidencia de que algún
+  secreto haya estado alguna vez en el historial de git (sin mostrar su
+  contenido). Un secreto que estuvo en el historial se considera
+  comprometido y requiere rotación humana, no borrado del archivo.
 
-```
-app/
-├── routes/       (auth.py, main.py, timeline.py)
-├── models/       (user.py, timeline_data.py, timeline_events_data.py)
-├── services/     (ia_service.py — integración Anthropic, protegida con try/except)
-├── templates/    (index.html, desafio.html, trivia.html, base.html, ...)
-└── static/
-    ├── css/
-    ├── js/       (timeline.js, content.js, video-bg.js, ...)
-    └── videos/   (fondos, comprimidos — ver sección Videos)
-```
+### Alcance y arquitectura
+- Solo D:\Proyectos\salsaquest. No toques otros proyectos ni hagas
+  cambios no relacionados con la tarea.
+- No modifiques la ruta /medellin bajo ningún motivo, aunque parezca
+  relacionada.
+- Los datos editoriales de la Ruta Salsera viven en
+  app/models/ruta_salsera_data.py (diccionarios Python) como fuente
+  única de verdad. No migres esto a SQLite ni cambies esa arquitectura
+  sin que yo lo pida expresamente.
+- Cambios pequeños, modulares y por fases. Antes de tocar código,
+  explica el plan en pocas líneas.
 
-Rutas multipágina reales en `main.py`: `/historia/linea-de-tiempo`, `/historia/eventos-y-records`, `/artistas`, `/musica/caratulas-y-albumes`, `/musica/orquestas-e-instrumentos`, `/lugares`, `/medellin`, `/premios-y-entrevistas`, `/son-havana`, `/grammy`, `/timba`, `/trivia`, `/recursos`, además de `/` y `/desafio`.
+### Rendimiento y accesibilidad
+- Cuida el peso de cualquier multimedia nueva (fotos, animaciones): el
+  hosting es Render plan gratuito, sensible al ancho de banda. Los
+  videos de fondo ya se comprimieron de ~85-105MB a ~20MB; no repitas
+  ese problema con fotos sin optimizar.
+- Respeta siempre prefers-reduced-motion y mantén contraste/legibilidad.
+- El vehículo cultural del mapa (cuando se implemente) debe ser diseño
+  100% original — nunca inspirado en un personaje o marca con derechos
+  de autor.
 
-## Decisiones de arquitectura fijadas (no revertir sin discutirlo)
+### Tests y verificación
+- Después de cambios relevantes, corre la suite de tests tú mismo sin
+  pedir permiso y muéstrame el resultado (total/passed/failed).
+- No inventes resultados ni afirmes que algo funciona si no lo
+  comprobaste ejecutándolo.
+- Si pido "solo lectura" o "solo diagnostica", no modifiques nada.
 
-- **Timeline:** fuente única de datos en `app/models/timeline_events_data.py` (`EVENTOS_TIMELINE`), usada por `init_db.py` y `timeline.py`. No duplicar esa lista en otro lado. Orden cronológico vía regex numérico (`_anio_numerico` en `timeline.py`), **no** alfabético ni por SQL `.asc()`. `/api/timeline` solo siembra la tabla si está vacía (antes se reseteaba en cada visita, causaba "database is locked").
-- **Leaderboard:** `/api/leaderboard` vive únicamente en `auth.py` (se eliminó un duplicado que existía en `main.py`).
-- **Trivia:** `/trivia` está separada de `/` en `main.py`. El endpoint `/api/trivia` en `main.py` (líneas ~86-108) es **código huérfano confirmado** — `timeline.js` usa su propio array local `preguntasQuiz`, ningún archivo hace fetch a `/api/trivia`. Candidato a eliminar.
-- **API keys:** solo en variables de entorno (`.env`). `ANTHROPIC_API_KEY` ya configurada así. Nunca hardcodear claves.
-- **Imágenes:** fotos reales vía Wikimedia Commons (licencias CC-BY/CC0), revisadas a mano. No inventar URLs de imágenes ni usar stock genérico.
-- **Video de fondo:** usa dos elementos `<video>` (`#video-bg-a` / `#video-bg-b`, clase `.video-bg-layer`) para crossfade, controlados por `video-bg.js` (no usar `autoplay` en el HTML). Nunca debe caer a una imagen estática como fallback — siempre video en loop.
-- **Videos comprimidos:** carpeta `app/static/videos` se mantiene comprimida (~20MB total). Los originales sin comprimir van en `originales_sin_comprimir/`, excluida en `.gitignore`. No commitear videos pesados sin comprimir.
+## Estilo de respuesta
+- Español, directo y conciso. Resultados en tablas cuando aplique.
+  Indica rutas como archivo:línea.
 
-## Convenciones de código y estilo
-
-- **Comentarios:** estilo commit profesional, breves. Evitar comentarios narrativos/explicados-para-lector-externo — el dueño del repo necesita poder explicar cualquier cambio con sus propias palabras.
-- **No asumir que un script subido/pegado es el que está en producción** sin confirmarlo (ya pasó con `trivia.js`, que resultó ser el script de `/desafio`, no el de `/trivia`).
-- **Antes de eliminar código sospechoso de estar huérfano**, verificar con grep/búsqueda en todo el repo (routes, templates, JS) que ningún otro archivo lo consume — no asumir por el nombre.
-
-## Estándar de trabajo obligatorio (loop construir-probar-auditar)
-
-Todo cambio de desarrollo sigue el loop: PLANIFICAR → CONSTRUIR → EJECUTAR → PROBAR → AUDITAR → CORREGIR → VOLVER A PROBAR → ENTREGAR. Reglas clave:
-
-- **"Compila/arranca" no es terminado:** comprobar funcionamiento real (páginas abiertas vía HTTP, respuesta real de APIs, imágenes que cargan con content-type correcto, datos que llegan al usuario).
-- **Nunca mostrar:** `None`, `null`, `undefined`, `NaN`, 404, URLs rotas ni texto de debug. Dato faltante → estado explícito profesional ("Imagen no disponible", "Información pendiente de verificación").
-- **Imágenes:** verificar identidad del sujeto por API/fuente (no fiarse del nombre del archivo), que la URL responde y es imagen, y registrar fuente+autor+licencia+URL. Coincidencia dudosa → marcar `NEEDS_REVIEW`, nunca confirmar por similitud.
-- **Sin licencia compatible → placeholder honesto local** (`app/static/img/ficha-placeholder.svg`); nunca usar imagen protegida para llenar el diseño.
-- **Acordes/progresiones:** material didáctico propio declarado como tal en pantalla; no transcribir tabs protegidas.
-- **Regresión:** tras modificar algo, revisar funciones relacionadas (navegación, APIs compartidas, estilos, páginas vecinas).
-- **Evidencia:** reporte final con tabla de casos de prueba (prueba/acción/resultado PASS-FAIL) distinguiendo VERIFICADO EJECUTANDO vs REVISADO POR INSPECCIÓN. No inventar evidencia jamás.
-- **READY solo si:** pruebas críticas pasan, cada requisito del pedido auditado uno a uno, errores corregidos y re-testeados, sin placeholders rotos, sin None visibles, sin errores críticos conocidos.
-
-## Empaquetado
-
-Para generar un `.tar` del proyecto en Git Bash, hacerlo **fuera** de la carpeta del proyecto (si se genera adentro, se auto-incluye). Excluir: `.git`, `.venv`, `__pycache__`, `*.pyc`, `app/static/videos`, `instance`, `node_modules`, `*.tar.gz`.
-
-## Qué NO hacer
-
-- No reintroducir el logo neón del navbar (`fa-compact-disc` + `.neon-sign`) — fue eliminado deliberadamente de `base.html`.
-- No usar PowerShell por defecto en este entorno.
-- No modificar nada en modo `build` sin que el usuario lo haya pedido explícitamente para esa tarea — para exploración/auditoría, preferir modo `plan` o el subagente `explore` (solo lectura).
-
-## Seguridad — Secretos
-
-**Nunca incluyas valores reales de API keys, tokens o contraseñas en archivos de documentación (.md), reportes, logs commiteados, ni en ningún archivo que no esté en .gitignore.** Usa siempre placeholders como `YOUR_API_KEY_HERE` o referencias a variables de entorno. Esto aplica para humanos y agentes de IA por igual.
-
-El repo tiene un pre-commit hook (`detect-secrets`) que bloquea automáticamente commits que contengan patrones de secretos. Si necesitas agregar un falso positivo al baseline: `detect-secrets scan --update .secrets.baseline`.
+## Contexto técnico
+- Stack: Flask + SQLAlchemy + SQLite + Jinja2 + Bootstrap + Leaflet +
+  JavaScript + Gunicorn, desplegado en Render (plan gratuito).
+- Producción: https://salsaquest-1.onrender.com
+- Repositorio: github.com/alvaroberrio23242-eng/salsaquest
+- Arquitectura: multipágina (Flask blueprints). / redirige
+  automáticamente a /ruta-salsera, que es la puerta de entrada principal
+  del sitio.
+- Secciones existentes: historia, línea de tiempo, artistas, orquestas,
+  música, lugares, Son Havana, trivia/desafío, recursos y fuentes.
+- Ruta Salsera (/ruta-salsera): hero con CTA, mapa Leaflet 420px con
+  marcadores dorados con glow, 7 filtros por categoría, timeline
+  vertical, tarjetas con hover, badges de evidencia en español
+  ("Verificado", "Atribuido", "Probable"), SEO básico, accesibilidad
+  (prefers-reduced-motion, sin zoom con rueda del mouse en mobile).
+- Contenido MVP: 14 eventos de línea de tiempo, 3 lugares (El Tíbiri
+  Tábara, Son Havana, El Suave), 11 artistas/orquestas, 1 emisora de
+  radio. Todo en español (inglés/francés quedan para el futuro).
+- Trabajo en curso: galería de fotos y enlaces externos de Son Havana
+  (app/models/son_havana_extra.py, endpoint /api/son-havana-extra),
+  aislado de content_data.py y ruta_salsera_data.py.
