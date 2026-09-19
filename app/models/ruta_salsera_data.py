@@ -698,6 +698,7 @@ RUTA_LUGARES = [
             "google_maps": "https://maps.google.com/?q=Cra+70+%2370-03+Laureles+Medellin",
             "tripadvisor": None,
         },
+        "route_order": 1,
     },
     {
         "id": "son-havana",
@@ -729,6 +730,7 @@ RUTA_LUGARES = [
             "google_maps": "https://maps.google.com/?q=Cra+73+%2344-56+Laureles+Medellin",
             "tripadvisor": "https://tripadvisor.es/Attraction_Review-g297478-d9604959-Reviews-Son_Havana-Medellin_Antioquia.html",
         },
+        "route_order": 2,
     },
     {
         "id": "el-suave",
@@ -760,6 +762,7 @@ RUTA_LUGARES = [
             "google_maps": "https://maps.google.com/?q=Av+33+%2380A-30+Medellin",
             "tripadvisor": None,
         },
+        "route_order": 3,
     },
 ]
 

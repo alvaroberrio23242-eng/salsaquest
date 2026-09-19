@@ -224,6 +224,21 @@
             markers.push(m);
         });
 
+        // Polyline estática conectando los 3 lugares en route_order (Fase 5C.1)
+        const routeVenues = venues
+            .filter(v => v.route_order != null && v.coordinates)
+            .sort((a, b) => a.route_order - b.route_order);
+        let routePolyline = null;
+        if (routeVenues.length >= 2) {
+            const latLngs = routeVenues.map(v => [v.coordinates.lat, v.coordinates.lng]);
+            routePolyline = L.polyline(latLngs, {
+                color: "#ffc107",
+                weight: 3,
+                opacity: 0.8,
+                className: "rs-route-polyline",
+            }).addTo(map);
+        }
+
         if (markers.length) {
             const group = L.featureGroup(markers);
             map.fitBounds(group.getBounds().pad(0.15));
@@ -234,6 +249,7 @@
         // Store map reference for filter sync
         window._rsMap = map;
         window._rsMarkers = markers;
+        window._rsRoutePolyline = routePolyline;
     }
 
     function renderOrchestras(orchestras) {
@@ -394,6 +410,20 @@
         window._rsMarkers.forEach(marker => {
             marker.setOpacity(showMarkers ? 1 : 0);
         });
+
+        // Polyline de ruta (Fase 5C.1): se añade/remueve del mapa junto con los marcadores
+        // (removeLayer/addLayer evita que una polyline oculta intercepte eventos mouse/touch)
+        if (window._rsRoutePolyline && window._rsMap) {
+            if (showMarkers) {
+                if (!window._rsMap.hasLayer(window._rsRoutePolyline)) {
+                    window._rsRoutePolyline.addTo(window._rsMap);
+                }
+            } else {
+                if (window._rsMap.hasLayer(window._rsRoutePolyline)) {
+                    window._rsMap.removeLayer(window._rsRoutePolyline);
+                }
+            }
+        }
     }
 
     // ── smooth scroll for anchor links ───────────────────────────
