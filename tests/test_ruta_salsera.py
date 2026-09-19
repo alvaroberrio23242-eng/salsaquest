@@ -161,3 +161,73 @@ def test_homepage_redirect_follows(client):
     assert resp.status_code == 200
     html = resp.data.decode("utf-8")
     assert "Ruta Salsera" in html
+
+
+# ── T-RS-07: Son Havana extra — galería y enlaces externos ───────
+
+def test_son_havana_extra_returns_200(client):
+    resp = client.get("/api/son-havana-extra")
+    assert resp.status_code == 200
+
+
+def test_son_havana_extra_content_type_json(client):
+    resp = client.get("/api/son-havana-extra")
+    assert "application/json" in resp.content_type
+
+
+def test_son_havana_extra_has_required_keys(client):
+    resp = client.get("/api/son-havana-extra")
+    data = json.loads(resp.data)
+    assert "photos" in data, "Falta la clave 'photos'"
+    assert "external_links" in data, "Falta la clave 'external_links'"
+
+
+def test_son_havana_extra_photos_is_list(client):
+    resp = client.get("/api/son-havana-extra")
+    data = json.loads(resp.data)
+    assert isinstance(data["photos"], list), "'photos' debe ser una lista"
+
+
+def test_son_havana_extra_external_links_is_list(client):
+    resp = client.get("/api/son-havana-extra")
+    data = json.loads(resp.data)
+    assert isinstance(data["external_links"], list), "'external_links' debe ser una lista"
+
+
+def test_son_havana_extra_photo_fields_when_present(client):
+    resp = client.get("/api/son-havana-extra")
+    data = json.loads(resp.data)
+    required = {"id", "file", "category", "credit", "alt", "caption", "people_identifiable"}
+    for photo in data["photos"]:
+        missing = required - set(photo.keys())
+        assert not missing, f"Photo '{photo.get('id')}' falta campos: {missing}"
+
+
+def test_son_havana_extra_link_fields_when_present(client):
+    resp = client.get("/api/son-havana-extra")
+    data = json.loads(resp.data)
+    required = {"id", "kind", "platform", "url", "label"}
+    for link in data["external_links"]:
+        missing = required - set(link.keys())
+        assert not missing, f"Link '{link.get('id')}' falta campos: {missing}"
+
+
+def test_son_havana_extra_no_numerical_ratings(client):
+    """No debe haber calificaciones numéricas de terceros en external_links."""
+    resp = client.get("/api/son-havana-extra")
+    data = json.loads(resp.data)
+    for link in data["external_links"]:
+        assert "rating" not in link, f"Link '{link.get('id')}' tiene campo 'rating' (prohibido)"
+        assert "score" not in link, f"Link '{link.get('id')}' tiene campo 'score' (prohibido)"
+
+
+def test_son_havana_html_has_gallery_section(client):
+    resp = client.get("/son-havana")
+    html = resp.data.decode("utf-8")
+    assert "son-havana-gallery" in html, "Falta sección de galería en HTML"
+
+
+def test_son_havana_html_has_external_links_section(client):
+    resp = client.get("/son-havana")
+    html = resp.data.decode("utf-8")
+    assert "son-havana-external-links" in html, "Falta sección de enlaces externos en HTML"

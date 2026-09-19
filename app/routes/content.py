@@ -7,6 +7,7 @@ from app.models.content_data import (
     MEDELLIN_EVENTOS, MEDELLIN_CALENDARIO_VIVO_URL, GRAMMY_SALSA, FOTOS_VALIDADAS
 )
 from app.models.ruta_salsera_data import get_ruta_salsera_data
+from app.models.son_havana_extra import SON_HAVANA_EXTRA
 from app.models.visit_counter import VisitCounter
 
 content_bp = Blueprint('content', __name__)
@@ -113,3 +114,8 @@ def get_visitas():
 @content_bp.route('/api/ruta-salsera', methods=['GET'])
 def get_ruta_salsera():
     return jsonify(get_ruta_salsera_data())
+
+
+@content_bp.route('/api/son-havana-extra', methods=['GET'])
+def get_son_havana_extra():
+    return jsonify(SON_HAVANA_EXTRA)
