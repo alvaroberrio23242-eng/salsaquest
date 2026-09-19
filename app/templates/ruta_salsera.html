@@ -5,7 +5,7 @@
 {% block og_description %}Mapa interactivo de la cultura salsera en Medellín: lugares, artistas, historia, radio y eventos.{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/ruta_salsera.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/ruta_salsera.css') }}?v=20260918">
 {% endblock %}
 
 {% block content %}
@@ -202,5 +202,5 @@
 {% endblock %}
 
 {% block extra_scripts %}
-<script src="{{ url_for('static', filename='js/ruta_salsera.js') }}"></script>
+<script src="{{ url_for('static', filename='js/ruta_salsera.js') }}?v=20260918"></script>
 {% endblock %}

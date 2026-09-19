@@ -63,6 +63,25 @@ def crear_app():
         from app.models.visit_counter import VisitCounter
         db.create_all()
 
+    # --- Cache-Control headers ---
+    # HTML: no-cache para que el navegador siempre pida la version
+    # mas reciente al servidor (evita contenido desactualizado en
+    # Render o cualquier CDN/browser cache).
+    @app.after_request
+    def set_cache_headers(response):
+        from flask import request
+        if request.path.startswith('/static/'):
+            # Assets estaticos: permitir cache 1 hora (gunicorn sirve
+            # directamente desde disco, no hay CDN intermedio en Render
+            # free tier). Si se agrega CDN en el futuro, subir este TTL.
+            response.headers['Cache-Control'] = 'public, max-age=3600'
+        else:
+            # HTML y APIs: nunca cachear
+            response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+            response.headers['Pragma'] = 'no-cache'
+            response.headers['Expires'] = '0'
+        return response
+
     return app
 
 # Alias para compatibilidad si alguna parte del proyecto busca 'create_app'
