@@ -75,15 +75,20 @@
                 ? `${ev.year_start} – ${ev.year_end}`
                 : ev.year_start;
 
+            // Category badge
+            const catBadge = ev.category ? `<span class="badge bg-secondary ms-2" style="font-size:0.6rem;text-transform:uppercase;letter-spacing:0.05em;">${ev.category}</span>` : "";
+
             item.innerHTML = `
                 <div class="d-flex align-items-start gap-3">
-                    <div class="text-warning fw-bold" style="min-width:85px;font-size:0.95rem;">${yearLabel}</div>
+                    <div class="rs-timeline-year">${yearLabel}</div>
                     <div class="flex-grow-1">
-                        <h6 class="text-warning fw-bold mb-1" style="font-family:'Fraunces',serif;font-size:1rem;">
-                            ${ev.title}${statusBadge(ev.evidence_status)}
+                        <h6 class="rs-timeline-title">
+                            ${ev.title}${statusBadge(ev.evidence_status)}${catBadge}
                         </h6>
-                        <p class="small mb-1" style="color:var(--rs-muted);line-height:1.6;">${ev.description}</p>
-                        ${ev.attribution ? `<p class="small fst-italic mb-0" style="color:#7a7590;font-size:0.78rem;">${ev.attribution}</p>` : ""}
+                        <p class="rs-timeline-desc">${ev.description}</p>
+                        ${ev.location ? `<p class="rs-timeline-location"><i class="fa-solid fa-location-dot me-1"></i>${ev.location}</p>` : ""}
+                        ${ev.people && ev.people.length ? `<p class="rs-timeline-people"><i class="fa-solid fa-user me-1"></i>${ev.people.join(", ")}</p>` : ""}
+                        ${ev.attribution ? `<p class="rs-timeline-attribution">${ev.attribution}</p>` : ""}
                     </div>
                 </div>
             `;
@@ -113,14 +118,44 @@
                         <p class="small mb-1" style="color:var(--rs-muted);font-style:italic;">${v.music_style}</p>
                         <p class="small mb-2" style="color:var(--rs-muted);line-height:1.55;">${v.description}</p>
                         <div class="d-flex gap-2 flex-wrap">
+                            ${v.coordinates ? `<button class="btn btn-sm rs-card-map-btn" data-venue-id="${v.id}" aria-label="Ver ${v.name} en el mapa" style="border:1px solid var(--rs-gold);color:var(--rs-gold);border-radius:20px;font-size:0.78rem;background:transparent;cursor:pointer;"><i class="fa-solid fa-map-location-dot me-1"></i>Ver en mapa</button>` : ""}
                             ${v.whatsapp_url ? `<a href="${v.whatsapp_url}" target="_blank" rel="noopener" class="btn btn-sm" style="border:1px solid #25d366;color:#25d366;border-radius:20px;font-size:0.78rem;"><i class="fa-brands fa-whatsapp me-1"></i>WhatsApp</a>` : ""}
-                            ${v.external_links?.google_maps ? `<a href="${v.external_links.google_maps}" target="_blank" rel="noopener" class="btn btn-sm" style="border:1px solid var(--rs-gold);color:var(--rs-gold);border-radius:20px;font-size:0.78rem;"><i class="fa-solid fa-map me-1"></i>Mapa</a>` : ""}
+                            ${v.external_links?.google_maps ? `<a href="${v.external_links.google_maps}" target="_blank" rel="noopener" class="btn btn-sm" style="border:1px solid var(--rs-muted);color:var(--rs-muted);border-radius:20px;font-size:0.78rem;"><i class="fa-solid fa-map me-1"></i>Google Maps</a>` : ""}
+                            ${v.website ? `<a href="${v.website}" target="_blank" rel="noopener" class="btn btn-sm" style="border:1px solid var(--rs-muted);color:var(--rs-muted);border-radius:20px;font-size:0.78rem;"><i class="fa-solid fa-globe me-1"></i>Web</a>` : ""}
+                            ${v.id === "son-havana" ? `<a href="/son-havana" class="btn btn-sm" style="border:1px solid var(--rs-gold);color:var(--rs-gold);border-radius:20px;font-size:0.78rem;"><i class="fa-solid fa-arrow-right me-1"></i>Ver más</a>` : ""}
                         </div>
                     </div>
                 </div>
             `;
             c.appendChild(col);
         });
+
+        // Add "Ver en mapa" click handlers
+        document.querySelectorAll(".rs-card-map-btn").forEach(btn => {
+            btn.addEventListener("click", function () {
+                const venueId = this.dataset.venueId;
+                focusMapOnVenue(venueId);
+            });
+        });
+    }
+
+    function focusMapOnVenue(venueId) {
+        if (!window._rsMap || !window._rsMarkers) return;
+
+        const marker = window._rsMarkers.find(m => m._venueId === venueId);
+        if (!marker) return;
+
+        // Scroll to map
+        const mapSection = document.getElementById("rs-map-section");
+        if (mapSection) {
+            mapSection.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+
+        // Open popup after scroll
+        setTimeout(() => {
+            window._rsMap.setView(marker.getLatLng(), 16, { animate: true });
+            marker.openPopup();
+        }, 400);
     }
 
     function renderMap(venues) {
@@ -138,22 +173,54 @@
             maxZoom: 18,
         }).addTo(map);
 
-        const goldIcon = L.divIcon({
-            className: "rs-marker",
-            html: '<div style="width:14px;height:14px;background:#ffc107;border:2px solid #000;border-radius:50%;box-shadow:0 0 8px rgba(255,193,7,0.5);"></div>',
-            iconSize: [14, 14],
-            iconAnchor: [7, 7],
-        });
+        // Category-based marker colors
+        const categoryColors = {
+            bar: "#ffc107",
+            club: "#ffc107",
+            discoteca: "#ffc107",
+            restaurante: "#ffc107",
+            default: "#ffc107",
+        };
 
         const markers = [];
         venues.forEach(v => {
             if (!v.coordinates) return;
-            const m = L.marker([v.coordinates.lat, v.coordinates.lng], { icon: goldIcon }).addTo(map);
-            m.bindPopup(`
-                <strong>${v.name}</strong><br>
-                <span style="color:#a09abc;font-size:0.82rem;">${v.address}</span>
-                ${v.music_style ? `<br><span style="color:#ffc107;font-size:0.78rem;font-style:italic;">${v.music_style}</span>` : ""}
-            `, { maxWidth: 240 });
+            const color = categoryColors[v.type] || categoryColors.default;
+            const icon = L.divIcon({
+                className: "rs-marker",
+                html: `<div style="width:16px;height:16px;background:${color};border:2.5px solid #000;border-radius:50%;box-shadow:0 0 10px ${color}80;"></div>`,
+                iconSize: [16, 16],
+                iconAnchor: [8, 8],
+            });
+
+            const m = L.marker([v.coordinates.lat, v.coordinates.lng], { icon }).addTo(map);
+
+            // Enhanced popup content
+            let popupHtml = `<strong>${v.name}</strong>`;
+            if (v.type) {
+                popupHtml += `<div class="rs-popup-type">${v.type}</div>`;
+            }
+            popupHtml += `<div class="rs-popup-addr"><i class="fa-solid fa-location-dot me-1" style="color:var(--rs-gold)"></i>${v.address}</div>`;
+            if (v.music_style) {
+                popupHtml += `<div class="rs-popup-style">${v.music_style}</div>`;
+            }
+            popupHtml += `<div class="rs-popup-actions">`;
+            if (v.whatsapp_url) {
+                popupHtml += `<a href="${v.whatsapp_url}" target="_blank" rel="noopener" class="rs-popup-btn rs-popup-btn-gold"><i class="fa-brands fa-whatsapp me-1"></i>WhatsApp</a>`;
+            }
+            if (v.external_links?.google_maps) {
+                popupHtml += `<a href="${v.external_links.google_maps}" target="_blank" rel="noopener" class="rs-popup-btn rs-popup-btn-outline"><i class="fa-solid fa-map me-1"></i>Mapa</a>`;
+            }
+            if (v.website) {
+                popupHtml += `<a href="${v.website}" target="_blank" rel="noopener" class="rs-popup-btn rs-popup-btn-outline"><i class="fa-solid fa-globe me-1"></i>Web</a>`;
+            }
+            if (v.id === "son-havana") {
+                popupHtml += `<a href="/son-havana" class="rs-popup-btn rs-popup-btn-outline"><i class="fa-solid fa-arrow-right me-1"></i>Ver más</a>`;
+            }
+            popupHtml += `</div>`;
+
+            m.bindPopup(popupHtml, { maxWidth: 280, minWidth: 200 });
+            m._venueId = v.id;
             markers.push(m);
         });
 
@@ -163,6 +230,10 @@
         } else {
             map.setView([6.2477, -75.5910], 14);
         }
+
+        // Store map reference for filter sync
+        window._rsMap = map;
+        window._rsMarkers = markers;
     }
 
     function renderOrchestras(orchestras) {
@@ -304,7 +375,24 @@
                         sec.classList.add("rs-hidden");
                     }
                 });
+
+                // Sync map markers with filter
+                syncMapWithFilter(cat);
             });
+        });
+    }
+
+    function syncMapWithFilter(category) {
+        if (!window._rsMarkers) return;
+
+        // Map only shows venues (physical locations).
+        // Show markers only when "all" or "lugares" is selected.
+        // Hide markers for other categories (historia, musica, artistas, radio, eventos)
+        // since those sections don't have markers on the map.
+        const showMarkers = (category === "all" || category === "lugares");
+
+        window._rsMarkers.forEach(marker => {
+            marker.setOpacity(showMarkers ? 1 : 0);
         });
     }
 
@@ -322,10 +410,63 @@
         });
     }
 
+    // ── sticky nav (appears when scrolling past hero) ────────────
+
+    function initStickyNav() {
+        const stickyNav = document.getElementById("rs-sticky-nav");
+        if (!stickyNav) return;
+
+        const hero = document.querySelector(".rs-hero");
+        const quickNav = document.querySelector(".rs-quick-nav");
+        if (!hero) return;
+
+        const triggerEl = quickNav || hero;
+        const pills = stickyNav.querySelectorAll(".rs-sticky-nav-pill");
+        const sections = document.querySelectorAll(".rs-section[id]");
+
+        // Show/hide sticky nav on scroll
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                stickyNav.classList.toggle("is-visible", !entry.isIntersecting);
+            },
+            { threshold: 0, rootMargin: "-60px 0px 0px 0px" }
+        );
+        observer.observe(triggerEl);
+
+        // Update active pill on scroll
+        const sectionObserver = new IntersectionObserver(
+            (entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.id;
+                        pills.forEach(p => {
+                            p.classList.toggle("active", p.dataset.section === id);
+                        });
+                    }
+                });
+            },
+            { threshold: 0.2, rootMargin: "-80px 0px -60% 0px" }
+        );
+
+        sections.forEach(sec => sectionObserver.observe(sec));
+
+        // Click to scroll
+        pills.forEach(pill => {
+            pill.addEventListener("click", function (e) {
+                e.preventDefault();
+                const target = document.getElementById(this.dataset.section);
+                if (target) {
+                    target.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
+            });
+        });
+    }
+
     // ── init ─────────────────────────────────────────────────────
 
     initFilters();
     initSmoothScroll();
+    initStickyNav();
 
     fetch(API)
         .then(r => {

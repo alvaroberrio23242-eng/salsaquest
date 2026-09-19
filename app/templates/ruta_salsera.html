@@ -10,6 +10,7 @@
 
 {% block content %}
 <section id="ruta-salsera-section">
+    <a href="#rs-map-section" class="rs-skip-link">Saltar al mapa</a>
 
     <!-- ═══ HERO ═══ -->
     <div class="rs-hero">
@@ -21,15 +22,39 @@
             <p class="rs-hero-subtitle">Medellín se escucha. Medellín se baila.</p>
             <p class="rs-hero-desc" id="ruta-intro">Cargando...</p>
             <div class="rs-hero-actions">
-                <a href="#rs-map-section" class="rs-btn rs-btn-primary">
+                <a href="#rs-map-section" class="rs-btn rs-btn-primary" aria-label="Explorar el mapa de la Ruta Salsera">
                     <i class="fa-solid fa-map-location-dot me-1"></i>Explorar la Ruta
                 </a>
-                <a href="#rs-history-section" class="rs-btn rs-btn-outline">
+                <a href="#rs-history-section" class="rs-btn rs-btn-outline" aria-label="Conocer la historia de la Ruta Salsera">
                     <i class="fa-solid fa-timeline me-1"></i>Conocer la Historia
                 </a>
             </div>
         </div>
     </div>
+
+    <!-- ═══ QUICK NAV ═══ -->
+    <nav class="rs-quick-nav" aria-label="Secciones de la Ruta Salsera">
+        <a href="#rs-map-section" class="rs-quick-nav-item"><i class="fa-solid fa-map-location-dot"></i>Mapa</a>
+        <a href="#rs-lugares-section" class="rs-quick-nav-item"><i class="fa-solid fa-martini-glass-citrus"></i>Lugares</a>
+        <a href="#rs-history-section" class="rs-quick-nav-item"><i class="fa-solid fa-landmark"></i>Historia</a>
+        <a href="#rs-musica-section" class="rs-quick-nav-item"><i class="fa-solid fa-compact-disc"></i>Música</a>
+        <a href="#rs-artistas-section" class="rs-quick-nav-item"><i class="fa-solid fa-microphone-lines"></i>Artistas</a>
+        <a href="#rs-radio-section" class="rs-quick-nav-item"><i class="fa-solid fa-radio"></i>Radio</a>
+        <a href="#rs-eventos-section" class="rs-quick-nav-item"><i class="fa-solid fa-calendar-days"></i>Eventos</a>
+    </nav>
+
+    <!-- ═══ STICKY NAV (appears on scroll) ═══ -->
+    <nav class="rs-sticky-nav" id="rs-sticky-nav" aria-label="Navegación rápida de secciones">
+        <div class="rs-sticky-nav-inner">
+            <a href="#rs-map-section" class="rs-sticky-nav-pill active" data-section="rs-map-section"><i class="fa-solid fa-map-location-dot me-1"></i>Mapa</a>
+            <a href="#rs-lugares-section" class="rs-sticky-nav-pill" data-section="rs-lugares-section"><i class="fa-solid fa-martini-glass-citrus me-1"></i>Lugares</a>
+            <a href="#rs-history-section" class="rs-sticky-nav-pill" data-section="rs-history-section"><i class="fa-solid fa-landmark me-1"></i>Historia</a>
+            <a href="#rs-musica-section" class="rs-sticky-nav-pill" data-section="rs-musica-section"><i class="fa-solid fa-compact-disc me-1"></i>Música</a>
+            <a href="#rs-artistas-section" class="rs-sticky-nav-pill" data-section="rs-artistas-section"><i class="fa-solid fa-microphone-lines me-1"></i>Artistas</a>
+            <a href="#rs-radio-section" class="rs-sticky-nav-pill" data-section="rs-radio-section"><i class="fa-solid fa-radio me-1"></i>Radio</a>
+            <a href="#rs-eventos-section" class="rs-sticky-nav-pill" data-section="rs-eventos-section"><i class="fa-solid fa-calendar-days me-1"></i>Eventos</a>
+        </div>
+    </nav>
 
     <!-- ═══ MAPA PROTAGONISTA ═══ -->
     <div class="rs-section" id="rs-map-section">
@@ -39,7 +64,7 @@
             </h2>
             <p class="rs-section-subtitle">Lugares verificados — confirma horarios antes de ir</p>
         </div>
-        <div id="mapa-ruta-salsera" class="rs-map"></div>
+        <div id="mapa-ruta-salsera" class="rs-map" role="img" aria-label="Mapa interactivo de la Ruta Salsera de Medellín"></div>
     </div>
 
     <!-- ═══ FILTROS DE CATEGORÍA ═══ -->
@@ -83,7 +108,7 @@
     </div>
 
     <!-- ═══ LUGARES ═══ -->
-    <div class="rs-section" data-cat="lugares">
+    <div class="rs-section" id="rs-lugares-section" data-cat="lugares">
         <div class="rs-section-header">
             <h2 class="rs-section-title">
                 <i class="fa-solid fa-map-location-dot me-2"></i>Lugares de la Ruta
@@ -96,7 +121,7 @@
     </div>
 
     <!-- ═══ ORQUESTAS ═══ -->
-    <div class="rs-section" data-cat="artistas">
+    <div class="rs-section" id="rs-artistas-section" data-cat="artistas">
         <div class="rs-section-header">
             <h2 class="rs-section-title">
                 <i class="fa-solid fa-music me-2"></i>Orquestas y Artistas
@@ -109,7 +134,7 @@
     </div>
 
     <!-- ═══ RADIO ═══ -->
-    <div class="rs-section" data-cat="radio">
+    <div class="rs-section" id="rs-radio-section" data-cat="radio">
         <div class="rs-section-header">
             <h2 class="rs-section-title">
                 <i class="fa-solid fa-radio me-2"></i>Radio Salsera
@@ -122,7 +147,7 @@
     </div>
 
     <!-- ═══ SELLOS ═══ -->
-    <div class="rs-section" data-cat="musica">
+    <div class="rs-section" id="rs-musica-section" data-cat="musica">
         <div class="rs-section-header">
             <h2 class="rs-section-title">
                 <i class="fa-solid fa-compact-disc me-2"></i>Sellos Discográficos
@@ -135,7 +160,7 @@
     </div>
 
     <!-- ═══ EVENTOS ═══ -->
-    <div class="rs-section" data-cat="eventos">
+    <div class="rs-section" id="rs-eventos-section" data-cat="eventos">
         <div class="rs-section-header">
             <h2 class="rs-section-title">
                 <i class="fa-solid fa-calendar-days me-2"></i>Próximos Eventos
@@ -177,6 +202,5 @@
 {% endblock %}
 
 {% block extra_scripts %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="{{ url_for('static', filename='js/ruta_salsera.js') }}"></script>
 {% endblock %}

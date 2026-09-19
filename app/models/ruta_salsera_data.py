@@ -174,12 +174,124 @@ FUENTES = {
         "source_level": "B",
         "access_date": "2026-09-18",
     },
+    "el-colombiano-son-havana-15": {
+        "source_id": "RS-020",
+        "title": "Atentos, salseros: por sus quince, Son Havana trae a Los Van Van",
+        "author": "El Colombiano",
+        "publisher": "El Colombiano",
+        "url": "https://www.elcolombiano.com/tendencias/son-havana-de-medellin-KJ27595539",
+        "source_level": "B",
+        "access_date": "2026-09-18",
+        "claims_supported": [
+            "Julio Restrepo Molina = fundador de Son Havana",
+            "nacimiento 1970",
+            "barrio Naranjal/San Joaquín",
+            "pasión por la salsa desde niño (familia)",
+            "gomoso, no coleccionista ni experto",
+            "arrendó bar primero, luego abrió Son Havana",
+            "nombre por timba cubana (Los Van Van, etc.)",
+        ],
+    },
+    "el-colombiano-latina-40": {
+        "source_id": "RS-021",
+        "title": "Latina Stéreo: trinchera de la salsa y la alegría",
+        "author": "Sara Kapkin",
+        "publisher": "El Colombiano",
+        "url": "https://www.elcolombiano.com/cultura/musica/latina-stereo-emisora-salsa-aniversario-40-KA31133911",
+        "source_level": "B",
+        "access_date": "2026-09-18",
+        "claims_supported": [
+            "fundada 31 octubre 1985",
+            "antes de salsa: bossa nova y jazz",
+            "Jairo Luis García = locutor legendario",
+            "Elmer Vergara = co-fundador",
+            "primera canción: Cangrejero de Chirivico Dávila",
+        ],
+    },
+    "latinastereo-40-anos": {
+        "source_id": "RS-022",
+        "title": "40 años de Latina — Sitio oficial",
+        "publisher": "Latina Stereo",
+        "url": "https://latinastereo.com/40-anos-de-latina/",
+        "source_level": "A",
+        "access_date": "2026-09-18",
+        "claims_supported": [
+            "hitos: 1985, 1995, 2000, 2010, 2015, 2025",
+            "1985: nace Latina Stereo",
+            "2025: se crea Latina All Stars",
+        ],
+    },
+    "bitacora-eafit-latina": {
+        "source_id": "RS-023",
+        "title": "Latina Stereo: 40 años haciendo latir la salsa en Medellín",
+        "author": "Manuela Pérez Moreno",
+        "publisher": "Bitácora — Universidad EAFIT",
+        "url": "https://bitacora.eafit.edu.co/blog/2026/03/19/latina-stereo-40-anos-haciendo-latir-la-salsa-en-medellin/",
+        "source_level": "C",
+        "access_date": "2026-09-18",
+        "claims_supported": [
+            "fundada 31 octubre 1985 en Envigado",
+            "programación inicial: jazz y bossa nova",
+            "apostó por la salsa cuando era 'música de nicho'",
+            "Pachanga Orquesta y Mulataje difundieron música por Latina",
+            "Diego Aranda = director actual",
+            "casa museo de la emisora",
+        ],
+    },
+    "rendon-zapata-2016": {
+        "source_id": "RS-024",
+        "title": "Apropiaciones, negociaciones y espacialidades de la salsa en Medellín",
+        "author": "Marilly Rendón Zapata",
+        "publisher": "Universidad de Antioquia",
+        "url": "http://hdl.handle.net/10495/14885",
+        "source_level": "A",
+        "access_date": "2026-09-18",
+        "claims_supported": [
+            "salsa como género urbano en Medellín",
+            "método etnográfico: 31 entrevistas, observación participante",
+            "espacialidades de la salsa en la ciudad",
+            "Carrera Palacé y Calle Zea como espacios históricos",
+        ],
+    },
+    "el-colombiano-df-90": {
+        "source_id": "RS-025",
+        "title": "Los 90 años de Discos Fuentes y cinco objetos que hacen parte de la historia de la música colombiana",
+        "author": "Ángel Castaño Guzmán",
+        "publisher": "El Colombiano",
+        "url": "https://www.elcolombiano.com/cultura/musica/historia-de-discos-fuentes-y-cinco-tesoros-que-cuentan-su-historia-KJ25687962",
+        "source_level": "B",
+        "access_date": "2026-09-18",
+        "claims_supported": [
+            "fundación 28 octubre 1934 en Cartagena",
+            "Antonio Fuentes = fundador",
+            "esposa Margarita Estrada de Antioquia",
+            "traslado a Medellín por influencia de esposa y auge industrial",
+        ],
+    },
+    "senal-memoria-df": {
+        "source_id": "RS-026",
+        "title": "Discos Fuentes, una toma global de la música colombiana",
+        "author": "Felipe Arias Escobar",
+        "publisher": "Señal Memoria — RTVC",
+        "url": "https://www.senalmemoria.co/articulos/discos-fuentes-colombia",
+        "source_level": "B",
+        "access_date": "2026-09-18",
+        "claims_supported": [
+            "1934: nacimiento del sello en Cartagena",
+            "1932: Antonio Fuentes inicia aventura radial",
+            "1943: primer prensaje en país (Guillermo Buitrago)",
+            "1960: primer disco sonido estéreo y primeros 14 Cañonazos",
+            "Fuentes ya se había trasladado a Medellín para 1960",
+            "Codiscos 'apareció en 1954' (Posible discrepancia con 1950)",
+        ],
+    },
 }
 
 # ==========================================
 # TIMELINE — LA RUTA SALSERA DE MEDELLÍN
 # ==========================================
-# Solo hechos VERIFIED_PRIMARY o VERIFIED_SECONDARY de la sección G.
+# Solo hechos VERIFIED_PRIMARY, VERIFIED_SECONDARY o documentados con
+# evidencia contradictoria trazable (ej. CONTRADICTED con attribution).
 # Orden cronológico por year_start.
 
 RUTA_TIMELINE = [
@@ -222,23 +334,44 @@ RUTA_TIMELINE = [
         "attribution": None,
     },
     {
-        "id": "discos-fuentes-traslado-1954-1960",
+        "id": "discos-fuentes-instalacion-medellin",
         "year_start": "1954",
-        "year_end": "1960",
+        "year_end": None,
         "category": "industria",
-        "title": "Discos Fuentes se traslada a Medellín",
+        "title": "Discos Fuentes se instala en Medellín",
         "description": (
-            "Entre 1954 y 1960, Discos Fuentes trasladó sus operaciones "
-            "de Cartagena a Medellín, convirtiéndose en el motor productivo "
-            "de la salsa colombiana desde la ciudad."
+            "Discos Fuentes se instaló en el barrio Colón de Medellín "
+            "en 1954, presentando su primer catálogo impreso con 500 títulos. "
+            "Las grabaciones continuaron realizándose en Cartagena durante "
+            "esta transición."
         ),
         "location": "Medellín, Colombia",
         "people": [],
         "organizations": ["Discos Fuentes"],
-        "evidence_status": "CONTRADICTED",
-        "confidence": "medium",
-        "source_ids": ["discos-fuentes-oficial", "discos-fuentes-wikipedia"],
-        "attribution": "Fecha entre 1954 y 1960. Discos Fuentes oficial dice 1960, Wikipedia dice 1954.",
+        "evidence_status": "VERIFIED_PRIMARY",
+        "confidence": "high",
+        "source_ids": ["discos-fuentes-oficial", "discos-fuentes-wikipedia", "el-colombiano-df-90", "senal-memoria-df"],
+        "attribution": None,
+    },
+    {
+        "id": "discos-fuentes-sede-guayabal",
+        "year_start": "1960",
+        "year_end": None,
+        "category": "industria",
+        "title": "Discos Fuentes inaugura sede en Guayabal",
+        "description": (
+            "Discos Fuentes inauguró su nueva sede en el sector de Guayabal, "
+            "con estudio de grabación, planta de duplicación y áreas "
+            "administrativas. La empresa se consolidó definitivamente en "
+            "Medellín como capital de la industria discográfica colombiana."
+        ),
+        "location": "Guayabal, Medellín, Colombia",
+        "people": [],
+        "organizations": ["Discos Fuentes"],
+        "evidence_status": "VERIFIED_PRIMARY",
+        "confidence": "high",
+        "source_ids": ["discos-fuentes-oficial", "discos-fuentes-wikipedia", "el-colombiano-df-90", "senal-memoria-df"],
+        "attribution": None,
     },
     {
         "id": "primeros-14-canonazos-1961",
@@ -340,19 +473,20 @@ RUTA_TIMELINE = [
         "year_start": "1975",
         "year_end": None,
         "category": "orquesta",
-        "title": "\"El Preso\" — Wilson Manyoma",
+        "title": "\"El Preso\" — Fruko y sus Tesos",
         "description": (
-            "\"El Preso\" de Fruko y sus Tesos, con la voz de Wilson "
-            "Manyoma, se convirtió en el himno más reconocible de la salsa "
-            "colombiana y uno de los temas bailables más icónicos del país."
+            "\"El Preso\" de Fruko y sus Tesos, compuesta por Álvaro Velásquez "
+            "e interpretada por Wilson Manyoma \"Saoco\", se convirtió en el "
+            "himno más reconocible de la salsa colombiana. La canción está "
+            "inspirada en la historia de un preso condenado a 30 años de pena."
         ),
         "location": "Medellín, Colombia",
-        "people": ["Wilson Manyoma", "Julio Ernesto Estrada (Fruko)"],
+        "people": ["Wilson Manyoma", "Julio Ernesto Estrada (Fruko)", "Álvaro Velásquez"],
         "organizations": ["Fruko y sus Tesos", "Discos Fuentes"],
         "evidence_status": "VERIFIED_PRIMARY",
         "confidence": "high",
         "source_ids": ["discos-fuentes-oficial"],
-        "attribution": None,
+        "attribution": "Composición de Álvaro Velásquez Balcázar; arreglos de Luis Carlos Montoya. Créditos documentados en fuentes secundarias (Wikipedia, Eje21).",
     },
     {
         "id": "afrosound-1973",
@@ -436,17 +570,18 @@ RUTA_TIMELINE = [
         "category": "radio",
         "title": "Latina Stereo inicia transmisiones",
         "description": (
-            "Latina Stereo comenzó a transmitir en 100.9 FM en Medellín, "
-            "convirtiéndose en la emisora de salsa más emblemática de la "
-            "ciudad con el lema \"Salsa desde 1985\"."
+            "Latina Stereo comenzó a transmitir el 31 de octubre de 1985 "
+            "en 100.9 FM desde Envigado. Inicialmente programaba jazz y "
+            "bossa nova; luego apostó por la salsa como género principal, "
+            "convirtiéndose en la emisora emblemática de la ciudad."
         ),
-        "location": "Medellín, Colombia",
+        "location": "Envigado, Medellín, Colombia",
         "people": [],
         "organizations": ["Latina Stereo"],
         "evidence_status": "VERIFIED_PRIMARY",
         "confidence": "high",
-        "source_ids": ["latina-stereo-oficial"],
-        "attribution": None,
+        "source_ids": ["latina-stereo-oficial", "el-colombiano-latina-40", "latinastereo-40-anos", "bitacora-eafit-latina"],
+        "attribution": "Fundada por Jairo Luis García y Elmer Vergara.",
     },
     {
         "id": "grupo-gale-1989",
@@ -474,16 +609,16 @@ RUTA_TIMELINE = [
         "category": "lugar",
         "title": "Son Havana abre en Laureles",
         "description": (
-            "Son Havana abrió sus puertas en el barrio Laureles como club "
-            "de salsa y son cubano, convirtiéndose en un punto de "
-            "encuentro clave para la comunidad salsera de Medellín."
+            "Son Havana abrió sus puertas en 2010 en el barrio Laureles, "
+            "fundado por el melómano Julio Restrepo Molina. El club se "
+            "consolidó como santuario de la salsa y el son cubano en Medellín."
         ),
-        "location": "Cra. 73 #44-56, Laureles, Medellín",
-        "people": [],
+        "location": "Cra 73 #44-56, Laureles, Medellín",
+        "people": ["Julio Restrepo Molina"],
         "organizations": ["Son Havana"],
         "evidence_status": "VERIFIED_SECONDARY",
         "confidence": "high",
-        "source_ids": ["son-havana-dancefree", "son-havana-evendo"],
+        "source_ids": ["el-colombiano-son-havana-15", "son-havana-dancefree"],
         "attribution": None,
     },
     {
@@ -578,16 +713,17 @@ RUTA_LUGARES = [
         "instagram": "https://instagram.com/sonhavana",
         "website": "https://sonhavana.co",
         "description": (
-            "Club de salsa y son cubano en Medellín. Programación en vivo, "
-            "reservas, contratación de orquestas y merch."
+            "Club de salsa y son cubano fundado en 2010 por Julio Restrepo "
+            "Molina. Programación en vivo, reservas, ruedas de Casino los "
+            "miércoles y contratación de orquestas."
         ),
         "music_style": "Salsa, son cubano, rueda de casino",
         "status": "active",
         "operating_hours": "Mié-Jue hasta medianoche, Vie-Sáb hasta 4am",
         "is_underground": False,
-        "evidence_status": "VERIFIED_PRIMARY",
+        "evidence_status": "VERIFIED_SECONDARY",
         "confidence": "high",
-        "source_ids": ["son-havana-dancefree", "son-havana-evendo"],
+        "source_ids": ["el-colombiano-son-havana-15", "son-havana-dancefree"],
         "attribution": None,
         "external_links": {
             "google_maps": "https://maps.google.com/?q=Cra+73+%2344-56+Laureles+Medellin",
@@ -707,28 +843,28 @@ RUTA_ORQUESTAS = [
         "name": "Pachanga Orquesta",
         "entity_type": "orchestra",
         "founding_year": "~1990",
-        "founding_location": "Barrios Aranjuez/Manrique, Medellín",
+        "founding_location": "Manrique, Medellín",
         "label": None,
-        "related_people": [],
-        "contribution": "Orquesta de barrios populares de Medellín",
-        "notable_works": [],
-        "evidence_status": "VERIFIED_SECONDARY",
+        "related_people": ["Tito Montoya"],
+        "contribution": "Orquesta de barrios populares de Medellín; ganadora del Primer Festival de Orquestas Nuevas de la Feria de Cali (1991)",
+        "notable_works": ["Son de los barrios", "La profecía"],
+        "evidence_status": "ATTRIBUTED",
         "source_ids": [],
-        "attribution": None,
+        "attribution": "Según artículo de Sergio Valencia en Universo Centro (2015) y perfil de Spotify. Información detallada sobre origen barrial y trayectoria verificada.",
     },
     {
         "id": "sonora-8",
         "name": "Sonora 8",
         "entity_type": "orchestra",
         "founding_year": "2003",
-        "founding_location": "Medellín (Latin Core)",
-        "label": None,
-        "related_people": [],
-        "contribution": "Orquesta contemporánea de la escena salsera medellinense",
-        "notable_works": [],
-        "evidence_status": "VERIFIED_SECONDARY",
+        "founding_location": "Medellín",
+        "label": "Latina Stereo Records",
+        "related_people": ["Federico Trujillo", "Mauricio Gómez"],
+        "contribution": "Orquesta contemporánea con estilo 'LatinCore', fusión de salsa con rock, blues, jazz y ritmos del Caribe",
+        "notable_works": ["Especialistas en mecánica general (2004)", "De Pelea (2005)", "Zoonando (2008)"],
+        "evidence_status": "ATTRIBUTED",
         "source_ids": ["latina-stereo-oficial"],
-        "attribution": None,
+        "attribution": "Según perfil de Sonora 8 en Latinastereo.com (c. 2007) y Tsunami Salsero blog (2011).",
     },
     {
         "id": "siguarajazz",
@@ -740,9 +876,9 @@ RUTA_ORQUESTAS = [
         "related_people": [],
         "contribution": "Fusión de jazz y ritmos tropicales en Medellín",
         "notable_works": [],
-        "evidence_status": "VERIFIED_SECONDARY",
+        "evidence_status": "ATTRIBUTED",
         "source_ids": [],
-        "attribution": None,
+        "attribution": "Reconocimiento local en la escena jazzística de Medellín; sin fuente documental específica verificada.",
     },
     {
         "id": "la-pregonera",
@@ -754,9 +890,9 @@ RUTA_ORQUESTAS = [
         "related_people": [],
         "contribution": "Grupo de salsa contemporáneo en Medellín",
         "notable_works": [],
-        "evidence_status": "VERIFIED_SECONDARY",
+        "evidence_status": "ATTRIBUTED",
         "source_ids": [],
-        "attribution": None,
+        "attribution": "Presencia activa en la escena salsera de Medellín; sin fuente documental específica verificada.",
     },
     {
         "id": "la-contundente",
@@ -768,9 +904,9 @@ RUTA_ORQUESTAS = [
         "related_people": [],
         "contribution": "Orquesta de salsa con propuesta propia",
         "notable_works": [],
-        "evidence_status": "VERIFIED_SECONDARY",
+        "evidence_status": "ATTRIBUTED",
         "source_ids": [],
-        "attribution": None,
+        "attribution": "Presencia activa en la escena salsera de Medellín; sin fuente documental específica verificada.",
     },
     {
         "id": "la-malandanza",
@@ -782,9 +918,9 @@ RUTA_ORQUESTAS = [
         "related_people": [],
         "contribution": "Grupo de salsa emergente en Medellín",
         "notable_works": [],
-        "evidence_status": "VERIFIED_SECONDARY",
+        "evidence_status": "ATTRIBUTED",
         "source_ids": [],
-        "attribution": None,
+        "attribution": "Presencia activa en la escena salsera de Medellín; sin fuente documental específica verificada.",
     },
 ]
 
@@ -879,10 +1015,10 @@ RUTA_EVENTOS = [
 RUTA_CURIOSIDADES = [
     {
         "id": "fruko-fruco",
-        "text": "El nombre \"Fruko\" viene de las iniciales de \"FRUCO\" (Federación de la Radio y la Unión Colombiana).",
-        "evidence_status": "VERIFIED_SECONDARY",
-        "source_ids": ["fruko-wikipedia"],
-        "attribution": "Según fuentes secundarias.",
+        "text": "El nombre \"Fruko\" viene del parecido del músico con la muñequita de la famosa salsa de tomate Fruco.",
+        "evidence_status": "ATTRIBUTED",
+        "source_ids": [],
+        "attribution": "Según Radio Nacional de Colombia (2018) y fuentes secundarias. La marca Fruco fue fundada en Cali en 1950.",
     },
     {
         "id": "discos-fuentes-motown",
@@ -929,6 +1065,15 @@ RUTA_REFERENCIAS = [
         "url": "https://www.uc.cl/",
         "type": "academic",
         "relevance": "Análisis de la música tropical colombiana.",
+    },
+    {
+        "id": "rendon-zapata-salsa-medellin",
+        "title": "Apropiaciones, negociaciones y espacialidades de la salsa en Medellín",
+        "author": "Marilly Rendón Zapata",
+        "institution": "Universidad de Antioquia",
+        "url": "http://hdl.handle.net/10495/14885",
+        "type": "academic",
+        "relevance": "Estudio etnográfico sobre la salsa como género urbano en Medellín (31 entrevistas, observación participante, 2015-2016).",
     },
 ]
 
