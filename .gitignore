@@ -1,29 +1,23 @@
+# Python / Virtual Environments
 .venv/
+venv/
+ENV/
+env/
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Databases
 *.db
 *.sqlite3
-.vscode/
+instance/
 
-# Entorno y secretos
+# Configuration & Secrets
 .env
 .env.local
-.env.production
-.env.*
-!.env.example
 
-# Backups
-*.bundle
-
-# Base de detect-secrets (no necesita versionarse)
-.secrets.baseline
-
-# Python
-*.egg-info/
-dist/
-build/
-
-# Videos pesados (no se versionan)
-app/static/videos/originales_sin_comprimir/
-
-app/static/videos/originales_backup/
+# IDEs & System
+.vscode/
+.idea/
+.DS_Store

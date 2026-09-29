@@ -16,10 +16,8 @@ def crear_app():
     """Crea y configura la instancia de la aplicación Flask."""
     app = Flask(__name__)
 
-    # Configuración básica y de la base de datos SQLite
+    # Configuración básica y de la clave secreta
     base_dir = os.path.abspath(os.path.dirname(__file__))
-    # La clave de sesiones NUNCA se hardcodea: sin SECRET_KEY en el
-    # entorno la app se niega a arrancar (fail-fast).
     secret_key = os.environ.get('SECRET_KEY')
     if not secret_key:
         raise RuntimeError(
@@ -27,11 +25,19 @@ def crear_app():
             "entorno antes de arrancar la aplicacion."
         )
     app.config['SECRET_KEY'] = secret_key
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(base_dir, '..', 'sonhavana.db')
+
+    # Configuración dinámica de la Base de Datos (PostgreSQL en Render / SQLite local)
+    db_url = os.environ.get('DATABASE_URL')
+    if db_url:
+        if db_url.startswith("postgres://"):
+            db_url = db_url.replace("postgres://", "postgresql://", 1)
+        app.config['SQLALCHEMY_DATABASE_URI'] = db_url
+    else:
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(base_dir, '..', 'sonhavana.db')
+
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    # "Recordar acceso": cuanto dura la cookie de sesion persistente
-    # cuando el login se hace con remember=True (ver auth.py)
+    # "Recordar acceso": cuánto dura la cookie de sesión persistente
     app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=30)
 
     # Inicializar extensiones
@@ -57,26 +63,18 @@ def crear_app():
 
     # Crear tablas en la base de datos si no existen al arrancar
     with app.app_context():
-        # Importar los modelos para que SQLAlchemy reconozca la estructura
-        from app.models.timeline_data import TimelineData 
+        from app.models.timeline_data import TimelineData
         from app.models.user import User
         from app.models.visit_counter import VisitCounter
         db.create_all()
 
     # --- Cache-Control headers ---
-    # HTML: no-cache para que el navegador siempre pida la version
-    # mas reciente al servidor (evita contenido desactualizado en
-    # Render o cualquier CDN/browser cache).
     @app.after_request
     def set_cache_headers(response):
         from flask import request
         if request.path.startswith('/static/'):
-            # Assets estaticos: permitir cache 1 hora (gunicorn sirve
-            # directamente desde disco, no hay CDN intermedio en Render
-            # free tier). Si se agrega CDN en el futuro, subir este TTL.
             response.headers['Cache-Control'] = 'public, max-age=3600'
         else:
-            # HTML y APIs: nunca cachear
             response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
             response.headers['Pragma'] = 'no-cache'
             response.headers['Expires'] = '0'
