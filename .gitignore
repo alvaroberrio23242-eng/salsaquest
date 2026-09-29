@@ -21,3 +21,7 @@ instance/
 .vscode/
 .idea/
 .DS_Store
+
+# Videos pesados (no se versionan)
+app/static/videos/originales_backup/
+app/static/videos/originales_sin_comprimir/
