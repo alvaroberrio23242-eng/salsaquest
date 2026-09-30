@@ -33,16 +33,41 @@
         return c;
     }
 
+    function safeText(value, fallback) {
+        if (
+            value === null ||
+            value === undefined ||
+            value === "" ||
+            value === "None" ||
+            value === "null" ||
+            value === "undefined"
+        ) {
+            return fallback;
+        }
+        return String(value);
+    }
+
+    function isEmptyValue(value) {
+        return (
+            value === null ||
+            value === undefined ||
+            value === "" ||
+            value === "None" ||
+            value === "null" ||
+            value === "undefined"
+        );
+    }
+
     function statusBadge(status) {
         const map = {
-            VERIFIED_PRIMARY:   { cls: "success",   label: "Verificado" },
-            VERIFIED_SECONDARY: { cls: "info",      label: "Verificado" },
-            ATTRIBUTED:         { cls: "warning",   label: "Atribuido" },
-            PROBABLE:           { cls: "secondary",  label: "Probable" },
-            PENDING:            { cls: "secondary",  label: "Pendiente" },
-            CONTRADICTED:       { cls: "danger",    label: "Contradictado" },
-            NEEDS_REVIEW:       { cls: "warning",   label: "Revisar" },
-            UNVERIFIED:         { cls: "secondary",  label: "No verificado" },
+            VERIFIED_PRIMARY:       { cls: "success",   label: "Verificado" },
+            VERIFIED_SECONDARY:     { cls: "info",      label: "Verificado" },
+            ATTRIBUTED:             { cls: "warning",   label: "Atribuido" },
+            PROBABLE:               { cls: "secondary",  label: "Probable" },
+            PENDING:                { cls: "secondary",  label: "Pendiente" },
+            CONTRADICTED:           { cls: "danger",    label: "En disputa" },
+            NEEDS_REVIEW:           { cls: "warning",   label: "Revisar" },
+            UNVERIFIED:             { cls: "secondary",  label: "No verificado" },
         };
         const info = map[status] || { cls: "secondary", label: status };
         return `<span class="badge bg-${info.cls} ms-2" style="font-size:0.65rem">${info.label}</span>`;
@@ -104,25 +129,44 @@
 
         venues.forEach(v => {
             const col = el("div", { className: "col-md-4 col-sm-6" });
+            const address = safeText(v.address, "Dirección pendiente de verificación");
+            const musicStyle = safeText(v.music_style, "Estilo musical pendiente de verificar");
+            const description = safeText(v.description, "Información pendiente de investigación");
+            const phone = isEmptyValue(v.phone) ? null : v.phone;
+            const hours = isEmptyValue(v.operating_hours) ? null : v.operating_hours;
+            const whatsapp = isEmptyValue(v.whatsapp_url) ? null : v.whatsapp_url;
+            const googleMaps = (v.external_links && !isEmptyValue(v.external_links.google_maps)) ? v.external_links.google_maps : null;
+            const website = isEmptyValue(v.website) ? null : v.website;
+            const showMapBtn = !isEmptyValue(v.coordinates);
+            const showVerMas = v.brand === "son-havana";
+
+            // Status indicator for closed/unknown venues
+            let statusIndicator = "";
+            if (v.status === "closed") {
+                statusIndicator = `<span class="badge bg-danger ms-2" style="font-size:0.65rem">Cerrado</span>`;
+            } else if (v.status === "unknown") {
+                statusIndicator = `<span class="badge bg-warning ms-2" style="font-size:0.65rem">Estado no confirmado</span>`;
+            }
+
             col.innerHTML = `
                 <div class="card h-100">
                     <div class="card-body">
                         <h6 class="card-title fw-bold" style="font-family:'Fraunces',serif;">
-                            ${v.name}${v.is_underground ? ' <i class="fa-solid fa-arrow-down ms-1" style="font-size:0.65rem;opacity:0.6"></i>' : ""}${statusBadge(v.evidence_status)}
+                            ${v.name}${v.is_underground ? ' <i class="fa-solid fa-arrow-down ms-1" style="font-size:0.65rem;opacity:0.6"></i>' : ""}${statusBadge(v.evidence_status)}${statusIndicator}
                         </h6>
                         <p class="small mb-1" style="color:var(--rs-text);">
-                            <i class="fa-solid fa-location-dot me-1" style="color:var(--rs-gold)"></i>${v.address}
+                            <i class="fa-solid fa-location-dot me-1" style="color:var(--rs-gold)"></i>${address}
                         </p>
-                        ${v.phone ? `<p class="small mb-1" style="color:var(--rs-text);"><i class="fa-solid fa-phone me-1" style="color:var(--rs-gold)"></i>${v.phone}</p>` : ""}
-                        ${v.operating_hours ? `<p class="small mb-1" style="color:var(--rs-text);"><i class="fa-solid fa-clock me-1" style="color:var(--rs-gold)"></i>${v.operating_hours}</p>` : ""}
-                        <p class="small mb-1" style="color:var(--rs-muted);font-style:italic;">${v.music_style}</p>
-                        <p class="small mb-2" style="color:var(--rs-muted);line-height:1.55;">${v.description}</p>
+                        ${phone ? `<p class="small mb-1" style="color:var(--rs-text);"><i class="fa-solid fa-phone me-1" style="color:var(--rs-gold)"></i>${phone}</p>` : ""}
+                        ${hours ? `<p class="small mb-1" style="color:var(--rs-text);"><i class="fa-solid fa-clock me-1" style="color:var(--rs-gold)"></i>${hours}</p>` : ""}
+                        <p class="small mb-1" style="color:var(--rs-muted);font-style:italic;">${musicStyle}</p>
+                        <p class="small mb-2" style="color:var(--rs-muted);line-height:1.55;">${description}</p>
                         <div class="d-flex gap-2 flex-wrap">
-                            ${v.coordinates ? `<button class="btn btn-sm rs-card-map-btn" data-venue-id="${v.id}" aria-label="Ver ${v.name} en el mapa" style="border:1px solid var(--rs-gold);color:var(--rs-gold);border-radius:20px;font-size:0.78rem;background:transparent;cursor:pointer;"><i class="fa-solid fa-map-location-dot me-1"></i>Ver en mapa</button>` : ""}
-                            ${v.whatsapp_url ? `<a href="${v.whatsapp_url}" target="_blank" rel="noopener" class="btn btn-sm" style="border:1px solid #25d366;color:#25d366;border-radius:20px;font-size:0.78rem;"><i class="fa-brands fa-whatsapp me-1"></i>WhatsApp</a>` : ""}
-                            ${v.external_links?.google_maps ? `<a href="${v.external_links.google_maps}" target="_blank" rel="noopener" class="btn btn-sm" style="border:1px solid var(--rs-muted);color:var(--rs-muted);border-radius:20px;font-size:0.78rem;"><i class="fa-solid fa-map me-1"></i>Google Maps</a>` : ""}
-                            ${v.website ? `<a href="${v.website}" target="_blank" rel="noopener" class="btn btn-sm" style="border:1px solid var(--rs-muted);color:var(--rs-muted);border-radius:20px;font-size:0.78rem;"><i class="fa-solid fa-globe me-1"></i>Web</a>` : ""}
-                            ${v.id === "son-havana" ? `<a href="/son-havana" class="btn btn-sm" style="border:1px solid var(--rs-gold);color:var(--rs-gold);border-radius:20px;font-size:0.78rem;"><i class="fa-solid fa-arrow-right me-1"></i>Ver más</a>` : ""}
+                            ${showMapBtn ? `<button class="btn btn-sm rs-card-map-btn" data-venue-id="${v.id}" aria-label="Ver ${v.name} en el mapa" style="border:1px solid var(--rs-gold);color:var(--rs-gold);border-radius:20px;font-size:0.78rem;background:transparent;cursor:pointer;"><i class="fa-solid fa-map-location-dot me-1"></i>Ver en mapa</button>` : ""}
+                            ${whatsapp ? `<a href="${whatsapp}" target="_blank" rel="noopener" class="btn btn-sm" style="border:1px solid #25d366;color:#25d366;border-radius:20px;font-size:0.78rem;"><i class="fa-brands fa-whatsapp me-1"></i>WhatsApp</a>` : ""}
+                            ${googleMaps ? `<a href="${googleMaps}" target="_blank" rel="noopener" class="btn btn-sm" style="border:1px solid var(--rs-muted);color:var(--rs-muted);border-radius:20px;font-size:0.78rem;"><i class="fa-solid fa-map me-1"></i>Google Maps</a>` : ""}
+                            ${website ? `<a href="${website}" target="_blank" rel="noopener" class="btn btn-sm" style="border:1px solid var(--rs-muted);color:var(--rs-muted);border-radius:20px;font-size:0.78rem;"><i class="fa-solid fa-globe me-1"></i>Web</a>` : ""}
+                            ${showVerMas ? `<a href="/son-havana" class="btn btn-sm" style="border:1px solid var(--rs-gold);color:var(--rs-gold);border-radius:20px;font-size:0.78rem;"><i class="fa-solid fa-arrow-right me-1"></i>Ver más</a>` : ""}
                         </div>
                     </div>
                 </div>
@@ -200,21 +244,24 @@
             if (v.type) {
                 popupHtml += `<div class="rs-popup-type">${v.type}</div>`;
             }
-            popupHtml += `<div class="rs-popup-addr"><i class="fa-solid fa-location-dot me-1" style="color:var(--rs-gold)"></i>${v.address}</div>`;
-            if (v.music_style) {
-                popupHtml += `<div class="rs-popup-style">${v.music_style}</div>`;
-            }
+            const addr = safeText(v.address, "Dirección pendiente de verificación");
+            popupHtml += `<div class="rs-popup-addr"><i class="fa-solid fa-location-dot me-1" style="color:var(--rs-gold)"></i>${addr}</div>`;
+            const mStyle = safeText(v.music_style, "Estilo musical pendiente de verificar");
+            popupHtml += `<div class="rs-popup-style">${mStyle}</div>`;
             popupHtml += `<div class="rs-popup-actions">`;
-            if (v.whatsapp_url) {
-                popupHtml += `<a href="${v.whatsapp_url}" target="_blank" rel="noopener" class="rs-popup-btn rs-popup-btn-gold"><i class="fa-brands fa-whatsapp me-1"></i>WhatsApp</a>`;
+            const whatsapp = isEmptyValue(v.whatsapp_url) ? null : v.whatsapp_url;
+            const gMaps = (v.external_links && !isEmptyValue(v.external_links.google_maps)) ? v.external_links.google_maps : null;
+            const website = isEmptyValue(v.website) ? null : v.website;
+            if (whatsapp) {
+                popupHtml += `<a href="${whatsapp}" target="_blank" rel="noopener" class="rs-popup-btn rs-popup-btn-gold"><i class="fa-brands fa-whatsapp me-1"></i>WhatsApp</a>`;
             }
-            if (v.external_links?.google_maps) {
-                popupHtml += `<a href="${v.external_links.google_maps}" target="_blank" rel="noopener" class="rs-popup-btn rs-popup-btn-outline"><i class="fa-solid fa-map me-1"></i>Mapa</a>`;
+            if (gMaps) {
+                popupHtml += `<a href="${gMaps}" target="_blank" rel="noopener" class="rs-popup-btn rs-popup-btn-outline"><i class="fa-solid fa-map me-1"></i>Mapa</a>`;
             }
-            if (v.website) {
-                popupHtml += `<a href="${v.website}" target="_blank" rel="noopener" class="rs-popup-btn rs-popup-btn-outline"><i class="fa-solid fa-globe me-1"></i>Web</a>`;
+            if (website) {
+                popupHtml += `<a href="${website}" target="_blank" rel="noopener" class="rs-popup-btn rs-popup-btn-outline"><i class="fa-solid fa-globe me-1"></i>Web</a>`;
             }
-            if (v.id === "son-havana") {
+            if (v.brand === "son-havana") {
                 popupHtml += `<a href="/son-havana" class="rs-popup-btn rs-popup-btn-outline"><i class="fa-solid fa-arrow-right me-1"></i>Ver más</a>`;
             }
             popupHtml += `</div>`;

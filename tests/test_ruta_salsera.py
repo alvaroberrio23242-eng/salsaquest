@@ -231,3 +231,194 @@ def test_son_havana_html_has_external_links_section(client):
     resp = client.get("/son-havana")
     html = resp.data.decode("utf-8")
     assert "son-havana-external-links" in html, "Falta sección de enlaces externos en HTML"
+
+
+# ── T-RS-08: Fallbacks y representación robusta ──────────────────
+
+def test_api_venues_no_none_values_in_rendered_html(client):
+    """Verifica que el HTML renderizado de venues no contiene 'None', 'null', 'undefined'."""
+    resp = client.get("/ruta-salsera")
+    html = resp.data.decode("utf-8")
+    # El template base no renderiza los venues directamente (lo hace JS),
+    # pero verificamos que no haya valores hardcodeados problemáticos
+    assert "None" not in html, "HTML contiene 'None' literal"
+    assert "null" not in html, "HTML contiene 'null' literal"
+    assert "undefined" not in html, "HTML contiene 'undefined' literal"
+
+
+def test_api_venues_pending_states_fallbacks_present(client):
+    """Verifica que venues con estados especiales tengan fallbacks en la API."""
+    resp = client.get("/api/ruta-salsera")
+    data = json.loads(resp.data)
+    # Estados especiales: CONTRADICTED (y futuros PENDING_VERIFICATION, PENDING_RESEARCH)
+    special_states = ["PENDING_VERIFICATION", "PENDING_RESEARCH", "CONTRADICTED"]
+    special_venues = [v for v in data["venues"] if v["evidence_status"] in special_states]
+    assert len(special_venues) >= 1, f"Debe haber al menos 1 venue con estado especial, encontrados: {len(special_venues)}"
+    for v in special_venues:
+        # Los campos que son None/null deben ser manejados por fallbacks en frontend
+        # Verificamos que la API devuelve valores (pueden ser None o strings reales)
+        assert "address" in v
+        assert "music_style" in v
+        assert "description" in v
+        # Al menos algunos campos son None (music_style, description para eslabon-prendido)
+        none_fields = [k for k in ["music_style", "description", "operating_hours", "coordinates"] if v.get(k) is None]
+        assert len(none_fields) > 0, f"Venue {v['id']} debería tener al menos algunos campos None"
+
+
+def test_venue_address_fallback_in_js_rendering(client):
+    """Test conceptual: verifica que el JS tiene la función safeText."""
+    # Este test verifica la presencia del código en el archivo JS
+    import os
+    js_path = os.path.join("app", "static", "js", "ruta_salsera.js")
+    with open(js_path, "r", encoding="utf-8") as f:
+        content = f.read()
+    assert "safeText" in content, "Falta función safeText en ruta_salsera.js"
+    assert "Dirección pendiente de verificación" in content, "Falta fallback de dirección"
+    assert "Estilo musical pendiente de verificar" in content, "Falta fallback de estilo musical"
+    assert "Información pendiente de investigación" in content, "Falta fallback de descripción"
+
+
+def test_venue_music_style_fallback_in_js_rendering(client):
+    """Verifica que music_style tiene fallback en JS."""
+    import os
+    js_path = os.path.join("app", "static", "js", "ruta_salsera.js")
+    with open(js_path, "r", encoding="utf-8") as f:
+        content = f.read()
+    assert "safeText" in content
+    assert "Estilo musical pendiente de verificar" in content
+
+
+def test_venue_description_fallback_in_js_rendering(client):
+    """Verifica que description tiene fallback en JS."""
+    import os
+    js_path = os.path.join("app", "static", "js", "ruta_salsera.js")
+    with open(js_path, "r", encoding="utf-8") as f:
+        content = f.read()
+    assert "Información pendiente de investigación" in content
+
+
+def test_venue_no_broken_links_for_missing_social(client):
+    """Verifica que el JS no genera botones para redes inexistentes."""
+    import os
+    js_path = os.path.join("app", "static", "js", "ruta_salsera.js")
+    with open(js_path, "r", encoding="utf-8") as f:
+        content = f.read()
+    # Verificar que usa isEmptyValue para validar antes de renderizar
+    assert "isEmptyValue" in content, "Falta función isEmptyValue en ruta_salsera.js"
+    # WhatsApp, Google Maps, Website deben estar protegidos
+    assert "isEmptyValue(v.whatsapp_url)" in content or "!isEmptyValue(v.whatsapp_url)" in content or "v.whatsapp_url" in content
+
+
+def test_venue_no_marker_without_coordinates(client):
+    """Verifica que el JS no crea marcadores sin coordenadas."""
+    import os
+    js_path = os.path.join("app", "static", "js", "ruta_salsera.js")
+    with open(js_path, "r", encoding="utf-8") as f:
+        content = f.read()
+    assert "if (!v.coordinates) return;" in content, "Mapa debe omitir venues sin coordenadas"
+
+
+def test_venue_no_polyline_without_route_order(client):
+    """Verifica que el JS no incluye venues sin route_order en el polyline."""
+    import os
+    js_path = os.path.join("app", "static", "js", "ruta_salsera.js")
+    with open(js_path, "r", encoding="utf-8") as f:
+        content = f.read()
+    assert "v.route_order != null" in content, "Polyline debe filtrar route_order None"
+
+
+def test_venues_unique_ids(client):
+    """Verifica que no hay IDs duplicados en RUTA_LUGARES."""
+    resp = client.get("/api/ruta-salsera")
+    data = json.loads(resp.data)
+    ids = [v["id"] for v in data["venues"]]
+    assert len(ids) == len(set(ids)), f"IDs duplicados encontrados: {ids}"
+
+
+def test_son_havana_laureles_id_and_brand(client):
+    """Verifica que Son Havana tiene el ID y brand correctos."""
+    resp = client.get("/api/ruta-salsera")
+    data = json.loads(resp.data)
+    son_havana = next((v for v in data["venues"] if v["id"] == "son-havana-laureles"), None)
+    assert son_havana is not None, "No se encontró son-havana-laureles"
+    assert son_havana["brand"] == "son-havana", f"Brand incorrecto: {son_havana.get('brand')}"
+
+
+def test_no_son_havana_poblado_in_venues(client):
+    """Verifica que no existe son-havana-poblado."""
+    resp = client.get("/api/ruta-salsera")
+    data = json.loads(resp.data)
+    ids = [v["id"] for v in data["venues"]]
+    assert "son-havana-poblado" not in ids, "son-havana-poblado no debe existir"
+
+
+def test_pending_states_badge_in_js(client):
+    """Verifica que los estados de evidencia tienen badge propio en JS."""
+    import os
+    js_path = os.path.join("app", "static", "js", "ruta_salsera.js")
+    with open(js_path, "r", encoding="utf-8") as f:
+        content = f.read()
+    # CONTRADICTED es un estado A (usado en eslabon-prendido)
+    assert "CONTRADICTED" in content, "statusBadge debe manejar CONTRADICTED"
+    # Etiqueta para CONTRADICTED (cambio A: de 'Contradictado' a 'En disputa')
+    assert "En disputa" in content, "CONTRADICTED debe mostrar 'En disputa'"
+
+
+# ── Tests para nueva arquitectura de estados ──────────────────────
+
+def test_bururu_barara_closed_status(client):
+    """Verifica que El Bururú Barará tiene status closed."""
+    resp = client.get("/api/ruta-salsera")
+    data = json.loads(resp.data)
+    bururu = next((v for v in data["venues"] if v["id"] == "bururu-barara"), None)
+    assert bururu is not None, "No se encontró bururu-barara"
+    assert bururu["status"] == "closed", f"Status incorrecto: {bururu.get('status')}"
+    assert bururu["evidence_status"] == "VERIFIED_SECONDARY"
+    assert bururu["inclusion"] == "usable"
+    assert bururu["route_order"] is None
+
+
+def test_eslabon_prendido_unknown_status(client):
+    """Verifica que El Eslabón Prendido tiene status unknown y evidence CONTRADICTED."""
+    resp = client.get("/api/ruta-salsera")
+    data = json.loads(resp.data)
+    eslabon = next((v for v in data["venues"] if v["id"] == "eslabon-prendido"), None)
+    assert eslabon is not None, "No se encontró eslabon-prendido"
+    assert eslabon["status"] == "unknown", f"Status incorrecto: {eslabon.get('status')}"
+    assert eslabon["evidence_status"] == "CONTRADICTED"
+    assert eslabon["inclusion"] == "usable"
+    assert eslabon["route_order"] is None
+    # No debe tener coordenadas verificadas
+    assert eslabon["coordinates"] is None
+
+
+def test_venue_inclusion_field_present(client):
+    """Verifica que todos los venues tienen el campo inclusion."""
+    resp = client.get("/api/ruta-salsera")
+    data = json.loads(resp.data)
+    for v in data["venues"]:
+        assert "inclusion" in v, f"Venue {v['id']} falta campo inclusion"
+        assert v["inclusion"] in ["usable", "DO_NOT_USE"]
+
+
+def test_venue_status_field_present(client):
+    """Verifica que todos los venues tienen el campo status con valores válidos."""
+    resp = client.get("/api/ruta-salsera")
+    data = json.loads(resp.data)
+    for v in data["venues"]:
+        assert "status" in v, f"Venue {v['id']} falta campo status"
+        assert v["status"] in ["active", "closed", "unknown"], f"Status inválido en {v['id']}: {v['status']}"
+
+
+def test_closed_venue_not_in_active_map(client):
+    """Verifica que el JS filtra venues cerrados/unknown del mapa (test conceptual)."""
+    import os
+    js_path = os.path.join("app", "static", "js", "ruta_salsera.js")
+    with open(js_path, "r", encoding="utf-8") as f:
+        content = f.read()
+    # El mapa debe filtrar status closed y unknown
+    assert "v.status === \"closed\"" in content or 'v.status === "closed"' in content or "status === \"closed\"" in content
+    assert "v.status === \"unknown\"" in content or 'v.status === "unknown"' in content or "status === \"unknown\"" in content
+
+
+

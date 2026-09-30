@@ -285,6 +285,54 @@ FUENTES = {
             "Codiscos 'apareció en 1954' (Posible discrepancia con 1950)",
         ],
     },
+    "eleslabon-wix": {
+        "source_id": "RS-027",
+        "title": "El Eslabón Prendido — Sitio oficial (Wix)",
+        "publisher": "El Eslabón Prendido",
+        "url": "https://eleslabonprendido0.wixsite.com/el-eslabon-prendido",
+        "source_level": "A",
+        "access_date": "2026-09-29",
+    },
+    "elcolombiano-cierre-2020": {
+        "source_id": "RS-028",
+        "title": "El bar de salsa El Eslabón Prendido cierra sus puertas en Medellín",
+        "author": "Jaime Horacio Arango Duque",
+        "publisher": "El Colombiano",
+        "url": "https://www.elcolombiano.com/cultura/el-bar-de-salsa-el-eslabon-prendido-cierra-sus-puertas-en-medellin-KI13399113",
+        "source_level": "B",
+        "access_date": "2026-09-29",
+        "claims_supported": [
+            "Cierre definitivo el 14/03/2020",
+            "Abrió en agosto de 1999",
+            "Música en vivo martes, jueves y sábado",
+        ],
+    },
+    "donjuan-recomienda": {
+        "source_id": "RS-029",
+        "title": "Templos salseros de Medellín — Recomendados por Don Juan",
+        "publisher": "padondejuan.com",
+        "url": "https://padondejuan.com/turismo",
+        "source_level": "C",
+        "access_date": "2026-09-29",
+        "claims_supported": [
+            "Dirección: Cl. 53 #42-55, Centro",
+            "Martes: salsa en vivo 8:00 pm",
+            "Recomendación activa 2023-2024",
+        ],
+    },
+    "dancefree-bares-2018": {
+        "source_id": "RS-030",
+        "title": "Bares de Salsa en Medellín — DANCEFREE",
+        "publisher": "Dancefree",
+        "url": "https://www.dancefree.com.co/diario/bares-de-salsa-en-medellin",
+        "source_level": "B",
+        "access_date": "2026-09-29",
+        "claims_supported": [
+            "Bururú Barará: Cerrado actualmente",
+            "Dirección: Calle 44 San Juan #71-73",
+            "Estilo: Salsa clásica, bolero, son",
+        ],
+    },
 }
 
 # ==========================================
@@ -699,9 +747,10 @@ RUTA_LUGARES = [
             "tripadvisor": None,
         },
         "route_order": 1,
+        "inclusion": "usable",
     },
     {
-        "id": "son-havana",
+        "id": "son-havana-laureles",
         "name": "Son Havana",
         "type": "club",
         "address": "Cra 73 #44-56, Florida Nueva, Laureles, Medellín",
@@ -731,6 +780,8 @@ RUTA_LUGARES = [
             "tripadvisor": "https://tripadvisor.es/Attraction_Review-g297478-d9604959-Reviews-Son_Havana-Medellin_Antioquia.html",
         },
         "route_order": 2,
+        "brand": "son-havana",
+        "inclusion": "usable",
     },
     {
         "id": "el-suave",
@@ -763,6 +814,75 @@ RUTA_LUGARES = [
             "tripadvisor": None,
         },
         "route_order": 3,
+        "inclusion": "usable",
+    },
+    {
+        "id": "eslabon-prendido",
+        "name": "El Eslabón Prendido",
+        "type": "bar",
+        "address": "Calle 53 #42-55, Centro, Medellín",
+        "neighborhood": "Centro",
+        "city": "Medellín",
+        "coordinates": None,
+        "phone": "3155304125",
+        "whatsapp_url": None,
+        "facebook": "https://www.facebook.com/eleslabonprendidomedellin/",
+        "instagram": None,
+        "website": "https://eleslabonprendido0.wixsite.com/el-eslabon-prendido",
+        "description": None,
+        "music_style": None,
+        "status": "unknown",
+        "operating_hours": None,
+        "is_underground": False,
+        "evidence_status": "CONTRADICTED",
+        "confidence": "medium",
+        "source_ids": ["eleslabon-wix", "elcolombiano-cierre-2020", "donjuan-recomienda"],
+        "attribution": (
+            "El Colombiano reportó el cierre definitivo el 14/03/2020. "
+            "Existen registros/reseñas posteriores (sitio Wix, recomendaciones 2023-2024) "
+            "que sugieren actividad, pero no permiten confirmar que se trate del mismo "
+            "establecimiento actualmente operativo."
+        ),
+        "external_links": {
+            "google_maps": "https://maps.google.com/?q=Calle+53+%2342-55+Centro+Medellin",
+            "tripadvisor": None,
+        },
+        "route_order": None,
+        "inclusion": "usable",
+    },
+    {
+        "id": "bururu-barara",
+        "name": "El Bururú Barará",
+        "type": "viejoteca",
+        "address": "Calle 44 San Juan #71-73, Medellín",
+        "neighborhood": "San Juan",
+        "city": "Medellín",
+        "coordinates": None,
+        "phone": None,
+        "whatsapp_url": None,
+        "facebook": None,
+        "instagram": None,
+        "website": None,
+        "description": (
+            "Viejoteca de culto: bar dedicado casi por completo a "
+            "vinilos de salsa y música antillana clásica, en el corazón de "
+            "la zona salsera de San Juan. Cerrado definitivamente según "
+            "registro Dancefree (2018)."
+        ),
+        "music_style": "Salsa clásica, bolero, son",
+        "status": "closed",
+        "operating_hours": None,
+        "is_underground": False,
+        "evidence_status": "VERIFIED_SECONDARY",
+        "confidence": "high",
+        "source_ids": ["dancefree-bares-2018"],
+        "attribution": "Dancefree (2018) lo lista como 'Cerrado actualmente'. No hay evidencia de reapertura.",
+        "external_links": {
+            "google_maps": None,
+            "tripadvisor": None,
+        },
+        "route_order": None,
+        "inclusion": "usable",
     },
 ]
 
