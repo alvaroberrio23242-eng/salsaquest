@@ -2,7 +2,7 @@
 # SalsaQuest — Project Report & Roadmap
 
 ## 📊 Estado Actual
-- Suite de Pruebas: 26/26 tests pasados.
+- Suite de Pruebas: 43/43 tests pasados.
 - Infraestructura: Archivos render.yaml, requirements.txt (psycopg2-binary) y soporte dinámico DATABASE_URL configurados.
 - Despliegue: Preparado para sincronización automática en Render.
 

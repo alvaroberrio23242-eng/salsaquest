@@ -13,4 +13,4 @@ SalsaQuest is a Flask-based web application providing a cultural and historical 
 1. **Preserve Business Logic:** Never modify `app/content_data.py` or blueprint structures without explicit authorization.
 2. **Database URLs:** Always ensure `DATABASE_URL` replaces `postgres://` with `postgresql://`.
 3. **Evidence-Based Historical Content:** Do NOT fabricate historical events, locations, or dates. Maintain research entries in `docs/research/`.
-4. **Testing Integrity:** All 26 test cases must pass (`python -m pytest`) before any commit/push.
+4. **Testing Integrity:** All 43 test cases must pass (`python -m pytest`) before any commit/push.
