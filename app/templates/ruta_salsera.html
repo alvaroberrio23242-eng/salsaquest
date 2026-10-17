@@ -5,7 +5,7 @@
 {% block og_description %}Mapa interactivo de la cultura salsera en Medellín: lugares, artistas, historia, radio y eventos.{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/ruta_salsera.css') }}?v=20260918">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/ruta_salsera.css') }}?v=20261017">
 {% endblock %}
 
 {% block content %}
@@ -19,6 +19,7 @@
                 <i class="fa-solid fa-route me-1"></i>SALSAQUEST
             </span>
             <h1 class="rs-hero-title">La Ruta Salsera</h1>
+            <p class="hero-slogan-pulse mb-2">Aqu&iacute; la salsa importa</p>
             <p class="rs-hero-subtitle">Medellín se escucha. Medellín se baila.</p>
             <p class="rs-hero-desc" id="ruta-intro">Cargando...</p>
             <div class="rs-hero-actions">
@@ -64,7 +65,28 @@
             </h2>
             <p class="rs-section-subtitle">Lugares verificados — confirma horarios antes de ir</p>
         </div>
-        <div id="mapa-ruta-salsera" class="rs-map" role="img" aria-label="Mapa interactivo de la Ruta Salsera de Medellín"></div>
+        <div class="rs-map-wrap">
+            <div id="mapa-ruta-salsera" class="rs-map" role="img" aria-label="Mapa interactivo de la Ruta Salsera de Medellín"></div>
+            <div id="rs-map-status" class="rs-status" role="status">Cargando lugares...</div>
+        </div>
+    </div>
+
+    <!-- ═══ LUGARES ═══ -->
+    <div class="rs-section" id="rs-lugares-section" data-cat="lugares">
+        <div class="rs-section-header">
+            <h2 class="rs-section-title">
+                <i class="fa-solid fa-map-location-dot me-2"></i>Lugares de la Ruta
+            </h2>
+            <p class="rs-section-subtitle">Bares, clubes y espacios salseros de Medellín</p>
+        </div>
+        <div class="rs-toolbar">
+            <input id="rs-search" class="rs-search" type="search" placeholder="Buscar bar, barrio, estilo..." autocomplete="off" aria-label="Buscar lugares">
+            <div class="rs-chips" id="rs-type-chips" role="group" aria-label="Tipo de lugar" hidden></div>
+            <p class="rs-count"><b id="rs-count">0</b> <span id="rs-count-label">lugares</span> <button type="button" id="rs-reset" class="rs-reset" hidden>Reiniciar</button></p>
+        </div>
+        <div id="ruta-lugares-container" class="row g-4">
+            <div class="rs-spinner"><div class="spinner-border text-warning" role="status"></div></div>
+        </div>
     </div>
 
     <!-- ═══ FILTROS DE CATEGORÍA ═══ -->
@@ -103,19 +125,6 @@
             <p class="rs-section-subtitle">De Discos Fuentes al underground contemporáneo</p>
         </div>
         <div id="ruta-timeline-container" class="rs-timeline-wrap">
-            <div class="rs-spinner"><div class="spinner-border text-warning" role="status"></div></div>
-        </div>
-    </div>
-
-    <!-- ═══ LUGARES ═══ -->
-    <div class="rs-section" id="rs-lugares-section" data-cat="lugares">
-        <div class="rs-section-header">
-            <h2 class="rs-section-title">
-                <i class="fa-solid fa-map-location-dot me-2"></i>Lugares de la Ruta
-            </h2>
-            <p class="rs-section-subtitle">Bares, clubes y espacios salseros de Medellín</p>
-        </div>
-        <div id="ruta-lugares-container" class="row g-4">
             <div class="rs-spinner"><div class="spinner-border text-warning" role="status"></div></div>
         </div>
     </div>
@@ -202,5 +211,5 @@
 {% endblock %}
 
 {% block extra_scripts %}
-<script src="{{ url_for('static', filename='js/ruta_salsera.js') }}?v=20260918"></script>
+<script src="{{ url_for('static', filename='js/ruta_salsera.js') }}?v=20261017"></script>
 {% endblock %}

@@ -832,3 +832,43 @@
 .rs-skip-link:focus {
     top: 0;
 }
+
+/* RS-MAP-V2 (mapa y lugares, portado de la Ruta Rockera) */
+.rs-map-wrap{position:relative}
+.rs-map-wrap .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.85) contrast(.9) saturate(.5)}
+.rs-status{position:absolute;left:12px;bottom:12px;z-index:500;max-width:calc(100% - 24px);padding:.35rem .7rem;border-radius:999px;background:rgba(20,17,32,.9);border:1px solid var(--rs-border);color:#dcdce6;font-size:.78rem;pointer-events:none}
+.rs-pin-wrap{background:transparent;border:0}
+.rs-pin{display:block;width:14px;height:14px;margin:4px;border-radius:50%;background:var(--c,#ffc107);box-shadow:0 0 0 3px rgba(0,0,0,.55),0 0 14px var(--c,#ffc107);transition:transform .15s ease}
+.rs-pin-hot .rs-pin,.leaflet-marker-icon:hover .rs-pin{transform:scale(1.55)}
+.rs-tip{background:#141120;color:#fff;border:1px solid rgba(255,193,7,.35);font-weight:600;font-size:.8rem;box-shadow:0 4px 14px rgba(0,0,0,.5)}
+.leaflet-tooltip-top.rs-tip::before{border-top-color:#141120}
+.rs-map .leaflet-bar{border:1px solid rgba(255,255,255,.25);box-shadow:none}
+.rs-map .leaflet-bar a{background:#141120;color:#fff;border-bottom:1px solid rgba(255,255,255,.18)}
+.rs-map .leaflet-bar a:hover{background:#221c34;color:var(--rs-gold)}
+.rs-map .leaflet-bar a.leaflet-disabled{background:#141120;color:#555}
+.rs-map .leaflet-control-attribution{background:rgba(20,17,32,.85);color:#b9b9c8}
+.rs-map .leaflet-control-attribution a{color:var(--rs-gold)}
+.rs-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:.7rem 1rem;margin-bottom:1.2rem}
+.rs-search{flex:1 1 240px;max-width:380px;padding:.65rem .85rem;border-radius:12px;color:var(--rs-text);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.2);font:inherit;outline:none;transition:border-color .2s,box-shadow .2s}
+.rs-search:focus{border-color:var(--rs-gold);box-shadow:0 0 0 3px var(--rs-gold-dim)}
+.rs-chips{display:flex;flex-wrap:wrap;gap:.4rem}
+.rs-chips[hidden]{display:none}
+.rs-chip{font:inherit;font-size:.82rem;font-weight:600;padding:.4rem .8rem;border-radius:999px;cursor:pointer;color:var(--rs-text);background:transparent;border:1px solid rgba(255,255,255,.28);display:inline-flex;align-items:center;gap:.4rem;transition:background .2s,border-color .2s}
+.rs-chip:hover{border-color:#fff}
+.rs-chip.on{background:var(--rs-gold);border-color:var(--rs-gold);color:#14101f}
+.rs-dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c)}
+.rs-chip.on .rs-dot{background:#14101f;box-shadow:none}
+.rs-n{font-style:normal;font-size:.72rem;opacity:.8}
+.rs-count{margin:0;display:flex;flex-wrap:wrap;align-items:center;gap:.3rem;color:var(--rs-muted);font-size:.85rem}
+.rs-count b{color:var(--rs-text);font-size:1.15rem}
+.rs-reset{font:inherit;font-size:.75rem;font-weight:600;padding:.15rem .7rem;border-radius:999px;border:1px solid var(--rs-gold);background:transparent;color:var(--rs-gold);cursor:pointer}
+.rs-reset:hover{background:var(--rs-gold-dim)}
+.rs-reset[hidden]{display:none}
+.rs-empty{color:var(--rs-muted);padding:.5rem}
+.rs-place{cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s}
+.rs-place::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:4px;border-radius:4px;background:var(--c,#ffc107);box-shadow:0 0 12px var(--c,#ffc107)}
+.rs-place:hover,.rs-place.is-active{transform:translateY(-2px);border-color:var(--c,#ffc107)!important;box-shadow:0 8px 24px -10px var(--c,#ffc107)}
+.rs-place:focus-visible,.rs-chip:focus-visible,.rs-reset:focus-visible{outline:2px solid var(--rs-gold);outline-offset:2px}
+.rs-tag{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--c,#ffc107)}
+@media (max-width:900px){.rs-map{height:55vh;min-height:340px}.rs-chip{min-height:40px;padding:.5rem .9rem}}
+@media (prefers-reduced-motion:reduce){.rs-place,.rs-chip,.rs-pin{transition:none}}

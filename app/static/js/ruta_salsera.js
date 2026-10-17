@@ -123,180 +123,296 @@
         c.appendChild(wrap);
     }
 
-    function renderVenues(venues) {
-        const c = clearSpinner("ruta-lugares-container");
-        if (!c || !venues.length) return;
+    // -- lugares + mapa (panel estilo RockQuest) ------------------
+    const esc = v => String(v == null ? "" : v).replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+    const safeUrl = u => (/^https?:\/\//i.test(String(u || "")) ? String(u) : "");
+    const norm = s => String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const hasCoords = v => !!(v.coordinates && typeof v.coordinates.lat === "number" && typeof v.coordinates.lng === "number");
 
-        venues.forEach(v => {
-            const col = el("div", { className: "col-md-4 col-sm-6" });
-            const address = safeText(v.address, "Dirección pendiente de verificación");
-            const musicStyle = safeText(v.music_style, "Estilo musical pendiente de verificar");
-            const description = safeText(v.description, "Información pendiente de investigación");
-            const phone = isEmptyValue(v.phone) ? null : v.phone;
-            const hours = isEmptyValue(v.operating_hours) ? null : v.operating_hours;
-            const whatsapp = isEmptyValue(v.whatsapp_url) ? null : v.whatsapp_url;
-            const googleMaps = (v.external_links && !isEmptyValue(v.external_links.google_maps)) ? v.external_links.google_maps : null;
-            const website = isEmptyValue(v.website) ? null : v.website;
-            const showMapBtn = !isEmptyValue(v.coordinates);
-            const showVerMas = v.brand === "son-havana";
+    const TYPE_INFO = {
+        bar:         { label: "Bar",         color: "#ffc107" },
+        club:        { label: "Club",        color: "#ff4fa3" },
+        discoteca:   { label: "Discoteca",   color: "#19e6ff" },
+        restaurante: { label: "Restaurante", color: "#ff8a3d" },
+    };
+    const typeKey = v => String(v.type || "").toLowerCase();
+    const typeInfo = v => TYPE_INFO[typeKey(v)] || {
+        label: typeKey(v) ? typeKey(v).charAt(0).toUpperCase() + typeKey(v).slice(1).replace(/_/g, " ") : "Lugar",
+        color: "#ffc107",
+    };
+    const routeUrl = v => "https://www.google.com/maps/dir/?api=1&destination=" + v.coordinates.lat + "," + v.coordinates.lng;
 
-            // Status indicator for closed/unknown venues
-            let statusIndicator = "";
-            if (v.status === "closed") {
-                statusIndicator = `<span class="badge bg-danger ms-2" style="font-size:0.65rem">Cerrado</span>`;
-            } else if (v.status === "unknown") {
-                statusIndicator = `<span class="badge bg-warning ms-2" style="font-size:0.65rem">Estado no confirmado</span>`;
-            }
+    const venueState = { type: "", q: "" };
+    const venueMarkers = new Map();
+    const venueCards = new Map();
+    let allVenues = [];
+    let rsMap = null;
+    let rsLayer = null;
 
-            col.innerHTML = `
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h6 class="card-title fw-bold" style="font-family:'Fraunces',serif;">
-                            ${v.name}${v.is_underground ? ' <i class="fa-solid fa-arrow-down ms-1" style="font-size:0.65rem;opacity:0.6"></i>' : ""}${statusBadge(v.evidence_status)}${statusIndicator}
-                        </h6>
-                        <p class="small mb-1" style="color:var(--rs-text);">
-                            <i class="fa-solid fa-location-dot me-1" style="color:var(--rs-gold)"></i>${address}
-                        </p>
-                        ${phone ? `<p class="small mb-1" style="color:var(--rs-text);"><i class="fa-solid fa-phone me-1" style="color:var(--rs-gold)"></i>${phone}</p>` : ""}
-                        ${hours ? `<p class="small mb-1" style="color:var(--rs-text);"><i class="fa-solid fa-clock me-1" style="color:var(--rs-gold)"></i>${hours}</p>` : ""}
-                        <p class="small mb-1" style="color:var(--rs-muted);font-style:italic;">${musicStyle}</p>
-                        <p class="small mb-2" style="color:var(--rs-muted);line-height:1.55;">${description}</p>
-                        <div class="d-flex gap-2 flex-wrap">
-                            ${showMapBtn ? `<button class="btn btn-sm rs-card-map-btn" data-venue-id="${v.id}" aria-label="Ver ${v.name} en el mapa" style="border:1px solid var(--rs-gold);color:var(--rs-gold);border-radius:20px;font-size:0.78rem;background:transparent;cursor:pointer;"><i class="fa-solid fa-map-location-dot me-1"></i>Ver en mapa</button>` : ""}
-                            ${whatsapp ? `<a href="${whatsapp}" target="_blank" rel="noopener" class="btn btn-sm" style="border:1px solid #25d366;color:#25d366;border-radius:20px;font-size:0.78rem;"><i class="fa-brands fa-whatsapp me-1"></i>WhatsApp</a>` : ""}
-                            ${googleMaps ? `<a href="${googleMaps}" target="_blank" rel="noopener" class="btn btn-sm" style="border:1px solid var(--rs-muted);color:var(--rs-muted);border-radius:20px;font-size:0.78rem;"><i class="fa-solid fa-map me-1"></i>Google Maps</a>` : ""}
-                            ${website ? `<a href="${website}" target="_blank" rel="noopener" class="btn btn-sm" style="border:1px solid var(--rs-muted);color:var(--rs-muted);border-radius:20px;font-size:0.78rem;"><i class="fa-solid fa-globe me-1"></i>Web</a>` : ""}
-                            ${showVerMas ? `<a href="/son-havana" class="btn btn-sm" style="border:1px solid var(--rs-gold);color:var(--rs-gold);border-radius:20px;font-size:0.78rem;"><i class="fa-solid fa-arrow-right me-1"></i>Ver más</a>` : ""}
-                        </div>
+    function venuePopup(v) {
+        const info = typeInfo(v);
+        const addr = safeText(v.address, "Dirección pendiente de verificación");
+        const mStyle = safeText(v.music_style, "Estilo musical pendiente de verificar");
+        const hours = isEmptyValue(v.operating_hours) ? null : v.operating_hours;
+        const whatsapp = safeUrl(v.whatsapp_url);
+        const gMaps = (v.external_links && !isEmptyValue(v.external_links.google_maps)) ? safeUrl(v.external_links.google_maps) : "";
+        const website = safeUrl(v.website);
+        let html = "<strong>" + esc(v.name) + "</strong>";
+        html += '<div class="rs-popup-type" style="color:' + info.color + '">' + esc(info.label) + "</div>";
+        html += '<div class="rs-popup-addr"><i class="fa-solid fa-location-dot me-1" style="color:var(--rs-gold)"></i>' + esc(addr) + "</div>";
+        if (hours) html += '<div class="rs-popup-addr"><i class="fa-solid fa-clock me-1" style="color:var(--rs-gold)"></i>' + esc(hours) + "</div>";
+        html += '<div class="rs-popup-style">' + esc(mStyle) + "</div>";
+        if (v.coords_approx) html += '<div class="rs-popup-style" style="opacity:.7">Ubicaci\u00f3n aproximada (OSM) \u00b7 NO VERIFICADO</div>';
+        html += '<div class="rs-popup-actions">';
+        if (hasCoords(v)) html += '<a href="' + esc(routeUrl(v)) + '" target="_blank" rel="noopener noreferrer" class="rs-popup-btn rs-popup-btn-gold"><i class="fa-solid fa-route me-1"></i>Cómo llegar</a>';
+        if (whatsapp) html += '<a href="' + esc(whatsapp) + '" target="_blank" rel="noopener noreferrer" class="rs-popup-btn rs-popup-btn-outline"><i class="fa-brands fa-whatsapp me-1"></i>WhatsApp</a>';
+        if (gMaps) html += '<a href="' + esc(gMaps) + '" target="_blank" rel="noopener noreferrer" class="rs-popup-btn rs-popup-btn-outline"><i class="fa-solid fa-map me-1"></i>Mapa</a>';
+        if (website) html += '<a href="' + esc(website) + '" target="_blank" rel="noopener noreferrer" class="rs-popup-btn rs-popup-btn-outline"><i class="fa-solid fa-globe me-1"></i>Web</a>';
+        if (v.brand === "son-havana") html += '<a href="/son-havana" class="rs-popup-btn rs-popup-btn-outline"><i class="fa-solid fa-arrow-right me-1"></i>Ver más</a>';
+        html += "</div>";
+        return html;
+    }
+
+    function venueCard(v) {
+        const info = typeInfo(v);
+        const address = safeText(v.address, "Dirección pendiente de verificación");
+        const musicStyle = safeText(v.music_style, "Estilo musical pendiente de verificar");
+        const description = safeText(v.description, "Información pendiente de investigación");
+        const phone = isEmptyValue(v.phone) ? null : v.phone;
+        const hours = isEmptyValue(v.operating_hours) ? null : v.operating_hours;
+        const whatsapp = safeUrl(v.whatsapp_url);
+        const gMaps = (v.external_links && !isEmptyValue(v.external_links.google_maps)) ? safeUrl(v.external_links.google_maps) : "";
+        const website = safeUrl(v.website);
+        let statusIndicator = "";
+        if (v.status === "closed") statusIndicator = '<span class="badge bg-danger ms-2" style="font-size:0.65rem">Cerrado</span>';
+        else if (v.status === "unknown") statusIndicator = '<span class="badge bg-warning ms-2" style="font-size:0.65rem">Estado no confirmado</span>';
+        const btn = 'style="border-radius:20px;font-size:0.78rem;"';
+
+        const col = el("div", { className: "col-md-4 col-sm-6" });
+        col.innerHTML = `
+            <div class="card h-100 rs-place" tabindex="0" style="--c:${info.color}">
+                <div class="card-body">
+                    <span class="rs-tag">${esc(info.label)}</span>
+                    <h6 class="card-title fw-bold" style="font-family:'Fraunces',serif;">
+                        ${esc(v.name)}${v.is_underground ? ' <i class="fa-solid fa-arrow-down ms-1" style="font-size:0.65rem;opacity:0.6"></i>' : ""}${statusBadge(v.evidence_status)}${statusIndicator}
+                    </h6>
+                    <p class="small mb-1" style="color:var(--rs-text);"><i class="fa-solid fa-location-dot me-1" style="color:var(--rs-gold)"></i>${esc(address)}</p>
+                    ${phone ? `<p class="small mb-1" style="color:var(--rs-text);"><i class="fa-solid fa-phone me-1" style="color:var(--rs-gold)"></i>${esc(phone)}</p>` : ""}
+                    ${hours ? `<p class="small mb-1" style="color:var(--rs-text);"><i class="fa-solid fa-clock me-1" style="color:var(--rs-gold)"></i>${esc(hours)}</p>` : ""}
+                    <p class="small mb-1" style="color:var(--rs-muted);font-style:italic;">${esc(musicStyle)}</p>
+                    <p class="small mb-2" style="color:var(--rs-muted);line-height:1.55;">${esc(description)}</p>
+                    <div class="d-flex gap-2 flex-wrap">
+                        ${hasCoords(v) ? `<button type="button" class="btn btn-sm rs-card-map-btn" aria-label="Ver ${esc(v.name)} en el mapa" style="border:1px solid var(--rs-gold);color:var(--rs-gold);border-radius:20px;font-size:0.78rem;background:transparent;cursor:pointer;"><i class="fa-solid fa-map-location-dot me-1"></i>Ver en mapa</button>` : ""}
+                        ${hasCoords(v) ? `<a href="${esc(routeUrl(v))}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" ${btn.replace('style="', 'style="border:1px solid var(--rs-gold);color:var(--rs-gold);')}><i class="fa-solid fa-route me-1"></i>Cómo llegar</a>` : ""}
+                        ${whatsapp ? `<a href="${esc(whatsapp)}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" ${btn.replace('style="', 'style="border:1px solid #25d366;color:#25d366;')}><i class="fa-brands fa-whatsapp me-1"></i>WhatsApp</a>` : ""}
+                        ${gMaps ? `<a href="${esc(gMaps)}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" ${btn.replace('style="', 'style="border:1px solid var(--rs-muted);color:var(--rs-muted);')}><i class="fa-solid fa-map me-1"></i>Google Maps</a>` : ""}
+                        ${website ? `<a href="${esc(website)}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" ${btn.replace('style="', 'style="border:1px solid var(--rs-muted);color:var(--rs-muted);')}><i class="fa-solid fa-globe me-1"></i>Web</a>` : ""}
+                        ${v.brand === "son-havana" ? `<a href="/son-havana" class="btn btn-sm" ${btn.replace('style="', 'style="border:1px solid var(--rs-gold);color:var(--rs-gold);')}><i class="fa-solid fa-arrow-right me-1"></i>Ver más</a>` : ""}
                     </div>
                 </div>
-            `;
-            c.appendChild(col);
-        });
+            </div>
+        `;
+        return col;
+    }
 
-        // Add "Ver en mapa" click handlers
-        document.querySelectorAll(".rs-card-map-btn").forEach(btn => {
-            btn.addEventListener("click", function () {
-                const venueId = this.dataset.venueId;
-                focusMapOnVenue(venueId);
-            });
+    function setActiveVenue(key) {
+        venueCards.forEach((col, k) => {
+            const card = col.querySelector(".rs-place");
+            if (card) card.classList.toggle("is-active", k === key);
         });
     }
 
-    function focusMapOnVenue(venueId) {
-        if (!window._rsMap || !window._rsMarkers) return;
+    function hotVenue(key, on) {
+        const m = venueMarkers.get(key);
+        const e = m && m.getElement && m.getElement();
+        if (e) e.classList.toggle("rs-pin-hot", on);
+    }
 
-        const marker = window._rsMarkers.find(m => m._venueId === venueId);
-        if (!marker) return;
-
-        // Scroll to map
+    function focusVenue(key) {
+        const m = venueMarkers.get(key);
+        if (!m || !rsMap) return;
+        setActiveVenue(key);
         const mapSection = document.getElementById("rs-map-section");
-        if (mapSection) {
-            mapSection.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-
-        // Open popup after scroll
-        setTimeout(() => {
-            window._rsMap.setView(marker.getLatLng(), 16, { animate: true });
-            marker.openPopup();
-        }, 400);
+        if (mapSection) mapSection.scrollIntoView({ behavior: "smooth", block: "start" });
+        let opened = false;
+        const open = () => { if (opened) return; opened = true; m.openPopup(); };
+        rsMap.once("moveend", open);
+        setTimeout(open, 1000);
+        rsMap.flyTo(m.getLatLng(), Math.max(rsMap.getZoom(), 16), { duration: 0.8 });
     }
 
-    function renderMap(venues) {
-        if (typeof L === "undefined") return;
-        const mapEl = document.getElementById("mapa-ruta-salsera");
-        if (!mapEl || !venues.length) return;
+    function venueMatches(v) {
+        if (venueState.type && typeKey(v) !== venueState.type) return false;
+        if (venueState.q && !v._hay.includes(norm(venueState.q))) return false;
+        return true;
+    }
 
-        const map = L.map(mapEl, {
-            scrollWheelZoom: false,
-            zoomControl: true,
+    function fitVenues(vis) {
+        if (!rsMap) return;
+        const pts = vis.filter(hasCoords).map(v => [v.coordinates.lat, v.coordinates.lng]);
+        rsMap.invalidateSize();
+        if (!pts.length) return;
+        if (pts.length === 1) rsMap.setView(pts[0], 15);
+        else rsMap.fitBounds(L.latLngBounds(pts).pad(0.15), { maxZoom: 15 });
+    }
+
+    function renderVenueList(refit) {
+        const listEl = document.getElementById("ruta-lugares-container");
+        if (!listEl) return;
+        const vis = allVenues.filter(venueMatches);
+        listEl.textContent = "";
+        if (rsLayer) rsLayer.clearLayers();
+        vis.forEach(v => {
+            listEl.appendChild(venueCards.get(v._k));
+            const m = venueMarkers.get(v._k);
+            if (m && rsLayer) rsLayer.addLayer(m);
         });
+        if (!vis.length) {
+            const empty = el("div", { className: "col-12" });
+            empty.innerHTML = '<p class="rs-empty">Nada por aquí. Prueba otro filtro.</p>';
+            listEl.appendChild(empty);
+        }
+        const countEl = document.getElementById("rs-count");
+        const labelEl = document.getElementById("rs-count-label");
+        const resetEl = document.getElementById("rs-reset");
+        const statusEl = document.getElementById("rs-map-status");
+        if (countEl) countEl.textContent = vis.length;
+        if (labelEl) labelEl.textContent = vis.length === 1 ? "lugar" : "lugares";
+        if (resetEl) resetEl.hidden = !(venueState.type || venueState.q);
+        if (statusEl) { const pins = vis.filter(hasCoords).length; statusEl.textContent = pins + " en el mapa" + (vis.length > pins ? " \u00b7 " + (vis.length - pins) + " sin ubicaci\u00f3n" : "") + " \u00b7 toca un pin o una tarjeta"; }
+        document.querySelectorAll("#rs-type-chips .rs-chip").forEach(b => {
+            const on = (b.dataset.type || "") === venueState.type;
+            b.classList.toggle("on", on);
+            b.setAttribute("aria-pressed", String(on));
+        });
+        if (refit) fitVenues(vis);
+    }
 
+    function buildTypeChips() {
+        const wrap = document.getElementById("rs-type-chips");
+        if (!wrap) return;
+        const types = [...new Set(allVenues.map(typeKey).filter(Boolean))].sort();
+        wrap.textContent = "";
+        if (types.length < 2) { wrap.hidden = true; return; }
+        wrap.hidden = false;
+        [""].concat(types).forEach(t => {
+            const n = allVenues.filter(v => !t || typeKey(v) === t).length;
+            const info = t ? (TYPE_INFO[t] || { label: t.charAt(0).toUpperCase() + t.slice(1), color: "#ffc107" }) : { label: "Todos", color: "#ffffff" };
+            const b = document.createElement("button");
+            b.type = "button";
+            b.className = "rs-chip";
+            b.dataset.type = t;
+            b.setAttribute("aria-pressed", "false");
+            b.innerHTML = '<i class="rs-dot" style="--c:' + info.color + '"></i>' + esc(info.label) + ' <em class="rs-n">(' + n + ")</em>";
+            wrap.appendChild(b);
+        });
+    }
+
+    function initVenueControls() {
+        const chips = document.getElementById("rs-type-chips");
+        const search = document.getElementById("rs-search");
+        const reset = document.getElementById("rs-reset");
+        if (chips) chips.addEventListener("click", e => {
+            const b = e.target.closest(".rs-chip");
+            if (!b) return;
+            venueState.type = b.dataset.type || "";
+            renderVenueList(true);
+        });
+        let timer = null;
+        if (search) search.addEventListener("input", () => {
+            venueState.q = search.value.trim();
+            clearTimeout(timer);
+            timer = setTimeout(() => renderVenueList(true), 200);
+        });
+        if (reset) reset.addEventListener("click", () => {
+            venueState.type = ""; venueState.q = "";
+            if (search) search.value = "";
+            if (rsMap) rsMap.closePopup();
+            renderVenueList(true);
+        });
+    }
+
+    function initVenueMap(venues) {
+        const mapEl = document.getElementById("mapa-ruta-salsera");
+        if (typeof L === "undefined" || !mapEl) return;
+
+        rsMap = L.map(mapEl, { scrollWheelZoom: false, zoomControl: true });
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-            attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a>',
+            attribution: '&copy; <a href="https://openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a>',
             maxZoom: 18,
-        }).addTo(map);
+        }).addTo(rsMap);
+        // En una página larga, la rueda solo hace zoom después de un clic en el mapa.
+        rsMap.on("click", () => rsMap.scrollWheelZoom.enable());
+        mapEl.addEventListener("mouseleave", () => rsMap.scrollWheelZoom.disable());
+        if (typeof ResizeObserver !== "undefined") new ResizeObserver(() => rsMap.invalidateSize()).observe(mapEl);
 
-        // Category-based marker colors
-        const categoryColors = {
-            bar: "#ffc107",
-            club: "#ffc107",
-            discoteca: "#ffc107",
-            restaurante: "#ffc107",
-            default: "#ffc107",
-        };
+        rsLayer = L.layerGroup().addTo(rsMap);
+        rsMap.setView([6.2477, -75.5910], 14);
 
-        const markers = [];
         venues.forEach(v => {
             if (!v.coordinates) return;
-            const color = categoryColors[v.type] || categoryColors.default;
+            if (!hasCoords(v)) return;
+            const info = typeInfo(v);
             const icon = L.divIcon({
-                className: "rs-marker",
-                html: `<div style="width:16px;height:16px;background:${color};border:2.5px solid #000;border-radius:50%;box-shadow:0 0 10px ${color}80;"></div>`,
-                iconSize: [16, 16],
-                iconAnchor: [8, 8],
+                className: "rs-pin-wrap",
+                html: '<span class="rs-pin" style="--c:' + info.color + '"></span>',
+                iconSize: [22, 22], iconAnchor: [11, 11], popupAnchor: [0, -12],
             });
-
-            const m = L.marker([v.coordinates.lat, v.coordinates.lng], { icon }).addTo(map);
-
-            // Enhanced popup content
-            let popupHtml = `<strong>${v.name}</strong>`;
-            if (v.type) {
-                popupHtml += `<div class="rs-popup-type">${v.type}</div>`;
-            }
-            const addr = safeText(v.address, "Dirección pendiente de verificación");
-            popupHtml += `<div class="rs-popup-addr"><i class="fa-solid fa-location-dot me-1" style="color:var(--rs-gold)"></i>${addr}</div>`;
-            const mStyle = safeText(v.music_style, "Estilo musical pendiente de verificar");
-            popupHtml += `<div class="rs-popup-style">${mStyle}</div>`;
-            popupHtml += `<div class="rs-popup-actions">`;
-            const whatsapp = isEmptyValue(v.whatsapp_url) ? null : v.whatsapp_url;
-            const gMaps = (v.external_links && !isEmptyValue(v.external_links.google_maps)) ? v.external_links.google_maps : null;
-            const website = isEmptyValue(v.website) ? null : v.website;
-            if (whatsapp) {
-                popupHtml += `<a href="${whatsapp}" target="_blank" rel="noopener" class="rs-popup-btn rs-popup-btn-gold"><i class="fa-brands fa-whatsapp me-1"></i>WhatsApp</a>`;
-            }
-            if (gMaps) {
-                popupHtml += `<a href="${gMaps}" target="_blank" rel="noopener" class="rs-popup-btn rs-popup-btn-outline"><i class="fa-solid fa-map me-1"></i>Mapa</a>`;
-            }
-            if (website) {
-                popupHtml += `<a href="${website}" target="_blank" rel="noopener" class="rs-popup-btn rs-popup-btn-outline"><i class="fa-solid fa-globe me-1"></i>Web</a>`;
-            }
-            if (v.brand === "son-havana") {
-                popupHtml += `<a href="/son-havana" class="rs-popup-btn rs-popup-btn-outline"><i class="fa-solid fa-arrow-right me-1"></i>Ver más</a>`;
-            }
-            popupHtml += `</div>`;
-
-            m.bindPopup(popupHtml, { maxWidth: 280, minWidth: 200 });
+            const m = L.marker([v.coordinates.lat, v.coordinates.lng], { icon, riseOnHover: true });
+            m.bindPopup(venuePopup(v), { maxWidth: 300, minWidth: 200 });
+            m.bindTooltip(v.name, { direction: "top", offset: [0, -10], className: "rs-tip" });
+            m.on("click", () => setActiveVenue(v._k));
             m._venueId = v.id;
-            markers.push(m);
+            venueMarkers.set(v._k, m);
         });
 
-        // Polyline estática conectando los 3 lugares en route_order (Fase 5C.1)
+        // Polyline estática conectando los lugares en route_order (Fase 5C.1)
         const routeVenues = venues
-            .filter(v => v.route_order != null && v.coordinates)
+            .filter(v => v.route_order != null && hasCoords(v))
             .sort((a, b) => a.route_order - b.route_order);
         let routePolyline = null;
         if (routeVenues.length >= 2) {
-            const latLngs = routeVenues.map(v => [v.coordinates.lat, v.coordinates.lng]);
-            routePolyline = L.polyline(latLngs, {
+            routePolyline = L.polyline(routeVenues.map(v => [v.coordinates.lat, v.coordinates.lng]), {
                 color: "#ffc107",
                 weight: 3,
                 opacity: 0.8,
                 className: "rs-route-polyline",
-            }).addTo(map);
+            }).addTo(rsMap);
         }
 
-        if (markers.length) {
-            const group = L.featureGroup(markers);
-            map.fitBounds(group.getBounds().pad(0.15));
-        } else {
-            map.setView([6.2477, -75.5910], 14);
-        }
-
-        // Store map reference for filter sync
-        window._rsMap = map;
-        window._rsMarkers = markers;
+        // Referencias globales usadas por el filtro de categorías
+        window._rsMap = rsMap;
+        window._rsMarkers = [...venueMarkers.values()];
         window._rsRoutePolyline = routePolyline;
+    }
+
+    function renderLugares(venues) {
+        const c = clearSpinner("ruta-lugares-container");
+        if (!c) return;
+        allVenues = (venues || []).slice();
+        allVenues.forEach((v, i) => {
+            v._k = v.id || ("v" + i);
+            v._hay = norm([v.name, v.address, v.music_style, v.description, typeInfo(v).label].filter(Boolean).join(" "));
+        });
+        initVenueMap(allVenues);
+        allVenues.forEach(v => {
+            const col = venueCard(v);
+            const card = col.querySelector(".rs-place");
+            const openMap = () => focusVenue(v._k);
+            const mapBtn = col.querySelector(".rs-card-map-btn");
+            if (mapBtn) mapBtn.addEventListener("click", e => { e.stopPropagation(); openMap(); });
+            card.addEventListener("click", e => { if (e.target.closest("a, button")) return; openMap(); });
+            card.addEventListener("keydown", e => {
+                if (e.target !== card) return;
+                if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openMap(); }
+            });
+            card.addEventListener("mouseenter", () => hotVenue(v._k, true));
+            card.addEventListener("mouseleave", () => hotVenue(v._k, false));
+            venueCards.set(v._k, col);
+        });
+        buildTypeChips();
+        initVenueControls();
+        renderVenueList(true);
     }
 
     function renderOrchestras(orchestras) {
@@ -553,8 +669,16 @@
         .then(data => {
             renderIntro(data.meta);
             renderTimeline(data.timeline);
-            renderVenues(data.venues);
-            renderMap(data.venues);
+            fetch("/static/data/coords_osm.json").then(r => (r.ok ? r.json() : {})).catch(() => ({})).then(extra => {
+            (data.venues || []).forEach(v => {
+                const c = extra[v.id];
+                if (!v.coordinates && c && typeof c.lat === "number" && typeof c.lng === "number") {
+                    v.coordinates = { lat: c.lat, lng: c.lng };
+                    v.coords_approx = true;
+                }
+            });
+            renderLugares(data.venues);
+        });
             renderOrchestras(data.orchestras);
             renderRadio(data.radio);
             renderLabels(data.labels);
