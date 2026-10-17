@@ -9,13 +9,13 @@
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="SalsaQuest">
-    <meta property="og:title" content="{% block og_title %}SalsaQuest — Donde la salsa importa{% endblock %}">
+    <meta property="og:title" content="{% block og_title %}SalsaQuest — Aqu&iacute; la salsa importa{% endblock %}">
     <meta property="og:description" content="{% block og_description %}El museo interactivo de la cultura salsera. Historia, artistas, música y trivia.{% endblock %}">
     <meta property="og:image" content="{% block og_image %}{{ url_for('static', filename='img/cuba-flag.jpg', _external=True) }}{% endblock %}">
 
     <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{% block twitter_title %}SalsaQuest — Donde la salsa importa{% endblock %}">
+    <meta name="twitter:title" content="{% block twitter_title %}SalsaQuest — Aqu&iacute; la salsa importa{% endblock %}">
     <meta name="twitter:description" content="{% block twitter_description %}El museo interactivo de la cultura salsera. Historia, artistas, música y trivia.{% endblock %}">
 
     <!-- Bootstrap 5 CSS -->
@@ -24,7 +24,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS (v=20260918 para cache-busting) -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=20260918">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/fase1-diseno.css') }}?v=20260918">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/fase1-diseno.css') }}?v=20261017">
     <!-- Leaflet (mapa interactivo) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 
@@ -159,17 +159,27 @@
     </main>
 
     <!-- PIE DE PÁGINA -->
-    <footer class="footer-glass text-white text-center py-4 mt-5 border-top border-secondary">
-        <div class="d-flex justify-content-center gap-4 mb-2">
-            <a href="https://github.com/alvaroberrio23242-eng" target="_blank" class="text-white text-decoration-none">
-                <i class="fa-brands fa-github fa-lg me-1"></i>GitHub
-            </a>
-            <a href="https://wa.me/573165192825" target="_blank" class="text-success text-decoration-none">
-                <i class="fa-brands fa-whatsapp fa-lg me-1"></i>WhatsApp
-            </a>
+    <footer class="footer-glass site-footer" id="contacto">
+    <div class="sf-inner">
+        <div class="sf-brand">
+            <span class="sf-logo">Salsa<span>Quest</span></span>
+            <p>Aqu&iacute; la salsa importa</p>
         </div>
-        <p class="mb-0 text-muted">&copy; 2026 SalsaQuest - Todos los derechos reservados.</p>
-    </footer>
+        <div class="sf-contact">
+            <p class="sf-title">Contacto</p>
+            <ul class="sf-links">
+                <li><a class="sf-btn sf-wa" href="https://wa.me/573165192825?text=Hola%2C%20vi%20SalsaQuest" target="_blank" rel="noopener noreferrer"><b>WhatsApp</b><small>+57 316 519 2825</small></a></li>
+                <li><a class="sf-btn sf-ig" href="https://instagram.com/barramovilpzo" target="_blank" rel="noopener noreferrer"><b>Instagram</b><small>@barramovilpzo</small></a></li>
+                <li><a class="sf-btn sf-pf" href="https://portfolio-hub-90zb.onrender.com/" target="_blank" rel="noopener noreferrer"><b>Portafolio</b><small>Mis proyectos</small></a></li>
+                <li><a class="sf-btn sf-gh" href="https://github.com/alvaroberrio23242-eng" target="_blank" rel="noopener noreferrer"><b>GitHub</b><small>alvaroberrio23242-eng</small></a>
+<a data-contact="email" class="sf-btn sf-gh" href="mailto:berriobenjamin16@gmail.com" rel="noopener noreferrer"><b>Correo</b><small>berriobenjamin16@gmail.com</small></a>
+<a data-contact="facebook" class="sf-btn sf-gh" href="https://www.facebook.com/alvaro.berrioc" target="_blank" rel="noopener noreferrer"><b>Facebook</b><small>alvaro.berrioc</small></a>
+<style>a[data-contact="email"]{border-color:#22d3ee!important}a[data-contact="email"]>:first-child{color:#22d3ee!important}a[data-contact="facebook"]{border-color:#3b82f6!important}a[data-contact="facebook"]>:first-child{color:#3b82f6!important}a[data-contact="email"] span,a[data-contact="email"] small{overflow-wrap:anywhere}</style></li>
+            </ul>
+        </div>
+    </div>
+    <p class="sf-legal">&copy; 2026 SalsaQuest &middot; Hecho en Medell&iacute;n</p>
+</footer>
 
     <!-- MODAL EMERGENTE DE REGISTRO / CAPTURA LEAD -->
     <div class="modal fade" id="modalRegistroLead" tabindex="-1" aria-labelledby="modalLeadLabel" aria-hidden="true">
