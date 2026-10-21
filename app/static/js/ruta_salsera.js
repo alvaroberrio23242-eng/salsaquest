@@ -247,13 +247,21 @@
         return true;
     }
 
+    let venueScope = "core";
+    let lastVis = [];
     function fitVenues(vis) {
         if (!rsMap) return;
-        const pts = vis.filter(hasCoords).map(v => [v.coordinates.lat, v.coordinates.lng]);
+        lastVis = vis;
+        let set = vis.filter(hasCoords);
+        if (venueScope === "core") {
+            const core = set.filter(v => norm(v.city).indexOf("medellin") === 0);
+            if (core.length) set = core;
+        }
+        const pts = set.map(v => [v.coordinates.lat, v.coordinates.lng]);
         rsMap.invalidateSize();
         if (!pts.length) return;
-        if (pts.length === 1) rsMap.setView(pts[0], 15);
-        else rsMap.fitBounds(L.latLngBounds(pts).pad(0.15), { maxZoom: 15 });
+        if (pts.length === 1) rsMap.flyTo(pts[0], 15, { duration: 0.8 });
+        else rsMap.flyToBounds(L.latLngBounds(pts).pad(0.2), { maxZoom: 15, duration: 0.9 });
     }
 
     function renderVenueList(refit) {
@@ -337,10 +345,31 @@
         if (typeof L === "undefined" || !mapEl) return;
 
         rsMap = L.map(mapEl, { scrollWheelZoom: false, zoomControl: true });
-        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-            attribution: '&copy; <a href="https://openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a>',
-            maxZoom: 18,
+        const RS_CARTO_KEY = "";
+        const rsDark = !!RS_CARTO_KEY;
+        L.tileLayer(rsDark
+            ? "https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png?key=" + encodeURIComponent(RS_CARTO_KEY)
+            : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution: '&copy; <a href="https://openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a>' + (rsDark ? ' &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener noreferrer">CARTO</a>' : ""),
+            subdomains: rsDark ? "abcd" : "abc",
+            maxZoom: 19,
         }).addTo(rsMap);
+        if (!rsDark && mapEl.parentElement) mapEl.parentElement.classList.add("rs-osm-filter");
+
+        const ctl = L.control({ position: "topright" });
+        ctl.onAdd = () => {
+            const d = L.DomUtil.create("div", "rs-ctl");
+            d.innerHTML = '<div class="rs-scope" role="group" aria-label="Zona del mapa"><button type="button" data-scope="core" class="on">Medellín</button><button type="button" data-scope="all">Valle de Aburrá</button></div>'
+                + '<div class="rs-legend"><span><i class="rs-lg rs-lg-ok"></i>Verificado</span><span><i class="rs-lg rs-lg-ap"></i>Aproximado</span></div>';
+            L.DomEvent.disableClickPropagation(d);
+            d.querySelectorAll("button").forEach(btn => btn.addEventListener("click", () => {
+                venueScope = btn.dataset.scope;
+                d.querySelectorAll("button").forEach(x => x.classList.toggle("on", x === btn));
+                fitVenues(lastVis);
+            }));
+            return d;
+        };
+        ctl.addTo(rsMap);
         // En una página larga, la rueda solo hace zoom después de un clic en el mapa.
         rsMap.on("click", () => rsMap.scrollWheelZoom.enable());
         mapEl.addEventListener("mouseleave", () => rsMap.scrollWheelZoom.disable());
@@ -355,7 +384,7 @@
             const info = typeInfo(v);
             const icon = L.divIcon({
                 className: "rs-pin-wrap",
-                html: '<span class="rs-pin" style="--c:' + info.color + '"></span>',
+                html: '<span class="rs-pin' + (v.coords_approx ? ' rs-pin-approx' : '') + '" style="--c:' + info.color + '"></span>',
                 iconSize: [22, 22], iconAnchor: [11, 11], popupAnchor: [0, -12],
             });
             const m = L.marker([v.coordinates.lat, v.coordinates.lng], { icon, riseOnHover: true });
@@ -674,7 +703,7 @@
                 const c = extra[v.id];
                 if (!v.coordinates && c && typeof c.lat === "number" && typeof c.lng === "number") {
                     v.coordinates = { lat: c.lat, lng: c.lng };
-                    v.coords_approx = true;
+                    v.coords_approx = !/^Google/.test(String(c.source || ""));
                 }
             });
             renderLugares(data.venues);

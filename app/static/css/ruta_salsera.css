@@ -872,3 +872,39 @@
 .rs-tag{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--c,#ffc107)}
 @media (max-width:900px){.rs-map{height:55vh;min-height:340px}.rs-chip{min-height:40px;padding:.5rem .9rem}}
 @media (prefers-reduced-motion:reduce){.rs-place,.rs-chip,.rs-pin{transition:none}}
+
+/* pines con ubicacion aproximada (OSM, NO VERIFICADO) */
+.rs-pin-approx{opacity:.6;outline:2px dashed rgba(255,255,255,.85);outline-offset:2px}
+
+/* RS-MAP-V3 (pulido visual) */
+.rs-map-wrap .leaflet-tile-pane{filter:none}
+.rs-map{border-radius:22px;border:1px solid rgba(255,255,255,.1);box-shadow:0 30px 70px -28px rgba(255,193,7,.28),0 10px 30px -10px rgba(0,0,0,.7)}
+@media (min-width:901px){.rs-map{height:560px}}
+.rs-status{background:rgba(18,14,32,.82);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.16)}
+.rs-pin{position:relative;width:16px;height:16px;margin:3px;background:var(--c,#ffc107);border:2px solid #0b0816;box-shadow:0 0 0 2px var(--c,#ffc107),0 0 20px var(--c,#ffc107)}
+.rs-pin::after{content:"";position:absolute;inset:-7px;border-radius:50%;border:2px solid var(--c,#ffc107);opacity:0;animation:rspulse 2.6s ease-out infinite}
+@keyframes rspulse{0%{transform:scale(.5);opacity:.85}100%{transform:scale(1.9);opacity:0}}
+.rs-pin.rs-pin-approx{width:14px;height:14px;margin:4px;background:transparent;border:2px dashed var(--c,#ffc107);outline:none;opacity:.8;box-shadow:0 0 12px var(--c,#ffc107)}
+.rs-pin.rs-pin-approx::after{display:none}
+.rs-route-polyline{stroke-width:2;stroke-dasharray:2 10;stroke-linecap:round;opacity:.55;animation:rsflow 2.4s linear infinite}
+@keyframes rsflow{to{stroke-dashoffset:-24}}
+.rs-map .leaflet-popup-content-wrapper{background:rgba(18,14,32,.9);backdrop-filter:blur(14px);color:#f3f0ff;border:1px solid rgba(255,255,255,.14);border-radius:16px;box-shadow:0 18px 50px -12px rgba(0,0,0,.75)}
+.rs-map .leaflet-popup-tip{background:rgba(18,14,32,.9)}
+.rs-map .leaflet-popup-content{margin:14px 16px;line-height:1.45}
+.rs-map .leaflet-popup-content strong{font-family:'Fraunces',serif;font-size:1.05rem;color:#fff}
+.rs-map a.leaflet-popup-close-button{color:#fff}
+.rs-ctl{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.rs-scope{display:flex;gap:4px;padding:4px;border-radius:999px;background:rgba(18,14,32,.82);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.16)}
+.rs-scope button{font:inherit;font-size:.78rem;font-weight:700;border:0;border-radius:999px;padding:.35rem .85rem;background:transparent;color:#e8e4f5;cursor:pointer;transition:background .2s,color .2s}
+.rs-scope button.on{background:var(--rs-gold,#ffc107);color:#14101f}
+.rs-scope button:focus-visible{outline:2px solid var(--rs-gold,#ffc107);outline-offset:2px}
+.rs-legend{display:flex;gap:12px;padding:.35rem .8rem;border-radius:999px;background:rgba(18,14,32,.82);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.16);color:#e8e4f5;font-size:.72rem;font-weight:600}
+.rs-legend span{display:inline-flex;align-items:center;gap:6px}
+.rs-lg{display:inline-block;width:10px;height:10px;border-radius:50%}
+.rs-lg-ok{background:var(--rs-gold,#ffc107);box-shadow:0 0 8px var(--rs-gold,#ffc107)}
+.rs-lg-ap{border:2px dashed var(--rs-gold,#ffc107)}
+.rs-place{background:linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,.02))!important;backdrop-filter:blur(8px)}
+@media (prefers-reduced-motion:reduce){.rs-pin::after,.rs-route-polyline{animation:none}}
+
+/* base OSM oscurecida (solo si no hay clave de CARTO) */
+.rs-map-wrap.rs-osm-filter .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.85) contrast(.9) saturate(.5)}
