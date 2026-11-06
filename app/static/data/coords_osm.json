@@ -1,1 +1,74 @@
-{}
+{
+  "el-timbalero": {
+    "lat": 6.2639925,
+    "lng": -75.56855,
+    "fuente": "OpenStreetMap Nominatim",
+    "estado": "NO VERIFICADO"
+  },
+  "bar-erre": {
+    "lat": 6.210288,
+    "lng": -75.5717944,
+    "fuente": "OpenStreetMap Nominatim",
+    "estado": "NO VERIFICADO"
+  },
+  "la-clave-salsa-bar": {
+    "lat": 6.2835838,
+    "lng": -75.5674942,
+    "fuente": "OpenStreetMap Nominatim",
+    "estado": "NO VERIFICADO"
+  },
+  "la-boca-salsa-bar": {
+    "lat": 6.3327099,
+    "lng": -75.5551717,
+    "fuente": "OpenStreetMap Nominatim",
+    "estado": "NO VERIFICADO"
+  },
+  "cheche-cole-salsa-bar-bello": {
+    "lat": 6.3223774,
+    "lng": -75.5605173,
+    "fuente": "OpenStreetMap Nominatim",
+    "estado": "NO VERIFICADO"
+  },
+  "ginzao-salsa-bar": {
+    "lat": 6.3373216,
+    "lng": -75.5553227,
+    "fuente": "OpenStreetMap Nominatim",
+    "estado": "NO VERIFICADO"
+  },
+  "el-son-de-la-loma": {
+    "lat": 6.1705192,
+    "lng": -75.584297,
+    "fuente": "OpenStreetMap Nominatim",
+    "estado": "NO VERIFICADO"
+  },
+  "tumbao-latino-envigado": {
+    "lat": 6.1638927,
+    "lng": -75.5811139,
+    "fuente": "OpenStreetMap Nominatim",
+    "estado": "NO VERIFICADO"
+  },
+  "el-malecon-taberna-salsa-bar": {
+    "lat": 6.1699663,
+    "lng": -75.606937,
+    "fuente": "OpenStreetMap Nominatim",
+    "estado": "NO VERIFICADO"
+  },
+  "zumbale-salsa-bar": {
+    "lat": 6.2568584,
+    "lng": -75.5830681,
+    "fuente": "OpenStreetMap Nominatim",
+    "estado": "NO VERIFICADO"
+  },
+  "el-social-el-codo": {
+    "lat": 6.2814721,
+    "lng": -75.5457012,
+    "fuente": "OpenStreetMap Nominatim",
+    "estado": "NO VERIFICADO"
+  },
+  "buchaos-salsa-bar": {
+    "lat": 6.2405904,
+    "lng": -75.5688634,
+    "fuente": "OpenStreetMap Nominatim",
+    "estado": "NO VERIFICADO"
+  }
+}
