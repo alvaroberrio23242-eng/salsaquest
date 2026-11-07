@@ -422,3 +422,105 @@ def test_closed_venue_not_in_active_map(client):
 
 
 
+
+
+def test_tripadvisor_status_and_verified_urls(client):
+    """Los 21 establecimientos declaran un estado TripAdvisor válido."""
+    from urllib.parse import urlparse
+
+    response = client.get("/api/ruta-salsera")
+    data = json.loads(response.data)
+    venues = data["venues"]
+
+    assert len(venues) == 21
+
+    allowed = {
+        "VERIFIED",
+        "NOT_FOUND",
+        "PENDING",
+        "IDENTITY_UNCONFIRMED",
+    }
+
+    by_id = {venue["id"]: venue for venue in venues}
+    assert len(by_id) == 21
+
+    counts = {
+        status: sum(
+            1 for venue in venues
+            if venue.get("tripadvisor_status") == status
+        )
+        for status in allowed
+    }
+
+    assert counts["VERIFIED"] == 2
+    assert counts["IDENTITY_UNCONFIRMED"] == 5
+    assert counts["NOT_FOUND"] == 14
+    assert counts["PENDING"] == 0
+
+    for venue in venues:
+        status = venue.get("tripadvisor_status")
+
+        assert status in allowed, (
+            f"Estado inválido en {venue['id']}: {status}"
+        )
+
+        links = venue.get("external_links") or {}
+        direct_url = links.get("tripadvisor")
+
+        if status == "VERIFIED":
+            assert direct_url, (
+                f"Falta URL verificada en {venue['id']}"
+            )
+
+            parsed = urlparse(direct_url)
+
+            assert parsed.scheme == "https"
+            assert parsed.hostname in {
+                "tripadvisor.es",
+                "www.tripadvisor.es",
+                "tripadvisor.com",
+                "www.tripadvisor.com",
+            }
+        else:
+            assert direct_url is None, (
+                f"URL individual no verificada en {venue['id']}"
+            )
+
+        legacy = venue.get("tripadvisor") or {}
+
+        assert legacy.get("rating") is None
+        assert legacy.get("review_count") is None
+        assert legacy.get("ranking") is None
+
+    assert (
+        by_id["son-havana-laureles"]["tripadvisor_status"]
+        == "VERIFIED"
+    )
+
+    assert (
+        by_id["el-timbalero"]["tripadvisor_status"]
+        == "VERIFIED"
+    )
+
+    assert by_id["son-havana-laureles"]["external_links"]["tripadvisor"] == (
+        "https://tripadvisor.es/Attraction_Review-g297478-d9604959-Reviews-Son_Havana-Medellin_Antioquia.html"
+    )
+
+    assert by_id["el-timbalero"]["external_links"]["tripadvisor"] == (
+        "https://www.tripadvisor.es/Restaurant_Review-g297478-d26565964-Reviews-El_Timbalero_Salsa_Bar-Medellin_Antioquia_Department.html"
+    )
+
+
+def test_tripadvisor_links_render_in_cards_and_popups():
+    """La interfaz integra el helper TripAdvisor en tarjeta y popup."""
+    from pathlib import Path
+
+    js_path = Path("app/static/js/ruta_salsera.js")
+    content = js_path.read_text(encoding="utf-8")
+
+    assert "function tripadvisorAction(v, context)" in content
+    assert 'tripadvisorAction(v, "popup")' in content
+    assert 'tripadvisorAction(v, "card")' in content
+    assert "noopener noreferrer" in content
+    assert "parsed.protocol === \"https:\"" in content
+    assert "encodeURIComponent(query)" in content

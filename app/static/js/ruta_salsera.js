@@ -149,6 +149,69 @@
     let rsMap = null;
     let rsLayer = null;
 
+    function tripadvisorAction(v, context) {
+        const status = String(v.tripadvisor_status || "");
+        const rawUrl = v.external_links && v.external_links.tripadvisor
+            ? String(v.external_links.tripadvisor)
+            : "";
+
+        let destination = "";
+        let label = "Buscar en Tripadvisor";
+        let verified = false;
+
+        if (status === "VERIFIED" && rawUrl) {
+            try {
+                const parsed = new URL(rawUrl);
+                const host = parsed.hostname.toLowerCase();
+
+                const trustedHost =
+                    host === "tripadvisor.com" ||
+                    host.endsWith(".tripadvisor.com") ||
+                    host === "tripadvisor.es" ||
+                    host.endsWith(".tripadvisor.es");
+
+                if (parsed.protocol === "https:" && trustedHost) {
+                    destination = parsed.href;
+                    label = "Ver ficha en Tripadvisor";
+                    verified = true;
+                }
+            } catch (_) {
+                destination = "";
+            }
+        }
+
+        if (!destination) {
+            const query = String(v.name || "") + " Medellín Colombia";
+
+            destination =
+                "https://www.tripadvisor.com/Search?q=" +
+                encodeURIComponent(query);
+
+            label = status === "IDENTITY_UNCONFIRMED"
+                ? "Buscar referencia en Tripadvisor"
+                : "Buscar en Tripadvisor";
+        }
+
+        const href = esc(destination);
+
+        if (context === "popup") {
+            return '<a href="' + href +
+                '" target="_blank" rel="noopener noreferrer" ' +
+                'class="rs-popup-btn rs-popup-btn-outline">' +
+                '<i class="fa-solid fa-utensils me-1"></i>' +
+                label + '</a>';
+        }
+
+        const border = verified ? "var(--rs-gold)" : "var(--rs-muted)";
+
+        return '<a href="' + href +
+            '" target="_blank" rel="noopener noreferrer" ' +
+            'class="btn btn-sm" style="border:1px solid ' +
+            border + ';color:' + border +
+            ';border-radius:20px;font-size:0.78rem;">' +
+            '<i class="fa-solid fa-utensils me-1"></i>' +
+            label + '</a>';
+    }
     function venuePopup(v) {
         const info = typeInfo(v);
         const addr = safeText(v.address, "Dirección pendiente de verificación");
@@ -169,6 +232,7 @@
         if (gMaps) html += '<a href="' + esc(gMaps) + '" target="_blank" rel="noopener noreferrer" class="rs-popup-btn rs-popup-btn-outline"><i class="fa-solid fa-map me-1"></i>Mapa</a>';
         if (website) html += '<a href="' + esc(website) + '" target="_blank" rel="noopener noreferrer" class="rs-popup-btn rs-popup-btn-outline"><i class="fa-solid fa-globe me-1"></i>Web</a>';
         if (v.brand === "son-havana") html += '<a href="/son-havana" class="rs-popup-btn rs-popup-btn-outline"><i class="fa-solid fa-arrow-right me-1"></i>Ver más</a>';
+        html += tripadvisorAction(v, "popup");
         html += "</div>";
         return html;
     }
@@ -197,6 +261,7 @@
                         ${esc(v.name)}${v.is_underground ? ' <i class="fa-solid fa-arrow-down ms-1" style="font-size:0.65rem;opacity:0.6"></i>' : ""}${statusBadge(v.evidence_status)}${statusIndicator}
                     </h6>
                     <p class="small mb-1" style="color:var(--rs-text);"><i class="fa-solid fa-location-dot me-1" style="color:var(--rs-gold)"></i>${esc(address)}</p>
+                    ${hasCoords(v) ? `<p class="small mb-1" style="color:var(--rs-muted);font-size:0.72rem;"><i class="fa-solid fa-location-crosshairs me-1"></i>Coordenadas: ${esc(v.coords_status || (v.coords_approx ? "NO VERIFICADO" : "VERIFICADO"))} · ${esc(v.coords_source || (v.coords_approx ? "Fuente pendiente" : "Coordenadas del registro"))}</p>` : `<p class="small mb-1" style="color:var(--rs-muted);font-size:0.72rem;">Sin coordenadas disponibles</p>`}
                     ${phone ? `<p class="small mb-1" style="color:var(--rs-text);"><i class="fa-solid fa-phone me-1" style="color:var(--rs-gold)"></i>${esc(phone)}</p>` : ""}
                     ${hours ? `<p class="small mb-1" style="color:var(--rs-text);"><i class="fa-solid fa-clock me-1" style="color:var(--rs-gold)"></i>${esc(hours)}</p>` : ""}
                     <p class="small mb-1" style="color:var(--rs-muted);font-style:italic;">${esc(musicStyle)}</p>
@@ -208,6 +273,7 @@
                         ${gMaps ? `<a href="${esc(gMaps)}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" ${btn.replace('style="', 'style="border:1px solid var(--rs-muted);color:var(--rs-muted);')}><i class="fa-solid fa-map me-1"></i>Google Maps</a>` : ""}
                         ${website ? `<a href="${esc(website)}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" ${btn.replace('style="', 'style="border:1px solid var(--rs-muted);color:var(--rs-muted);')}><i class="fa-solid fa-globe me-1"></i>Web</a>` : ""}
                         ${v.brand === "son-havana" ? `<a href="/son-havana" class="btn btn-sm" ${btn.replace('style="', 'style="border:1px solid var(--rs-gold);color:var(--rs-gold);')}><i class="fa-solid fa-arrow-right me-1"></i>Ver más</a>` : ""}
+                        ${tripadvisorAction(v, "card")}
                     </div>
                 </div>
             </div>
@@ -703,7 +769,9 @@
                 const c = extra[v.id];
                 if (!v.coordinates && c && typeof c.lat === "number" && typeof c.lng === "number") {
                     v.coordinates = { lat: c.lat, lng: c.lng };
-                    v.coords_approx = !/^Google/.test(String(c.source || ""));
+                    v.coords_approx = String(c.estado || "").toUpperCase() !== "VERIFICADO";
+                    v.coords_source = String(c.fuente || c.source || "Fuente no especificada");
+                    v.coords_status = String(c.estado || "NO VERIFICADO");
                 }
             });
             renderLugares(data.venues);
